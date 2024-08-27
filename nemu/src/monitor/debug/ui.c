@@ -129,6 +129,8 @@ static int cmd_x(char *args) {
 
     sscanf(args, "%d", &n);
 
+    printf("%d", n);
+
     s_expr = strtok(args , " ");
     
     printf("%s\n",s_expr);
