@@ -133,6 +133,8 @@ static int cmd_x(char *args) {
     
     sscanf(args, "%s", s_expr);
 
+    printf("%s",s_expr);
+
     assert(0);
     if (s_expr[0] != '0' && s_expr[1] != 'x') {
         printf("Expression must be hexdecimal format!\n");
