@@ -123,7 +123,7 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-    int n;
+    int n,len = 4;
     char *s_expr = NULL;
     swaddr_t expr = 0;
 
@@ -139,17 +139,17 @@ static int cmd_x(char *args) {
     
     sscanf(s_expr + 2, "%x", &expr);
     printf("0x%08x", swaddr_read(expr, 4));
-    /* 
+     
     while (n>0) {
-        
+        printf("0x%08x: ",expr);
         int t;
-        for (t = 0; t < 4 && n > 0; ++t, --n) {
-            
-            swaddr_read(expr, 3);
+        for (t = 0; t < 4 && n > 0; ++t, --n) {     
+            printf("0x%08x ", swaddr_read(expr, len));
         }
         putchar('\n');
+        expr+=4*len;
     }
-    */
+    
     return 0;
 
 }
