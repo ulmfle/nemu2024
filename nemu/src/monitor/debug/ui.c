@@ -129,7 +129,7 @@ static int cmd_x(char *args) {
 
     printf("str:%s\n",args);
     
-    sscanf(args,"%d%s", &n, s_expr);
+    sscanf(args,"%d %s", &n, s_expr);
   
     printf("num:%d,str:%s\n", n, s_expr);
     
