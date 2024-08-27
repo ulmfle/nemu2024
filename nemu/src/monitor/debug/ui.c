@@ -36,6 +36,12 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
+static int cmd_si(char *args);
+
+static int cmd_info(char *args);
+
+static int cmd_x(char *args);
+
 static int cmd_help(char *args);
 
 static struct {
@@ -46,6 +52,9 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
+	{ "si", "Allow the program to execute N instructions step by step before pausing execution. If N is not provided, the default is 1.", cmd_si},
+    	{ "info", "Enter \'r\' to print the register status, and enter \'w\' to print the watchpoint information", cmd_info},
+    	{ "x", "Evaluate the expression EXPR, use the result as the starting memory address, and output the next N 4-byte values in hexadecimal format.", cmd_x}
 
 	/* TODO: Add more commands */
 
@@ -76,6 +85,64 @@ static int cmd_help(char *args) {
 	return 0;
 }
 
+static int cmd_si(char *args) {
+	if (args == NULL) {
+		cpu_exec(1);
+		return 0;
+	}
+
+	uint32_t n = 0;
+
+	sscanf(args,"%d",&n);
+	
+	while (n--)
+	    cpu_exec(1);
+	
+	return 0;
+} 
+
+static int cmd_info(char *args) {
+    char subcmd;
+    sscanf(args,"%c",&subcmd);
+
+    switch (subcmd) {
+        case 'r': {
+            int idx; 
+            for (idx = 0; idx < 8; ++idx)  
+                printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
+            printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
+            break;
+        }
+
+        case 'w':
+
+        break;
+    }
+
+    return 0;
+}
+
+static int cmd_x(char *args) {
+    int n;
+    char *s_expr = NULL;
+    swaddr_t expr = 0;
+
+    sscanf(args,"%d%s", &n,  s_expr);
+  
+    printf("str:%s",s_expr);
+    assert(0);
+    if (s_expr[0] != '0' && s_expr[1] != 'x') {
+        printf("Expression must be hexdecimal format!\n");
+        return 0;
+    }
+    
+    sscanf(s_expr + 2,"%x", &expr);
+    
+    printf("%#x",expr);
+    return 0;
+
+}
+
 void ui_mainloop() {
 	while(1) {
 		char *str = rl_gets();
@@ -101,7 +168,7 @@ void ui_mainloop() {
 		int i;
 		for(i = 0; i < NR_CMD; i ++) {
 			if(strcmp(cmd, cmd_table[i].name) == 0) {
-				if(cmd_table[i].handler(args) < 0) { return; }
+				if (cmd_table[i].handler(args) < 0) { return; }
 				break;
 			}
 		}
