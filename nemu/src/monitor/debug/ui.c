@@ -140,7 +140,7 @@ static int cmd_x(char *args) {
     
     sscanf(s_expr + 2,"%x", &expr);
    */ 
-    printf("%#x",expr);
+    printf("%#x\n",expr);
     return 0;
 
 }
