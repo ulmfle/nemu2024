@@ -133,7 +133,7 @@ static int cmd_x(char *args) {
   
     printf("num:%d,str:%s", n, s_expr);
     
-    assert(0);
+    //assert(0);
    /* 
     if (s_expr[0] != '0' && s_expr[1] != 'x') {
         printf("Expression must be hexdecimal format!\n");
