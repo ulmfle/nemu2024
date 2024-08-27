@@ -129,6 +129,8 @@ static int cmd_x(char *args) {
 
     sscanf(args, "%d", &n);
 
+    args = strtok(args, " ");
+
     printf("%u\n",(uint32_t)strlen(args));
 
     assert(0);
