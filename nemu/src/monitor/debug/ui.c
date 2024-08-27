@@ -127,6 +127,8 @@ static int cmd_x(char *args) {
     char *s_expr = NULL;
     swaddr_t expr = 0;
 
+    printf("str:%s\n",args);
+    
     sscanf(args,"%d%s", &n, s_expr);
   
     printf("str:%s\n",s_expr);
