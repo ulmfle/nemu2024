@@ -131,7 +131,7 @@ static int cmd_x(char *args) {
     
     sscanf(args,"%d%s", &n, s_expr);
   
-    printf("num:%d,str:%p", n, s_expr);
+    printf("num:%d,str:%c", n, *s_expr);
     
     assert(0);
    /* 
