@@ -137,10 +137,19 @@ static int cmd_x(char *args) {
         return 0;
     }
     
-    sscanf(s_expr + 2,"%x", &expr);
-    
-    //swaddr_read();
-
+    sscanf(s_expr + 2, "%x", &expr);
+    printf("0x%08x", swaddr_read(expr, 3));
+    /* 
+    while (n>0) {
+        
+        int t;
+        for (t = 0; t < 4 && n > 0; ++t, --n) {
+            
+            swaddr_read(expr, 3);
+        }
+        putchar('\n');
+    }
+    */
     return 0;
 
 }
