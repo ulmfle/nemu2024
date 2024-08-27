@@ -129,9 +129,10 @@ static int cmd_x(char *args) {
 
     sscanf(args, "%d", &n);
 
+    printf("%d\n", n);
     s_expr = args + strlen(args) + 1;
 
-    printf("%s",s_expr);
+    printf("%s\n",s_expr);
 
     assert(0);
    /* 
