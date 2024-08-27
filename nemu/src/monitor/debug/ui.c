@@ -129,11 +129,9 @@ static int cmd_x(char *args) {
 
     sscanf(args, "%d", &n);
 
-    args = strtok(args," ");
+    s_expr = strtok(args , " ");
     
-    sscanf(args, "%s", s_expr);
-
-    printf("%s",s_expr);
+    printf("%s\n",s_expr);
 
     assert(0);
     if (s_expr[0] != '0' && s_expr[1] != 'x') {
