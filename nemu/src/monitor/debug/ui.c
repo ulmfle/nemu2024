@@ -138,7 +138,6 @@ static int cmd_x(char *args) {
     }
     
     sscanf(s_expr + 2, "%x", &expr);
-    printf("0x%08x", swaddr_read(expr, 4));
      
     while (n>0) {
         printf("0x%08x: ",expr);
