@@ -132,9 +132,6 @@ static int cmd_x(char *args) {
     args = strtok(args, " ");
     s_expr = args + strlen(args) + 1;
 
-    printf("%u\n",(uint32_t)strlen(s_expr));
-
-    assert(0);
     if (s_expr[0] != '0' && s_expr[1] != 'x') {
         printf("Expression must be hexdecimal format!\n");
         return 0;
