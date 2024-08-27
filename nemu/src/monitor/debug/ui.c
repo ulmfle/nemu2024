@@ -127,17 +127,19 @@ static int cmd_x(char *args) {
     char *s_expr = NULL;
     swaddr_t expr = 0;
 
-    sscanf(args,"%d%s", &n,  s_expr);
+    sscanf(args,"%d%s", &n, s_expr);
   
     printf("str:%s\n",s_expr);
+    
     assert(0);
+   /* 
     if (s_expr[0] != '0' && s_expr[1] != 'x') {
         printf("Expression must be hexdecimal format!\n");
         return 0;
     }
     
     sscanf(s_expr + 2,"%x", &expr);
-    
+   */ 
     printf("%#x",expr);
     return 0;
 
