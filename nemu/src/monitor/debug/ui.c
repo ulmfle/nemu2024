@@ -142,11 +142,10 @@ static int cmd_x(char *args) {
     while (n>0) {
         printf("0x%08x: ",expr);
         int t;
-        for (t = 0; t < 4 && n > 0; ++t, --n) {     
+        for (t = 0; t < 4 && n > 0; ++t, --n, expr+=len) {     
             printf("0x%08x ", swaddr_read(expr, len));
         }
         putchar('\n');
-        expr+=4*len;
     }
     
     return 0;
