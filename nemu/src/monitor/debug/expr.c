@@ -24,6 +24,8 @@ static struct rule {
 
 	{" +"         			, NOTYPE},				    // spaces
 	{"=="         			, EQ    },					// equal
+	{"("					, '('   },
+	{")"					, ')'   },
 	{"\\+"        			, '+'   },					// plus
 	{"-"          			, '-'   },					// minus
 	{"\\*"         			, '*'   },					// multiply
@@ -91,6 +93,8 @@ static bool make_token(char *e) {
 						for (si = 0; si < substr_len && si < 32; ++si)
 							tokens[nr_token].str[si] = substr_start[si];
 					}
+					case '(':
+					case ')':
 					case '+':
 					case '-':
 					case '*':
