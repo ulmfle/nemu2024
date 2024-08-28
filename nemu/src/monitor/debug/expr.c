@@ -26,7 +26,7 @@ static struct rule {
 	{"=="         			, EQ    },					// equal
 	{"\\+"        			, '+'   },					// plus
 	{"-"          			, '-'   },					// minus
-	{"*"          			, '*'   },					// multiply
+	{"\\*"         			, '*'   },					// multiply
 	{"/"          			, '/'   },					// divided by
 	{"0b[01]+"				, BIN   },
 	{"0[0-7]+"				, OCT	},
