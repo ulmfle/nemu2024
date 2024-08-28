@@ -107,8 +107,9 @@ static int cmd_info(char *args) {
 
     switch (subcmd) {
         case 'r': {
+            int reglen = sizeof(cpu.gpr) / sizeof(cpu.gpr[0]); 
             int idx; 
-            for (idx = 0; idx < 8; ++idx)  
+            for (idx = 0; idx < reglen; ++idx)  
                 printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
             break;
