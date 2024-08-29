@@ -32,7 +32,7 @@ static struct rule {
 	{" +"         		  , NOTYPE},				    // spaces
 	{"\\("				  , LPR   },					// left parenthesis
 	{"\\)"				  , RPR   },					// right parenthesis
-	{"||"				  , OR	  },					// or
+	//{"\\|\\|"			  , OR	  },					// or
 	{"&&"				  , AND   },					// and
 	{"!="				  , NEQ   },					// not equal
 	{"=="       		  , EQ    },					// equal
