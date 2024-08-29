@@ -36,6 +36,19 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
+static int cmd_p(char *args) {
+	if (args == NULL) {
+		printf("Empty expression.\n");
+		return 0;
+	}
+	bool succ = false;
+	int ret;
+	ret = expr(args, &succ);
+	if (succ == false) return 0;
+	printf("%u\n", ret);
+	return 0;
+}
+
 static int cmd_si(char *args);
 
 static int cmd_info(char *args);
@@ -53,9 +66,9 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Allow the program to execute N instructions step by step before pausing execution. If N is not provided, the default is 1.", cmd_si},
-    	{ "info", "Enter \'r\' to print the register status, and enter \'w\' to print the watchpoint information", cmd_info},
-    	{ "x", "Evaluate the expression EXPR, use the result as the starting memory address, and output the next N 4-byte values in hexadecimal format.", cmd_x}
-
+    { "info", "Enter \'r\' to print the register status, and enter \'w\' to print the watchpoint information", cmd_info},
+    { "x", "Evaluate the expression EXPR, use the result as the starting memory address, and output the next N 4-byte values in hexadecimal format.", cmd_x},
+	{ "p", "Evaluate the expression", cmd_p}
 	/* TODO: Add more commands */
 
 };
@@ -94,12 +107,12 @@ static int cmd_si(char *args) {
 	uint32_t n = 0;
 
 	sscanf(args,"%d",&n);
-	
+
 	while (n--)
 	    cpu_exec(1);
-	
+
 	return 0;
-} 
+}
 
 static int cmd_info(char *args) {
     char subcmd;
@@ -107,9 +120,9 @@ static int cmd_info(char *args) {
 
     switch (subcmd) {
         case 'r': {
-            int reglen = sizeof(cpu.gpr) / sizeof(cpu.gpr[0]); 
-            int idx; 
-            for (idx = 0; idx < reglen; ++idx)  
+            int reglen = sizeof(cpu.gpr) / sizeof(cpu.gpr[0]);
+            int idx;
+            for (idx = 0; idx < reglen; ++idx)
                 printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
             break;
@@ -137,18 +150,18 @@ static int cmd_x(char *args) {
         printf("Expression must be hexdecimal format!\n");
         return 0;
     }
-    
+
     sscanf(s_expr + 2, "%x", &expr);
-     
+
     while (n>0) {
         printf("0x%08x: ",expr);
         int t;
-        for (t = 0; t < 4 && n > 0; ++t, --n, expr+=len) {     
+        for (t = 0; t < 4 && n > 0; ++t, --n, expr+=len) {
             printf("0x%08x ", swaddr_read(expr, len));
         }
         putchar('\n');
     }
-    
+
     return 0;
 
 }
