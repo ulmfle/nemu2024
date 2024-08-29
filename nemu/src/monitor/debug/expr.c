@@ -128,9 +128,40 @@ static bool make_token(char *e) {
 	return true;
 }
 
+int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
+	int tki,step;
+	int pr_pair = 0;
+
+	step = is_rev?-1:1;
+	for (tki = st; tki >= ed; tki+=step) {
+		if (tokens[tki].type == LPR) {
+			do {
+				if (tokens[tki].type == LPR+is_rev) ++pr_pair;
+				else if (tokens[tki].type == RPR-is_rev) --pr_pair;
+				tki+=step;
+			} while (pr_pair);
+		}
+		if (tokens[tki].type >= type_st && tokens[tki].type <= type_ed) return tki;
+	}
+
+	return -1;
+}
+
 int dom_op(int st, int ed) {
-	//int idx,tki;
-	return ed;
+	int ret_1 = find_op(OR, OR, ed, st, 1);
+	if (ret_1 != -1) return ret_1;
+	int ret_2 = find_op(AND, AND, ed, st, 1);
+	if (ret_2 != -1) return ret_2;
+	int ret_3 = find_op(EQ, NEQ, ed, st, 1);
+	if (ret_3 != -1) return ret_3;
+	int ret_4 = find_op(ADD, SUB, ed, st, 1);
+	if (ret_4 != -1) return ret_4;
+	int ret_5 = find_op(MUL, DIV, ed, st, 1);
+	if (ret_5 != -1) return ret_5;
+	int ret_6 = find_op(REV, DEREF, st, ed, 0);
+	if (ret_6 != -1) return ret_6;
+	panic("Cannot find dom_op!\n");
+	return -1;
 }
 
 uint32_t eval(int st, int ed, uint8_t *bad) {
@@ -159,10 +190,10 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			case ADD:case SUB:case MUL:case DIV:
 			case OR:case AND:case EQ:case NEQ:
 			lvalue = eval(st, op-1, &bad_state_l);
-			Assert(bad_state_l == 0, "Lvalue evaluation failed!");
+			Assert(bad_state_l == 0, "Lvalue evaluation failed!\n");
 			case REV:case POS:case NEG:case DEREF:
 			rvalue = eval(op+1, ed, &bad_state_r);
-			Assert(bad_state_r == 0, "Rvalue evaluation failed!");
+			Assert(bad_state_r == 0, "Rvalue evaluation failed!\n");
 		}
 
 		switch(tokens[op].type) {
@@ -190,7 +221,7 @@ uint32_t expr(char *e, bool *success) {
 		return 0;
 	}
 
-	//check POSitive, NEGative, DEREFerence
+	//preprocess : check POSitive, NEGative, DEREFerence
 	int tki = 0;
 	for (;tki < nr_token; ++tki) {
 		if (tokens[tki].type >= POS && tokens[tki].type <= DEREF && (tki = 0|| (tokens[tki-1].type < BIN && tokens[tki+1].type >= BIN)))
@@ -199,6 +230,6 @@ uint32_t expr(char *e, bool *success) {
 
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
-	Assert(bad_state == 0,"Evaluation failed!");
+	Assert(bad_state == 0,"Evaluation failed!\n");
 	return ret;
 }
