@@ -89,7 +89,7 @@ static bool make_token(char *e) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
 
-				
+
 				position += substr_len;
 
 				/* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -258,6 +258,9 @@ uint32_t expr(char *e, bool *success) {
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
 	if (bad_state == 1) printf("Bad expression\n");
+
+	memset(tokens, 0, 32*sizeof(Token));
+
 	*success = true;
 	return ret;
 }
