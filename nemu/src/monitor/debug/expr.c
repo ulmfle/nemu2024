@@ -89,7 +89,7 @@ static bool make_token(char *e) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
 
-				Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
+				
 				position += substr_len;
 
 				/* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -169,22 +169,16 @@ int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
 
 int dom_op(int st, int ed) {
 	int ret_1 = find_op(OR, OR, st, ed, 1);
-	//Log("ret_1:%d",ret_1);
 	if (ret_1 != -1) return ret_1;
 	int ret_2 = find_op(AND, AND, st, ed, 1);
-	//Log("ret_2:%d",ret_2);
 	if (ret_2 != -1) return ret_2;
 	int ret_3 = find_op(EQ, NEQ, st, ed, 1);
-	//Log("ret_3:%d",ret_3);
 	if (ret_3 != -1) return ret_3;
 	int ret_4 = find_op(ADD, SUB, st, ed, 1);
-	//Log("ret_4:%d",ret_4);
 	if (ret_4 != -1) return ret_4;
 	int ret_5 = find_op(MUL, DIV, st, ed, 1);
-	//Log("ret_5:%d",ret_5);
 	if (ret_5 != -1) return ret_5;
 	int ret_6 = find_op(REV, DEREF, st, ed, 0);
-	//Log("ret_6:%d",ret_6);
 	if (ret_6 != -1) return ret_6;
 	panic("Cannot find dom_op!\n");
 	return -1;
@@ -192,7 +186,6 @@ int dom_op(int st, int ed) {
 
 uint32_t eval(int st, int ed, uint8_t *bad) {
 	if (st>ed) {
-		Log("0");
 		*bad = 1;
 		return 0;
 	}
@@ -201,7 +194,6 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 	uint8_t bad_state_l = 0,bad_state_r = 0;
 
 	if (st==ed) {
-		Log("1");
 		switch (tokens[st].type) {
 			case DEC:sscanf(tokens[st].str, "%u", &value); break;
 			case HEX:sscanf(tokens[st].str + 2, "%x", &value); break;
@@ -210,11 +202,9 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 	}
 
 	if (tokens[st].type == LPR && tokens[ed].type == RPR && check_parentheses(st+1, ed-1) == true) {
-		Log("2");
 		return eval(st+1, ed-1, bad);
 
 	} else {
-		Log("3");
 		int op = dom_op(st, ed);
 
 		switch(tokens[op].type) {
