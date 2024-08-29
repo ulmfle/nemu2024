@@ -222,6 +222,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 
 	}
 
+	Log("complete!");
 	return value;
 }
 
