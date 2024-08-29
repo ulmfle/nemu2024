@@ -138,40 +138,51 @@ int check_parentheses(int st, int ed) {
 	if (pair > 0) return false; else return true;
 }
 
-int find_op(int type_st, int type_ed, int st, int ed) {
-	int tki,is_rev,step,pr_pair=0;
+int skip_parentheses(int st, int is_rev) {
+	int pr_pair = 0;
+	int step = is_rev?-1:1;
+	do {
+		if (tokens[st].type == is_rev?RPR:LPR) ++pr_pair;
+		else if (tokens[st].type == is_rev?LPR:RPR) --pr_pair;
+		st+=step;
+	} while (pr_pair);
+	return st;
+}
 
-	is_rev = ed<st;
-	for (tki = st; tki >= ed; tki+=(is_rev?-1:1)) {
-		if (tokens[tki].type == is_rev?RPR:LPR) {
-			do {
-				if (tokens[tki].type == is_rev?RPR:LPR) ++pr_pair;
-				else if (tokens[tki].type == is_rev?LPR:RPR) --pr_pair;
-				tki+=step;
-			} while (pr_pair);
+int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
+	int tki;
+
+	if (!is_rev) {
+		for (tki = st; tki <= ed; ++tki) {
+			if (tokens[tki].type == LPR) tki = skip_parentheses(tki,is_rev);
+			if (tokens[tki].type >= type_st && tokens[tki].type <= type_ed) return tki;
 		}
-		if (tokens[tki].type >= type_st && tokens[tki].type <= type_ed) return tki;
+	} else {
+		for (tki = ed; tki >= st; --tki) {
+			if (tokens[tki].type == RPR) tki = skip_parentheses(tki,is_rev);
+			if (tokens[tki].type >= type_st && tokens[tki].type <= type_ed) return tki;
+		}
 	}
 	return -1;
 }
 
 int dom_op(int st, int ed) {
-	int ret_1 = find_op(OR, OR, ed, st);
+	int ret_1 = find_op(OR, OR, st, ed, 1);
 	Log("ret_1:%d",ret_1);
 	if (ret_1 != -1) return ret_1;
-	int ret_2 = find_op(AND, AND, ed, st);
+	int ret_2 = find_op(AND, AND, st, ed, 1);
 	Log("ret_2:%d",ret_2);
 	if (ret_2 != -1) return ret_2;
-	int ret_3 = find_op(EQ, NEQ, ed, st);
+	int ret_3 = find_op(EQ, NEQ, st, ed, 1);
 	Log("ret_3:%d",ret_3);
 	if (ret_3 != -1) return ret_3;
-	int ret_4 = find_op(ADD, SUB, ed, st);
+	int ret_4 = find_op(ADD, SUB, st, ed, 1);
 	Log("ret_4:%d",ret_4);
 	if (ret_4 != -1) return ret_4;
-	int ret_5 = find_op(MUL, DIV, ed, st);
+	int ret_5 = find_op(MUL, DIV, st, ed, 1);
 	Log("ret_5:%d",ret_5);
 	if (ret_5 != -1) return ret_5;
-	int ret_6 = find_op(REV, DEREF, st, ed);
+	int ret_6 = find_op(REV, DEREF, st, ed, 0);
 	Log("ret_6:%d",ret_6);
 	if (ret_6 != -1) return ret_6;
 	panic("Cannot find dom_op!\n");
