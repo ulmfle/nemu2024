@@ -239,7 +239,7 @@ uint32_t expr(char *e, bool *success) {
 	}
 
 	if (check_parentheses(0, nr_token-1) == false) {
-		printf("Bad expression\n");
+		printf("Bad expression : parentheses\n");
 		return -1;
 	}
 
