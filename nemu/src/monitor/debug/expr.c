@@ -250,6 +250,9 @@ uint32_t expr(char *e, bool *success) {
 		tokens[tki].type+=POS-ADD;
 	}
 
+	int i;
+	for (i = 0; i < nr_token; ++i) Log("%d", tokens[i].type);
+
 	if (check_parentheses(0, nr_token-1) == false) {
 		printf("Bad expression : parentheses\n");
 		return -1;
@@ -258,8 +261,6 @@ uint32_t expr(char *e, bool *success) {
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
 	if (bad_state == 1) printf("Bad expression\n");
-
-	memset(tokens, 0, 32*sizeof(Token));
 
 	*success = true;
 	return ret;
