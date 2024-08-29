@@ -12,11 +12,10 @@ enum {
 
 	OR,
 	AND,
-	REV,
 	EQ,  NEQ,
 	ADD, SUB,
 	MUL, DIV,
-	DEREF,
+	REV, POS, NEG, DEREF,
 	BIN, OCT, DEC, HEX
 };
 
@@ -100,8 +99,8 @@ static bool make_token(char *e) {
 
 				int si = 0;
 				switch(rules[i].token_type) {
-					case BIN:case OCT:case HEX:
-						if (rules[i].token_type == OCT) si = 1; else si = 2;
+					/*case BIN:case OCT:*/case HEX:
+					/*if (rules[i].token_type == OCT) si = 1; else */si = 2;
 
 					case DEC:
 						for (; si < substr_len && si < 32; ++si) {
@@ -140,22 +139,49 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 		return 0;
 	}
 
-	uint32_t value = 0,lvalue = 0,rvalue = 0;
+	uint32_t value = 0, lvalue = 0, rvalue = 0;
 	uint8_t bad_state_l = 0,bad_state_r = 0;
 
 	if (st==ed) {
-		sscanf(tokens[st].str, "%u", &value);
+		switch (tokens[st].type) {
+			case DEC:sscanf(tokens[st].str, "%u", &value); break;
+			case HEX:sscanf(tokens[st].str + 2, "%x", &value); break;
+		}
 		return value;
+
 	} else if (tokens[st].type == '(' && tokens[ed].type == ')') {
-		eval(st+1, ed-1, bad);
+		return eval(st+1, ed-1, bad);
+
 	} else {
 		int op = dom_op(st, ed);
-		lvalue = eval(st, op-1, &bad_state_l);
-		rvalue = eval(op+1, ed, &bad_state_r);
-		Assert(bad_state_r , "Rvalue evaluation failed!");
+
+		switch(tokens[op].type) {
+			case ADD:case SUB:case MUL:case DIV:
+			case OR:case AND:case EQ:case NEQ:
+			lvalue = eval(st, op-1, &bad_state_l);
+			Assert(bad_state_l == 0, "Lvalue evaluation failed!");
+			case REV:case POS:case NEG:case DEREF:
+			rvalue = eval(op+1, ed, &bad_state_r);
+			Assert(bad_state_r == 0, "Rvalue evaluation failed!");
+		}
+
+		switch(tokens[op].type) {
+			case ADD: value = lvalue + rvalue; break;
+			case SUB: value = lvalue - rvalue; break;
+			case MUL: value = lvalue * rvalue; break;
+			case DIV: value = lvalue / rvalue; break;
+			case OR : value = lvalue || rvalue; break;
+			case AND: value = lvalue && rvalue; break;
+			case EQ : value = lvalue == rvalue; break;
+			case NEQ : value = lvalue != rvalue; break;
+			case REV: value = !rvalue; break;
+			case POS: value = 0+rvalue; break;
+			case NEG: value = 0-rvalue; break;
+			case DEREF: value = swaddr_read(rvalue, 4); break;
+		}
 
 	}
-	return 0;
+	return value;
 }
 
 uint32_t expr(char *e, bool *success) {
@@ -164,7 +190,12 @@ uint32_t expr(char *e, bool *success) {
 		return 0;
 	}
 
-	assert(0);
+	//check POSitive, NEGative, DEREFerence
+	int tki = 0;
+	for (;tki < nr_token; ++tki) {
+		if (tokens[tki].type >= POS && tokens[tki].type <= DEREF && (tki = 0|| (tokens[tki-1].type < BIN && tokens[tki+1].type >= BIN)))
+		tokens[tki].type+=POS-ADD;
+	}
 
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
