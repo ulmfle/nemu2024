@@ -22,18 +22,18 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 
-	{" +"         			, NOTYPE},				    // spaces
-	{"=="         			, EQ    },					// equal
-	{"\\("					, '('   },
-	{"\\)"					, ')'   },
-	{"\\+"        			, '+'   },					// plus
-	{"-"          			, '-'   },					// minus
-	{"\\*"         			, '*'   },					// multiply
-	{"/"          			, '/'   },					// divided by
-	{"0b[01]+"				, BIN   },
-	{"0[0-7]+"				, OCT	},
-	{"0[xX][0-9a-fA-F]+"    , HEX   },
-	{"[1-9][0-9]+"			, DEC   }
+	{" +"         		  , NOTYPE},				    // spaces
+	{"=="       		  , EQ    },					// equal
+	{"\\("				  , '('   },
+	{"\\)"				  , ')'   },
+	{"\\+"        		  , '+'   },					// plus
+	{"-"          		  , '-'   },					// minus
+	{"\\*"         		  , '*'   },					// multiply
+	{"/"          		  , '/'   },					// divided by
+	{"0b[01]+"			  , BIN   },
+	{"0[0-7]+"			  , OCT	  },
+	{"0[xX][0-9a-fA-F]+"  , HEX   },
+	{"([1-9][0-9]+)|[0-9]", DEC   }
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -124,11 +124,13 @@ uint32_t expr(char *e, bool *success) {
 		return 0;
 	}
 
+	/*
 	int tki = 0;
 	for (tki = 0; tki < nr_token; ++tki) {
 		Log("#Token: %d %s\n", tokens[tki].type, tokens[tki].str);
 	}
 	putchar('\n');
+	*/
 
 	return 0;
 }
