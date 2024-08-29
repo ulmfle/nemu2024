@@ -186,8 +186,9 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			case HEX:sscanf(tokens[st].str + 2, "%x", &value); break;
 		}
 		return value;
+	}
 
-	} else if (tokens[st].type == '(' && tokens[ed].type == ')') {
+	if (tokens[st].type == LPR && tokens[ed].type == RPR) {
 		return eval(st+1, ed-1, bad);
 
 	} else {
