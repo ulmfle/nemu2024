@@ -139,19 +139,15 @@ int check_parentheses(int st, int ed) {
 }
 
 int skip_parentheses(int st, int is_rev) {
-	Log("%d %d", st, is_rev);
 	int pr_pair = 0;
 	int step = is_rev?-1:1;
 	do {
+		Log("st:%d, pr:%d",st, pr_pair);
 		if (tokens[st].type == is_rev?RPR:LPR) ++pr_pair;
 		else if (tokens[st].type == is_rev?LPR:RPR) --pr_pair;
-		if (st == 0 || st == nr_token-1) {
-			Log("edge");
-			return st;
-		}
+		if (st == 0 || st == nr_token-1) break;
 		st+=step;
 	} while (pr_pair);
-	Log("ret:%d", st);
 	return st;
 }
 
