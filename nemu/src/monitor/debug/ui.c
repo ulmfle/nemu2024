@@ -41,7 +41,7 @@ static int cmd_p(char *args) {
 	int ret;
 	ret = expr(args, &succ);
 	if (succ == false) return -1;
-	printf("val:%u\n", ret);
+	printf("%u\n", ret);
 	return 0;
 }
 
