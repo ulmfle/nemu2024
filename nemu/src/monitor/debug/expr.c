@@ -32,7 +32,7 @@ static struct rule {
 	{" +"         		  , NOTYPE},				    // spaces
 	{"\\("				  , LPR   },					// left parenthesis
 	{"\\)"				  , RPR   },					// right parenthesis
-	//{"\\|\\|"			  , OR	  },					// or
+	{"\\|\\|"			  , OR	  },					// or
 	{"&&"				  , AND   },					// and
 	{"!="				  , NEQ   },					// not equal
 	{"=="       		  , EQ    },					// equal
@@ -100,15 +100,18 @@ static bool make_token(char *e) {
 
 				int si = 0;
 				switch(rules[i].token_type) {
-					case HEX:
-						si = 2;
+					case BIN:case OCT:case HEX:
+						if (rules[i].token_type == OCT) si = 1; else si = 2;
+
 					case DEC:
-						for (; si < substr_len && si < 32; ++si)
+						for (; si < substr_len && si < 32; ++si) {
 							tokens[nr_token].str[si] = substr_start[si];
+						}
 
 					case LPR:case RPR:case OR :case AND:case ADD:case SUB:
 					case MUL:case DIV:case EQ :case NEQ:case REV:
 						tokens[nr_token++].type = rules[i].token_type;
+
 					case NOTYPE:
 						break;
 				}
@@ -126,13 +129,9 @@ static bool make_token(char *e) {
 	return true;
 }
 
-uint32_t expr(char *e, bool *success) {
-	if(!make_token(e)) {
-		*success = false;
-		return 0;
-	}
-
-	return 0;
+int dom_op(int st, int ed) {
+	//int idx,tki;
+	return ed;
 }
 
 uint32_t eval(int st, int ed, uint8_t *bad) {
@@ -141,8 +140,8 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 		return 0;
 	}
 
-	uint32_t value;
-	//uint8_t bad_state_l = 0,bad_state_r = 0;
+	uint32_t value = 0,lvalue = 0,rvalue = 0;
+	uint8_t bad_state_l = 0,bad_state_r = 0;
 
 	if (st==ed) {
 		sscanf(tokens[st].str, "%u", &value);
@@ -150,11 +149,25 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 	} else if (tokens[st].type == '(' && tokens[ed].type == ')') {
 		eval(st+1, ed-1, bad);
 	} else {
-		
+		int op = dom_op(st, ed);
+		lvalue = eval(st, op-1, &bad_state_l);
+		rvalue = eval(op+1, ed, &bad_state_r);
+		Assert(bad_state_r , "Rvalue evaluation failed!");
+
 	}
 	return 0;
 }
 
-int dom_op(int st, int ed) {
-	return ed;
+uint32_t expr(char *e, bool *success) {
+	if(!make_token(e)) {
+		*success = false;
+		return 0;
+	}
+
+	assert(0);
+
+	uint8_t bad_state;
+	uint32_t ret = eval(0, nr_token-1, &bad_state);
+	Assert(bad_state == 0,"Evaluation failed!");
+	return ret;
 }
