@@ -190,7 +190,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 	}
 
 	if (tokens[st].type == LPR && tokens[ed].type == RPR && check_parentheses(st+1, ed-1) == true) {
-		eval(st+1, ed-1, bad);
+		return eval(st+1, ed-1, bad);
 
 	} else {
 		int op = dom_op(st, ed);
@@ -237,6 +237,9 @@ uint32_t expr(char *e, bool *success) {
 		if (tokens[tki].type >= POS && tokens[tki].type <= DEREF && (tki = 0|| (tokens[tki-1].type < BIN && tokens[tki+1].type >= BIN)))
 		tokens[tki].type+=POS-ADD;
 	}
+
+
+
 
 	if (check_parentheses(0, nr_token-1) == false) {
 		printf("Bad expression : parentheses\n");
