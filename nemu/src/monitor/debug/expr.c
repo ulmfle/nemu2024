@@ -246,7 +246,7 @@ uint32_t expr(char *e, bool *success) {
 	//preprocess : check POSitive, NEGative, DEREFerence
 	int tki = 0;
 	for (;tki < nr_token; ++tki) {
-		if (tokens[tki].type >= ADD && tokens[tki].type <= MUL && (tki == 0|| (tokens[tki-1].type < BIN && tokens[tki+1].type >= BIN)))
+		if (tokens[tki].type >= ADD && tokens[tki].type <= MUL && (tki == 0|| (tokens[tki-1].type != RPR && tokens[tki+1].type >= BIN)))
 		tokens[tki].type+=POS-ADD;
 	}
 
