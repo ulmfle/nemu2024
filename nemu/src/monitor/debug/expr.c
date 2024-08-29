@@ -179,7 +179,6 @@ int dom_op(int st, int ed) {
 }
 
 uint32_t eval(int st, int ed, uint8_t *bad) {
-	Log("now %d %d",st,ed);
 	if (st>ed) {
 		*bad = 1;
 		return 0;
@@ -195,7 +194,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 		}
 		return value;
 	}
-
+	Log("now %d %d",st,ed);
 	if (tokens[st].type == LPR && tokens[ed].type == RPR && check_parentheses(st+1, ed-1) == true) {
 		return eval(st+1, ed-1, bad);
 
@@ -211,7 +210,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			rvalue = eval(op+1, ed, &bad_state_r);
 			Assert(bad_state_r == 0, "Rvalue evaluation failed!");
 		}
-
+	Log("now %d %d",st,ed);
 		switch(tokens[op].type) {
 			case ADD: value = lvalue + rvalue; break;
 			case SUB: value = lvalue - rvalue; break;
@@ -228,7 +227,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 		}
 
 	}
-
+	Log("now %d %d",st,ed);
 	return value;
 }
 
