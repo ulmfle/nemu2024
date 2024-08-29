@@ -193,6 +193,7 @@ int dom_op(int st, int ed) {
 
 uint32_t eval(int st, int ed, uint8_t *bad) {
 	if (st>ed) {
+		Log("0");
 		*bad = 1;
 		return 0;
 	}
@@ -201,6 +202,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 	uint8_t bad_state_l = 0,bad_state_r = 0;
 
 	if (st==ed) {
+		Log("1");
 		switch (tokens[st].type) {
 			case DEC:sscanf(tokens[st].str, "%u", &value); break;
 			case HEX:sscanf(tokens[st].str + 2, "%x", &value); break;
@@ -209,9 +211,11 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 	}
 
 	if (tokens[st].type == LPR && tokens[ed].type == RPR && check_parentheses(st+1, ed-1) == true) {
+		Log("2");
 		return eval(st+1, ed-1, bad);
 
 	} else {
+		Log("3");
 		int op = dom_op(st, ed);
 
 		switch(tokens[op].type) {
