@@ -171,6 +171,7 @@ int dom_op(int st, int ed) {
 }
 
 uint32_t eval(int st, int ed, uint8_t *bad) {
+	Log("eval_now:%d %d", st, ed);
 	if (st>ed) {
 		*bad = 1;
 		return 0;
