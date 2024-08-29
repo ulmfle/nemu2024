@@ -244,9 +244,6 @@ uint32_t expr(char *e, bool *success) {
 		return 0;
 	}
 
-	int i;
-	for (i = 0; i < nr_token; ++i) Log("%d", tokens[i].type);
-
 	if (check_parentheses(0, nr_token-1) == false) {
 		printf("Bad expression : parentheses\n");
 		return -1;
