@@ -139,10 +139,17 @@ int check_parentheses(int st, int ed) {
 }
 
 int find_op(int type_st, int type_ed, int st, int ed) {
-	int tki,step;
+	int tki,step,pr_pair=0;
 
 	step = ed<st?-1:1;
 	for (tki = st; tki >= ed; tki+=step) {
+		if (tokens[tki].type == LPR-step) {
+			do {
+				if (tokens[tki].type == LPR-step) ++pr_pair;
+				else if (tokens[tki].type == RPR+step) --pr_pair;
+				tki+=step;
+			} while (pr_pair);
+		}
 		if (tokens[tki].type >= type_st && tokens[tki].type <= type_ed) return tki;
 	}
 	return -1;
