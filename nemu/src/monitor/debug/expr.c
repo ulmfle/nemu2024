@@ -128,22 +128,23 @@ static bool make_token(char *e) {
 	return true;
 }
 
+int check_parentheses(int st, int ed) {
+	int tki,pair=0;
+	for (tki = st; tki < ed; ++tki) {
+		if (tokens[tki].type == LPR) ++pair;
+		if (tokens[tki].type == RPR) --pair;
+		if (pair<0) return false;
+	}
+	if (pair > 0) return false; else return true;
+}
+
 int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
 	int tki,step;
-	int pr_pair = 0;
 
 	step = is_rev?-1:1;
 	for (tki = st; tki >= ed; tki+=step) {
-		if (tokens[tki].type == LPR+is_rev) {
-			do {
-				if (tokens[tki].type == LPR+is_rev) ++pr_pair;
-				else if (tokens[tki].type == RPR-is_rev) --pr_pair;
-				tki+=step;
-			} while (pr_pair);
-		}
 		if (tokens[tki].type >= type_st && tokens[tki].type <= type_ed) return tki;
 	}
-
 	return -1;
 }
 
@@ -188,8 +189,8 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 		return value;
 	}
 
-	if (tokens[st].type == LPR && tokens[ed].type == RPR) {
-		return eval(st+1, ed-1, bad);
+	if (tokens[st].type == LPR && tokens[ed].type == RPR && check_parentheses(st+1, ed-1) == true) {
+		eval(st+1, ed-1, bad);
 
 	} else {
 		int op = dom_op(st, ed);
@@ -237,7 +238,13 @@ uint32_t expr(char *e, bool *success) {
 		tokens[tki].type+=POS-ADD;
 	}
 
+	if (check_parentheses(0, nr_token-1) == false) {
+		printf("Bad expression\n");
+		return -1;
+	}
+
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
+	if (bad_state == 1) printf("Bad expression\n");
 	return ret;
 }
