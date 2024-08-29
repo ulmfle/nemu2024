@@ -37,10 +37,10 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_p(char *args) {
-	bool *succ = NULL;
+	bool succ = false;
 	int ret;
-	ret = expr(args, succ);
-	if (*succ == false) return -1;
+	ret = expr(args, &succ);
+	if (succ == false) return -1;
 	printf("%u", ret);
 	return 0;
 }

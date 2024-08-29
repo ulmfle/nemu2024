@@ -7,10 +7,17 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, BIN, OCT, DEC, HEX
+	NOTYPE = 256,
+	LPR, RPR,
 
-	/* TODO: Add more token types */
-
+	OR,
+	AND,
+	REV,
+	EQ,  NEQ,
+	ADD, SUB,
+	MUL, DIV,
+	DEREF,
+	BIN, OCT, DEC, HEX
 };
 
 static struct rule {
@@ -23,17 +30,21 @@ static struct rule {
 	 */
 
 	{" +"         		  , NOTYPE},				    // spaces
+	{"\\("				  , LPR   },					// left parenthesis
+	{"\\)"				  , RPR   },					// right parenthesis
+	{"||"				  , OR	  },					// or
+	{"&&"				  , AND   },					// and
+	{"!="				  , NEQ   },					// not equal
 	{"=="       		  , EQ    },					// equal
-	{"\\("				  , '('   },
-	{"\\)"				  , ')'   },
-	{"\\+"        		  , '+'   },					// plus
-	{"-"          		  , '-'   },					// minus
-	{"\\*"         		  , '*'   },					// multiply
-	{"/"          		  , '/'   },					// divided by
-	{"0b[01]+"			  , BIN   },
-	{"0[0-7]+"			  , OCT	  },
-	{"0[xX][0-9a-fA-F]+"  , HEX   },
-	{"([1-9][0-9]+)|[0-9]", DEC   }
+	{"!" 				  , REV   },					// reverse
+	{"\\+"        		  , ADD   },					// plus
+	{"-"          		  , SUB   },					// minus
+	{"\\*"         		  , MUL   },					// multiply
+	{"/"          		  , DIV   },					// divided by
+	{"0b[01]+"			  , BIN   },					// binary number
+	{"0[0-7]+"			  , OCT	  },					// octal number
+	{"0[xX][0-9a-fA-F]+"  , HEX   },					// hexademical number
+	{"([1-9][0-9]+)|[0-9]", DEC   }						// decimal number
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -87,19 +98,16 @@ static bool make_token(char *e) {
 				 * of tokens, some extra actions should be performed.
 				 */
 
+				int si = 0;
 				switch(rules[i].token_type) {
-					case DEC: {
-						int si = 0;
-						for (si = 0; si < substr_len && si < 32; ++si)
+					case HEX:
+						si = 2;
+					case DEC:
+						for (; si < substr_len && si < 32; ++si)
 							tokens[nr_token].str[si] = substr_start[si];
-					}
-					case '(':
-					case ')':
-					case '+':
-					case '-':
-					case '*':
-					case '/':
-					case EQ :
+
+					case LPR:case RPR:case OR :case AND:case ADD:case SUB:
+					case MUL:case DIV:case EQ :case NEQ:case REV:
 						tokens[nr_token++].type = rules[i].token_type;
 					case NOTYPE:
 						break;
@@ -124,11 +132,29 @@ uint32_t expr(char *e, bool *success) {
 		return 0;
 	}
 
-	*success = false;
 	return 0;
 }
 
-uint32_t eval(int st, int ed) {
+uint32_t eval(int st, int ed, uint8_t *bad) {
+	if (st>ed) {
+		*bad = 1;
+		return 0;
+	}
+
+	uint32_t value;
+	//uint8_t bad_state_l = 0,bad_state_r = 0;
+
+	if (st==ed) {
+		sscanf(tokens[st].str, "%u", &value);
+		return value;
+	} else if (tokens[st].type == '(' && tokens[ed].type == ')') {
+		eval(st+1, ed-1, bad);
+	} else {
+		
+	}
 	return 0;
 }
 
+int dom_op(int st, int ed) {
+	return ed;
+}
