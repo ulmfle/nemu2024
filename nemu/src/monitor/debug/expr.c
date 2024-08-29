@@ -148,6 +148,7 @@ int skip_parentheses(int st, int is_rev) {
 		if (st == 0 || st == nr_token-1) return st;
 		st+=step;
 	} while (pr_pair);
+	Log("ret:%d", st);
 	return st;
 }
 
