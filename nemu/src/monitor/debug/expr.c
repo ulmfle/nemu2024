@@ -152,7 +152,6 @@ int skip_parentheses(int st, int is_rev) {
 }
 
 int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
-	Log("%d %d %d %d %d", type_st, type_ed, st, ed, is_rev);
 	int tki;
 
 	if (!is_rev) {
