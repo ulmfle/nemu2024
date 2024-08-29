@@ -130,7 +130,7 @@ static bool make_token(char *e) {
 
 int check_parentheses(int st, int ed) {
 	int tki,pair=0;
-	for (tki = st; tki < ed; ++tki) {
+	for (tki = st; tki <= ed; ++tki) {
 		if (tokens[tki].type == LPR) ++pair;
 		if (tokens[tki].type == RPR) --pair;
 		Log("pair:%d",pair);
