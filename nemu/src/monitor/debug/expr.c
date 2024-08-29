@@ -169,22 +169,22 @@ int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
 
 int dom_op(int st, int ed) {
 	int ret_1 = find_op(OR, OR, st, ed, 1);
-	Log("ret_1:%d",ret_1);
+	//Log("ret_1:%d",ret_1);
 	if (ret_1 != -1) return ret_1;
 	int ret_2 = find_op(AND, AND, st, ed, 1);
-	Log("ret_2:%d",ret_2);
+	//Log("ret_2:%d",ret_2);
 	if (ret_2 != -1) return ret_2;
 	int ret_3 = find_op(EQ, NEQ, st, ed, 1);
-	Log("ret_3:%d",ret_3);
+	//Log("ret_3:%d",ret_3);
 	if (ret_3 != -1) return ret_3;
 	int ret_4 = find_op(ADD, SUB, st, ed, 1);
-	Log("ret_4:%d",ret_4);
+	//Log("ret_4:%d",ret_4);
 	if (ret_4 != -1) return ret_4;
 	int ret_5 = find_op(MUL, DIV, st, ed, 1);
-	Log("ret_5:%d",ret_5);
+	//Log("ret_5:%d",ret_5);
 	if (ret_5 != -1) return ret_5;
 	int ret_6 = find_op(REV, DEREF, st, ed, 0);
-	Log("ret_6:%d",ret_6);
+	//Log("ret_6:%d",ret_6);
 	if (ret_6 != -1) return ret_6;
 	panic("Cannot find dom_op!\n");
 	return -1;
