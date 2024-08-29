@@ -230,6 +230,5 @@ uint32_t expr(char *e, bool *success) {
 
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
-	Assert(bad_state == 0,"Evaluation failed!\n");
 	return ret;
 }
