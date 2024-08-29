@@ -222,7 +222,6 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 
 	}
 
-	Log("complete!");
 	return value;
 }
 
@@ -235,6 +234,7 @@ uint32_t expr(char *e, bool *success) {
 	//preprocess : check POSitive, NEGative, DEREFerence
 	int tki = 0;
 	for (;tki < nr_token; ++tki) {
+		Log("u");
 		if (tokens[tki].type >= ADD && tokens[tki].type <= MUL && (tki = 0|| (tokens[tki-1].type < BIN && tokens[tki+1].type >= BIN)))
 		tokens[tki].type+=POS-ADD;
 	}
