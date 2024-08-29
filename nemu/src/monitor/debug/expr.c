@@ -143,12 +143,11 @@ int skip_parentheses(int st, int is_rev) {
 	int step = is_rev?-1:1;
 	int l = is_rev?RPR:LPR,r = is_rev?LPR:RPR;
 	do {
-		Log("st:%d, pr:%d",st, pr_pair);
 		if (tokens[st].type == l) ++pr_pair;
 		if (tokens[st].type == r) --pr_pair;
 		st+=step;
 	} while (pr_pair&&st > -1&&st < nr_token);
-	return st-is_rev;
+	return st-step;
 }
 
 int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
