@@ -125,7 +125,6 @@ static bool make_token(char *e) {
 		}
 	}
 
-	Log("test");
 	return true;
 }
 
@@ -253,6 +252,8 @@ uint32_t expr(char *e, bool *success) {
 		printf("Bad expression : parentheses\n");
 		return -1;
 	}
+
+	Log("test");
 
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
