@@ -125,6 +125,7 @@ static bool make_token(char *e) {
 		}
 	}
 
+	Log("test");
 	return true;
 }
 
