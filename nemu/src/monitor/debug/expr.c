@@ -220,6 +220,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 		}
 
 	}
+	Log("eval(%d,%d)_value: %u",st,ed,value);
 	return value;
 }
 
