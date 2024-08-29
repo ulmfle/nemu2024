@@ -139,14 +139,14 @@ int check_parentheses(int st, int ed) {
 }
 
 int find_op(int type_st, int type_ed, int st, int ed) {
-	int tki,step,pr_pair=0;
+	int tki,is_rev,step,pr_pair=0;
 
-	step = ed<st?-1:1;
-	for (tki = st; tki >= ed; tki+=step) {
-		if (tokens[tki].type == LPR-step) {
+	is_rev = ed<st;
+	for (tki = st; tki >= ed; tki+=(is_rev?-1:1)) {
+		if (tokens[tki].type == is_rev?RPR:LPR) {
 			do {
-				if (tokens[tki].type == LPR-step) ++pr_pair;
-				else if (tokens[tki].type == RPR+step) --pr_pair;
+				if (tokens[tki].type == is_rev?RPR:LPR) ++pr_pair;
+				else if (tokens[tki].type == is_rev?LPR:RPR) --pr_pair;
 				tki+=step;
 			} while (pr_pair);
 		}
@@ -234,7 +234,6 @@ uint32_t expr(char *e, bool *success) {
 	//preprocess : check POSitive, NEGative, DEREFerence
 	int tki = 0;
 	for (;tki < nr_token; ++tki) {
-		Log("u");
 		if (tokens[tki].type >= ADD && tokens[tki].type <= MUL && (tki == 0|| (tokens[tki-1].type < BIN && tokens[tki+1].type >= BIN)))
 		tokens[tki].type+=POS-ADD;
 	}
