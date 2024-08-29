@@ -252,7 +252,10 @@ uint32_t expr(char *e, bool *success) {
 
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
-	if (bad_state == 1) printf("Bad expression\n");
+	if (bad_state == 1) {
+		printf("Bad expression\n");
+		*success = false;
+	}
 
 	*success = true;
 	memset(tokens, 0, 32*sizeof(Token));
