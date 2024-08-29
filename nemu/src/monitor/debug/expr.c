@@ -115,7 +115,7 @@ static bool make_token(char *e) {
 		}
 	}
 
-	return true; 
+	return true;
 }
 
 uint32_t expr(char *e, bool *success) {
@@ -124,14 +124,7 @@ uint32_t expr(char *e, bool *success) {
 		return 0;
 	}
 
-	/*
-	int tki = 0;
-	for (tki = 0; tki < nr_token; ++tki) {
-		Log("#Token: %d %s\n", tokens[tki].type, tokens[tki].str);
-	}
-	putchar('\n');
-	*/
-
+	*success = false;
 	return 0;
 }
 
