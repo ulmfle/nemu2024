@@ -179,6 +179,7 @@ int dom_op(int st, int ed) {
 }
 
 uint32_t eval(int st, int ed, uint8_t *bad) {
+	Log("now %d %d",st,ed);
 	if (st>ed) {
 		*bad = 1;
 		return 0;
@@ -252,8 +253,6 @@ uint32_t expr(char *e, bool *success) {
 		printf("Bad expression : parentheses\n");
 		return -1;
 	}
-
-	Log("test");
 
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
