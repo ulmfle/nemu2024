@@ -134,7 +134,7 @@ int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
 
 	step = is_rev?-1:1;
 	for (tki = st; tki >= ed; tki+=step) {
-		if (tokens[tki].type == LPR) {
+		if (tokens[tki].type == LPR+is_rev) {
 			do {
 				if (tokens[tki].type == LPR+is_rev) ++pr_pair;
 				else if (tokens[tki].type == RPR-is_rev) --pr_pair;
