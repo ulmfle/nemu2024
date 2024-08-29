@@ -37,6 +37,10 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_p(char *args) {
+	if (args == NULL) {
+		printf("Empty expression.\n");
+		return 0;
+	}
 	bool succ = false;
 	int ret;
 	ret = expr(args, &succ);
