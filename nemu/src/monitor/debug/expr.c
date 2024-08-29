@@ -255,5 +255,6 @@ uint32_t expr(char *e, bool *success) {
 	if (bad_state == 1) printf("Bad expression\n");
 
 	*success = true;
+	memset(tokens, 0, 32*sizeof(Token));
 	return ret;
 }
