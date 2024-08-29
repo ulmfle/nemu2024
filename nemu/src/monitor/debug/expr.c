@@ -139,6 +139,7 @@ int check_parentheses(int st, int ed) {
 }
 
 int skip_parentheses(int st, int is_rev) {
+	Log("%d %d", st, is_rev);
 	int pr_pair = 0;
 	int step = is_rev?-1:1;
 	do {
