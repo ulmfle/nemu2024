@@ -69,7 +69,7 @@ static bool make_token(char *e) {
 	int position = 0;
 	int i;
 	regmatch_t pmatch;
-	
+
 	nr_token = 0;
 
 	while(e[position] != '\0') {
@@ -124,8 +124,16 @@ uint32_t expr(char *e, bool *success) {
 		return 0;
 	}
 
-	/* TODO: Insert codes to evaluate the expression. */
-	panic("please implement me");
+	int tki = 0;
+	for (tki = 0; tki < nr_token; ++tki) {
+		Log("#Token: %d %s\n", tokens[tki].type, tokens[tki].str);
+	}
+	putchar('\n');
+
+	return 0;
+}
+
+uint32_t eval(int st, int ed) {
 	return 0;
 }
 
