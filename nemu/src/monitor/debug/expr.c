@@ -211,10 +211,11 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			case ADD:case SUB:case MUL:case DIV:
 			case OR:case AND:case EQ:case NEQ:
 			lvalue = eval(st, op-1, &bad_state_l);
-			Assert(bad_state_l == 0, "Lvalue evaluation failed!");
+			if (bad_state_l == 1 && tokens[op].type >= ADD && tokens[op].type <= MUL)
+				tokens[op].type+=POS-ADD;
+
 			case REV:case POS:case NEG:case DEREF:
 			rvalue = eval(op+1, ed, &bad_state_r);
-			Assert(bad_state_r == 0, "Rvalue evaluation failed!");
 		}
 
 		switch(tokens[op].type) {
@@ -241,14 +242,6 @@ uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		*success = false;
 		return 0;
-	}
-
-	//preprocess : check POSitive, NEGative, DEREFerence
-	int tki = 0;
-	for (;tki < nr_token; ++tki) {
-		if (tokens[tki].type >= ADD && tokens[tki].type <= MUL 
-		&& (tki == 0 || ((tokens[tki-1].type < BIN || tokens[tki-1].type != RPR) && tokens[tki+1].type >= BIN)))
-		tokens[tki].type+=POS-ADD;
 	}
 
 	int i;
