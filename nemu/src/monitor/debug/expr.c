@@ -133,7 +133,6 @@ int check_parentheses(int st, int ed) {
 	for (tki = st; tki <= ed; ++tki) {
 		if (tokens[tki].type == LPR) ++pair;
 		if (tokens[tki].type == RPR) --pair;
-		Log("pair:%d",pair);
 		if (pair<0) return false;
 	}
 	if (pair > 0) return false; else return true;
