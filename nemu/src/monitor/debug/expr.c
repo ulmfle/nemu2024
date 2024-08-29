@@ -145,7 +145,7 @@ int skip_parentheses(int st, int is_rev) {
 		Log("st:%d, pr:%d",st, pr_pair);
 		if (tokens[st].type == is_rev?RPR:LPR) ++pr_pair;
 		else if (tokens[st].type == is_rev?LPR:RPR) --pr_pair;
-		if (st == 0 || st == nr_token-1) break;
+		if ((is_rev == 1 && st == 0) || (is_rev == 0 && st == nr_token-1)) break;
 		st+=step;
 	} while (pr_pair);
 	return st;
