@@ -149,6 +149,7 @@ int find_op(int type_st, int type_ed, int st, int ed, int is_rev) {
 }
 
 int dom_op(int st, int ed) {
+	Log("%d|%d",st,ed);
 	int ret_1 = find_op(OR, OR, ed, st, 1);
 	//Log("ret_1:%d",ret_1);
 	if (ret_1 != -1) return ret_1;
