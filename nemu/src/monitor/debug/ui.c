@@ -139,7 +139,10 @@ static int cmd_info(char *args) {
         }
 
         case 'w': {
-			//WP *wpidx = get_wp_head();
+			WP *wph = get_wp_head(), *wpidx;
+			for (wpidx = wph; wpidx != NULL; wpidx = wpidx->next) {
+				printf("%8u\t%s\n",wpidx->NO, wpidx->expr);
+			}
 		}
 
         break;
