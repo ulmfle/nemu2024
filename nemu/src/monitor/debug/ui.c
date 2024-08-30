@@ -141,7 +141,7 @@ static int cmd_info(char *args) {
 			WP *wph = get_wp_head(), *wpidx;
 			if (wph != NULL) printf("%8s\t%s\t\t%s\n", "NO", "address", "enable"); else return 0;
 			for (wpidx = wph; wpidx != NULL; wpidx = wpidx->next) {
-				printf("%8u\t%s\n0x%08x",wpidx->NO, wpidx->expr, expr(wpidx->expr, NULL));
+				printf("%8u\t%s\t0x%08x\n",wpidx->NO, wpidx->expr, expr(wpidx->expr, NULL));
 			}
 		}
 
