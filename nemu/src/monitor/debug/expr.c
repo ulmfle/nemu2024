@@ -198,6 +198,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 		switch (tokens[st].type) {
 			case REF: {
 				int idx;
+				if (strcmp(tokens[st].str+1, "eip")) {value = cpu.eip ;break;}
 				for (idx = 0; idx < 8; ++idx) {
 					if (strcmp(tokens[st].str+1, regsl[idx])) {value = reg_l(idx);break;}
 					if (strcmp(tokens[st].str+1, regsb[idx])) {value = reg_b(idx);break;}
