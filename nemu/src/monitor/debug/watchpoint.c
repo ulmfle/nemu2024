@@ -19,7 +19,7 @@ void init_wp_pool() {
 }
 
 WP *new_wp() {
-	Assert(free_ == NULL, "No empty watchpoints!");
+	Assert(free_ != NULL, "No empty watchpoints!");
 	WP *prev = free_;
 	free_ = free_->next;
 	if (head == NULL) {
