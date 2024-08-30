@@ -39,21 +39,25 @@ void free_wp(WP* wp) {
 	WP *wpidx = head;
 	while (wpidx->next != NULL && wpidx->next != wp) wpidx = wpidx->next;
 	wpidx->next = wp->next;
+
 	wp->next = NULL;
 	strcpy(wp->expr, "");
+
 	WP *fwpi = free_;
 	while (fwpi->next != NULL) fwpi = fwpi->next;
 	fwpi->next = wp;
-	if (wpidx == head) {
-		wpidx = wpidx->next;
-		do {
+
+	if (wp == head) {
+		wpidx = head->next;
+		while (wpidx != NULL) {
 			--wpidx->NO;
 			wpidx = wpidx->next;
-		} while (wpidx != NULL);
-	}
-	else while (wpidx->next != NULL) {
-		wpidx->next->NO = wpidx->NO+1;
-		wpidx = wpidx->next;
+		}
+	} else {
+		while (wpidx->next != NULL) {
+			wpidx->next->NO = wpidx->NO+1;
+			wpidx = wpidx->next;
+		}
 	}
 }
 
