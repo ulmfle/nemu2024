@@ -22,6 +22,7 @@ WP *new_wp() {
 	Assert(free_ != NULL, "No empty watchpoints!");
 	WP *prev = free_;
 	free_ = free_->next;
+	prev->next = NULL;
 	if (head == NULL) {
 		head = prev;
 		head->NO = 0;
