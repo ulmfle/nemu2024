@@ -69,7 +69,7 @@ WP *make_wp(char *s_expr) {
 		return NULL;
 	}
 	WP *nwp = new_wp();
-	nwp->expr = s_expr;
+	strcpy(nwp->expr, s_expr);
 	nwp->v_prev = pr_v;
 	return nwp;
 }
