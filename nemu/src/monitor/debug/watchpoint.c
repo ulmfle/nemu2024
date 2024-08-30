@@ -40,15 +40,8 @@ void free_wp(WP* wp) {
 	while (wpidx->next != NULL && wpidx->next != wp) wpidx = wpidx->next;
 	wpidx->next = wp->next;
 
-	wp->next = NULL;
-	strcpy(wp->expr, "");
-
-	WP *fwpi = free_;
-	while (fwpi->next != NULL) fwpi = fwpi->next;
-	fwpi->next = wp;
-
 	if (wp == head) {
-		wpidx = head->next;
+		head = wpidx = head->next;
 		while (wpidx != NULL) {
 			--wpidx->NO;
 			wpidx = wpidx->next;
@@ -59,6 +52,13 @@ void free_wp(WP* wp) {
 			wpidx = wpidx->next;
 		}
 	}
+
+	wp->next = NULL;
+	strcpy(wp->expr, "");
+
+	WP *fwpi = free_;
+	while (fwpi->next != NULL) fwpi = fwpi->next;
+	fwpi->next = wp;
 }
 
 int del_wp(uint32_t n) {
