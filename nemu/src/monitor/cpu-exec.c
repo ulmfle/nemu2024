@@ -76,7 +76,7 @@ void cpu_exec(volatile uint32_t n) {
 
 	WP *wpi;
 	uint32_t expr_ret;
-	for (wpi = get_wp_head(); wpi != NULL; ++wpi) {
+	for (wpi = get_wp_head(); wpi != NULL; wpi = wpi->next) {
 		expr_ret = expr(wpi->expr, NULL);
 		if (expr_ret != wpi->v_prev) do_int3();
 	}
