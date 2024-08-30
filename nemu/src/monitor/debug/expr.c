@@ -36,7 +36,7 @@ static struct rule {
 	{"!="				  , NEQ   },					// not equal
 	{"=="       		  , EQ    },					// equal
 	{"!" 				  , REV   },					// reverse
-	{"$[a-zA-Z_]+"  ,	REF   },					// refer to
+	{"\\$[a-zA-Z_]+"      ,	REF   },					// refer to
 	{"\\+"        		  , ADD   },					// plus
 	{"-"          		  , SUB   },					// minus
 	{"\\*"         		  , MUL   },					// multiply
