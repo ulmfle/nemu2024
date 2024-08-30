@@ -252,12 +252,12 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
-		*success = false;
+		if (success) *success = false;
 		return 0;
 	}
 
 	if (check_parentheses(0, nr_token-1) == false) {
-		*success = false;
+		if (success) *success = false;
 		printf("Bad expression.\n");
 		return 0;
 	}
@@ -265,12 +265,12 @@ uint32_t expr(char *e, bool *success) {
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
 	if (bad_state == 1) {
-		*success = false;
+		if (success) *success = false;
 		printf("Bad expression.\n");
 		return 0;
 	}
 
-	*success = true;
+	if (success) *success = true;
 	memset(tokens, 0, 32*sizeof(Token));
 	return ret;
 }

@@ -1,4 +1,6 @@
 #include "monitor/monitor.h"
+#include "monitor/watchpoint.h"
+#include "monitor/expr.h"
 #include "cpu/helper.h"
 #include <setjmp.h>
 
@@ -72,7 +74,13 @@ void cpu_exec(volatile uint32_t n) {
 		}
 #endif
 
-	
+	WP *wpi;
+	uint32_t expr_ret;
+	for (wpi = get_wp_head(); wpi != NULL; ++wpi) {
+		expr_ret = expr(wpi->expr, NULL);
+		if (expr_ret != wpi->v_prev) do_int3();
+	}
+
 
 #ifdef HAS_DEVICE
 		extern void device_update();
