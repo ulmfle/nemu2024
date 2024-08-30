@@ -40,7 +40,7 @@ void free_wp(WP* wp) {
 	while (wpidx->next != NULL && wpidx->next != wp) wpidx = wpidx->next;
 	wpidx->next = wp->next;
 	wp->next = NULL;
-	wp->expr = NULL;
+	strcpy(wp->expr, "");
 	WP *fwpi = free_;
 	while (fwpi->next != NULL) fwpi = fwpi->next;
 	fwpi->next = wp;
