@@ -51,7 +51,7 @@ void free_wp(WP* wp) {
 
 int del_wp(uint32_t n) {
 	WP *wpidx = head;
-	while (wpidx->NO != n && wpidx != NULL) wpidx = wpidx->next;
+	while (wpidx != NULL && wpidx->NO != n) wpidx = wpidx->next;
 	if (wpidx == NULL) return -1;
 	free_wp(wpidx);
 	return 0;
