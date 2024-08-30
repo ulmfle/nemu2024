@@ -79,11 +79,11 @@ void cpu_exec(volatile uint32_t n) {
 	for (wpi = get_wp_head(); wpi != NULL; wpi = wpi->next) {
 		expr_ret = expr(wpi->expr, NULL);
 		if (expr_ret == wpi->v_prev) continue;
-		printf("Hint watchpoint #%d at address 0x%08x, expr = %s\n\
-				Old value = 0x%08x\n\
-				New value = 0x%08x",\
-				wpi->NO, cpu.eip, wpi->expr, wpi->v_prev, expr_ret);
+		printf("Hint watchpoint #%d at address 0x%08x, expr = %s\n",wpi->NO, cpu.eip, wpi->expr);
+		printf("Old value: 0x%08x", wpi->v_prev);
+		printf("New value: 0x%08x", expr_ret);
 		wpi->v_prev = expr_ret;
+		nemu_state = STOP;
 	}
 
 
