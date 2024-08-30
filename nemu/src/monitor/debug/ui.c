@@ -139,6 +139,7 @@ static int cmd_info(char *args) {
         }
 
         case 'w': {
+			printf("%8s\t%s\t%s\n", "NO", "address", "enable");
 			WP *wph = get_wp_head(), *wpidx;
 			for (wpidx = wph; wpidx != NULL; wpidx = wpidx->next) {
 				printf("%8u\t%s\n",wpidx->NO, wpidx->expr);
