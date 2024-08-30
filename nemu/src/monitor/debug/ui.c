@@ -36,24 +36,17 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
-static int cmd_p(char *args) {
-	if (args == NULL) {
-		printf("Empty expression.\n");
-		return 0;
-	}
-	bool succ = false;
-	int ret;
-	ret = expr(args, &succ);
-	if (succ == false) return 0;
-	printf("%u\n", ret);
-	return 0;
-}
+static int cmd_p(char *args);
 
 static int cmd_si(char *args);
 
 static int cmd_info(char *args);
 
 static int cmd_x(char *args);
+
+static int cmd_w(char *args);
+
+static int cmd_d(char *args);
 
 static int cmd_help(char *args);
 
@@ -68,7 +61,9 @@ static struct {
 	{ "si", "Allow the program to execute N instructions step by step before pausing execution. If N is not provided, the default is 1.", cmd_si},
     { "info", "Enter \'r\' to print the register status, and enter \'w\' to print the watchpoint information", cmd_info},
     { "x", "Evaluate the expression EXPR, use the result as the starting memory address, and output the next N 4-byte values in hexadecimal format.", cmd_x},
-	{ "p", "Evaluate the expression", cmd_p}
+	{ "p", "Evaluate the expression", cmd_p},
+	{ "w", "Create watchpoints", cmd_w},
+	{ "d", "Remove watchpoints", cmd_d}
 	/* TODO: Add more commands */
 
 };
@@ -95,6 +90,21 @@ static int cmd_help(char *args) {
 		}
 		printf("Unknown command '%s'\n", arg);
 	}
+	return 0;
+}
+
+static int cmd_p(char *args) {
+	if (args == NULL) {
+		printf("Empty expression.\n");
+		return 0;
+	}
+	bool succ = false;
+	int ret;
+	ret = expr(args, &succ);
+	if (succ == false) {
+		return 0;
+	}
+	printf("0x%08x(%ld)\n", ret, (long)ret);
 	return 0;
 }
 
@@ -128,7 +138,9 @@ static int cmd_info(char *args) {
             break;
         }
 
-        case 'w':
+        case 'w': {
+			//WP *wpidx = get_wp_head();
+		}
 
         break;
     }
@@ -139,31 +151,43 @@ static int cmd_info(char *args) {
 static int cmd_x(char *args) {
     int n,len = 4;
     char *s_expr = NULL;
-    swaddr_t expr = 0;
+    swaddr_t _expr = 0;
+	bool expr_succ;
 
     sscanf(args, "%d", &n);
 
     args = strtok(args, " ");
     s_expr = args + strlen(args) + 1;
-
-    if (s_expr[0] != '0' && s_expr[1] != 'x') {
-        printf("Expression must be hexdecimal format!\n");
-        return 0;
-    }
-
-    sscanf(s_expr + 2, "%x", &expr);
+	_expr = expr(s_expr, &expr_succ);
+	if (expr_succ == false) {
+		return 0;
+	}
 
     while (n>0) {
-        printf("0x%08x: ",expr);
+        printf("0x%08x: ",_expr);
         int t;
-        for (t = 0; t < 4 && n > 0; ++t, --n, expr+=len) {
-            printf("0x%08x ", swaddr_read(expr, len));
+        for (t = 0; t < 4 && n > 0; ++t, --n, _expr+=len) {
+            printf("0x%08x ", swaddr_read(_expr, len));
         }
         putchar('\n');
     }
 
     return 0;
 
+}
+
+static int cmd_w(char *args) {
+	WP *wp = make_wp(args);
+	if (wp != NULL) printf("Set watchpoint #%u\n", wp->NO);
+	return 0;
+}
+
+static int cmd_d(char *args) {
+	uint32_t n;
+	sscanf(args, "%u", &n);
+	int ret = del_wp(n);
+	if (ret == -1) printf("Watchpoint #%u does not exist\n", n);
+	return 0;
 }
 
 void ui_mainloop() {

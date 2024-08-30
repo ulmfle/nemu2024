@@ -18,6 +18,57 @@ void init_wp_pool() {
 	free_ = wp_pool;
 }
 
-/* TODO: Implement the functionality of watchpoint */
+WP *new_wp() {
+	Assert(free_ == NULL, "No empty watchpoints!");
+	WP *prev = free_;
+	free_ = free_->next;
+	if (head == NULL) {
+		head = prev;
+		head->NO = 0;
+	} else {
+		WP *wpidx = head;
+		while (wpidx->next != NULL) wpidx = wpidx->next;
+		wpidx->next = prev;
+		prev->NO = wpidx->NO + 1;
+	}
+	return prev;
+}
 
+void free_wp(WP* wp) {
+	WP *wpidx = head;;
+	while (wpidx->next != wp) wpidx = wpidx->next;
+	wpidx->next = wp->next;
+	wp->next = NULL;
+	wp->expr = NULL;
+	WP *fwpi = free_;
+	while (fwpi->next != NULL) fwpi = fwpi->next;
+	fwpi->next = wp;
+	while (wpidx->next != NULL) {
+		wpidx->next->NO = wpidx->NO+1;
+		wpidx = wpidx->next;
+	}
+}
 
+int del_wp(int n) {
+	WP *wpidx = head;
+	while (wpidx->NO != n && wpidx != NULL) wpidx = wpidx->next;
+	if (wpidx == NULL) return -1;
+	free_wp(wpidx);
+	return 0;
+}
+
+WP *get_wp_head() {
+	return head;
+}
+
+WP *make_wp(char *s_expr) {
+	bool expr_succ;
+	uint32_t pr_v = expr(s_expr, &expr_succ);
+	if (expr_succ == false) {
+		return NULL;
+	}
+	WP *nwp = new_wp();
+	nwp->expr = s_expr;
+	nwp->v_prev = pr_v;
+	return nwp;
+}

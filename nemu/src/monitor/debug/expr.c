@@ -15,7 +15,7 @@ enum {
 	EQ,  NEQ,
 	ADD, SUB,
 	MUL, DIV,
-	REV, POS, NEG, DEREF,
+	REV, POS, NEG, DEREF, REF,
 	BIN, OCT, DEC, HEX
 };
 
@@ -36,6 +36,7 @@ static struct rule {
 	{"!="				  , NEQ   },					// not equal
 	{"=="       		  , EQ    },					// equal
 	{"!" 				  , REV   },					// reverse
+	{"$[^0-9][a-zA-Z_]+"  ,	REF   },					// refer to
 	{"\\+"        		  , ADD   },					// plus
 	{"-"          		  , SUB   },					// minus
 	{"\\*"         		  , MUL   },					// multiply
@@ -102,7 +103,7 @@ static bool make_token(char *e) {
 					/*case BIN:case OCT:*/case HEX:
 					/*if (rules[i].token_type == OCT) si = 1; else */si = 2;
 
-					case DEC:
+					case DEC:case REF:
 						for (; si < substr_len && si < 32; ++si) {
 							tokens[nr_token].str[si] = substr_start[si];
 						}
@@ -178,7 +179,7 @@ int dom_op(int st, int ed) {
 	if (ret_4 != -1) return ret_4;
 	int ret_5 = find_op(MUL, DIV, st, ed, 1);
 	if (ret_5 != -1) return ret_5;
-	int ret_6 = find_op(REV, DEREF, st, ed, 0);
+	int ret_6 = find_op(REV, REF, st, ed, 0);
 	if (ret_6 != -1) return ret_6;
 	panic("Cannot find dom_op!\n");
 	return -1;
@@ -195,6 +196,15 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 
 	if (st==ed) {
 		switch (tokens[st].type) {
+			case REF: {
+				int idx;
+				for (idx = 0; idx < 8; ++idx) {
+					if (strcmp(tokens[st].str+1, regsl[idx])) {value = reg_l(idx);break;}
+					if (strcmp(tokens[st].str+1, regsb[idx])) {value = reg_b(idx);break;}
+					if (strcmp(tokens[st].str+1, regsw[idx])) {value = reg_w(idx);break;}
+				}
+				break;
+			}
 			case DEC:sscanf(tokens[st].str, "%u", &value); break;
 			case HEX:sscanf(tokens[st].str + 2, "%x", &value); break;
 		}
@@ -214,7 +224,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			if (bad_state_l == 1 && tokens[op].type >= ADD && tokens[op].type <= MUL)
 				tokens[op].type+=POS-ADD;
 
-			case REV:case POS:case NEG:case DEREF:
+			case REV:case POS:case NEG:case DEREF:case REF:
 			rvalue = eval(op+1, ed, &bad_state_r);
 		}
 
@@ -231,6 +241,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			case POS: value = 0+rvalue; break;
 			case NEG: value = 0-rvalue; break;
 			case DEREF: value = swaddr_read(rvalue, 4); break;
+			default: break;
 		}
 
 	}
@@ -245,16 +256,17 @@ uint32_t expr(char *e, bool *success) {
 	}
 
 	if (check_parentheses(0, nr_token-1) == false) {
-		printf("Bad expression : parentheses\n");
 		*success = false;
+		printf("Bad expression.\n");
 		return 0;
 	}
 
 	uint8_t bad_state;
 	uint32_t ret = eval(0, nr_token-1, &bad_state);
 	if (bad_state == 1) {
-		printf("Bad expression\n");
 		*success = false;
+		printf("Bad expression.\n");
+		return 0;
 	}
 
 	*success = true;
