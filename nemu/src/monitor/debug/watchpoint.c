@@ -44,7 +44,14 @@ void free_wp(WP* wp) {
 	WP *fwpi = free_;
 	while (fwpi->next != NULL) fwpi = fwpi->next;
 	fwpi->next = wp;
-	while (wpidx->next != NULL) {
+	if (wpidx == head) {
+		wpidx = wpidx->next;
+		do {
+			--wpidx->NO;
+			wpidx = wpidx->next;
+		} while (wpidx != NULL);
+	}
+	else while (wpidx->next != NULL) {
 		wpidx->next->NO = wpidx->NO+1;
 		wpidx = wpidx->next;
 	}
