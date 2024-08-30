@@ -13,6 +13,6 @@ typedef struct watchpoint {
 
 WP *make_wp(char *expr);
 WP *get_wp_head();
-int del_wp(int);
+int del_wp(uint32_t);
 
 #endif
