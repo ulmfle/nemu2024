@@ -253,6 +253,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		if (success) *success = false;
+		printf("Bad expression.\n");
 		return 0;
 	}
 
