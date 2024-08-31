@@ -57,9 +57,8 @@ void free_wp(WP* wp) {
 	wp->next = NULL;
 	strcpy(wp->expr, "");
 
-	WP *fwpi = free_;
-	while (fwpi->next != NULL) fwpi = fwpi->next;
-	fwpi->next = wp;
+	wp->next = free_;
+	free_ = wp;
 }
 
 int del_wp(uint32_t n) {
