@@ -1,7 +1,7 @@
 #include "monitor/watchpoint.h"
 #include "monitor/expr.h"
 
-#define NR_WP 32
+#define NR_WP 3
 
 static WP wp_pool[NR_WP];
 static WP *head, *free_;
