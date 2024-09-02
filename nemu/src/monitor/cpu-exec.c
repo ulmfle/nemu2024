@@ -9,7 +9,7 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-#define MAX_INSTR_TO_PRINT (uint32_t)(-1)
+#define MAX_INSTR_TO_PRINT 10
 
 int nemu_state = STOP;
 
