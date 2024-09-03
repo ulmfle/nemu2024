@@ -4,7 +4,7 @@
 
 make_helper(concat(call_rel_,SUFFIX)) {
     int len = decode_si_l(eip + 1);
-    cpu.eip += op_src->val;
+    cpu.eip += op_src->simm;
     print_asm_template1();
     return len + 1;
 }
