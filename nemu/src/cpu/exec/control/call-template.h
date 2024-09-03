@@ -6,9 +6,9 @@ make_helper(concat(call_rel_,SUFFIX)) {
     int len = decode_si_l(eip + 1);
 
     cpu.esp -= 4;
-    MEM_W(reg_l(4), eip);
+    MEM_W(reg_l(4), eip + len + 1);
 
-    cpu.eip += op_src->simm & (~0u >> (4 - DATA_BYTE));
+    cpu.eip += op_src->simm & ~0u >> (DATA_BYTE == 2 ? 16 : 0);
 
     print_asm_template1();
     return len + 1;
