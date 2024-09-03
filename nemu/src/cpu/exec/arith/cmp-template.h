@@ -7,7 +7,6 @@ static void do_execute() {
     update_eflags_pf_zf_sf(res);
     if ((op_dest->val >> 31) == (op_src->val >> 31) &&
         (op_src->val >> 31) != (res >> 31)) cpu.eflags.OF = 1;
-    
 
 }
 
