@@ -10,7 +10,7 @@ static void do_execute() {
     res >>= 8*DATA_BYTE - 1;
     cpu.eflags.CF = ~((dst & 1) ^ (src & 1)) ^ ~((dst & 1) ^ res);
     cpu.eflags.OF = ~((dst >> 1) ^ (src >> 1)) ^ ((dst >> 1) ^ res);
-
+    print_asm_template2();
 }
 
 #if DATA_BYTE == 2 || DATA_BYTE == 4
