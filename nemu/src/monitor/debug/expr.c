@@ -199,6 +199,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			case REF: {
 				int idx;
 				if (strcmp(tokens[st].str+1, "eip") == 0) {value = cpu.eip ;break;}
+				if (strcmp(tokens[st].str+1, "eflags") == 0) {value = cpu.eflags.val ;break;}
 				for (idx = 0; idx < 8; ++idx) {
 					if (strcmp(tokens[st].str+1, regsl[idx]) == 0) {value = reg_l(idx);break;}
 					if (strcmp(tokens[st].str+1, regsb[idx]) == 0) {value = reg_b(idx);break;}

@@ -3,13 +3,12 @@
 #define instr cmp
 
 static void do_execute() {
-    DATA_TYPE res = op_dest->val - op_src->val;
-    uint8_t dst = op_dest->val >> (8*DATA_BYTE-2);
-    uint8_t src = op_dest->val >> (8*DATA_BYTE-2);
-    update_eflags_pf_zf_sf(res);
-    res >>= 8*DATA_BYTE - 1;
-    cpu.eflags.CF = ~((dst & 1) ^ (src & 1)) ^ ~((dst & 1) ^ res);
-    cpu.eflags.OF = ~((dst >> 1) ^ (src >> 1)) ^ ((dst >> 1) ^ res);
+    DATA_TYPE result = op_dest->val - op_src->val;
+
+    update_eflags_pf_zf_sf((DATA_TYPE_S)result);
+	cpu.eflags.CF = result > op_dest->val;
+	cpu.eflags.OF = MSB((op_dest->val ^ op_src->val) & (op_dest->val ^ result));
+
     print_asm_template2();
 }
 
