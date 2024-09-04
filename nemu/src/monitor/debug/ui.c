@@ -134,6 +134,7 @@ static int cmd_info(char *args) {
             for (idx = 0; idx < reglen; ++idx)
                 printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
+			printf("%s\t\t0x%08x\t\t%d\n", "eflags", cpu.eflags.val, cpu.eflags.val);
             break;
         }
 

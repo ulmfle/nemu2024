@@ -3,10 +3,13 @@
 #define instr cmp
 
 static void do_execute() {
-    uint32_t res = op_dest->val - op_src->val;
+    DATA_TYPE res = op_dest->val - op_src->val;
+    uint8_t dst = op_dest->val >> (8*DATA_BYTE-2);
+    uint8_t src = op_dest->val >> (8*DATA_BYTE-2);
     update_eflags_pf_zf_sf(res);
-    if ((op_dest->val >> 31) == (op_src->val >> 31) &&
-        (op_src->val >> 31) != (res >> 31)) cpu.eflags.OF = 1;
+    res >>= 8*DATA_BYTE - 1;
+    cpu.eflags.CF = ~((dst & 1) ^ (src & 1)) ^ ~((dst & 1) ^ res);
+    cpu.eflags.OF = ~((dst >> 1) ^ (src >> 1)) ^ ((dst >> 1) ^ res);
 
 }
 
