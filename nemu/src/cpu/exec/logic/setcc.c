@@ -2,8 +2,9 @@
 
 #define SETCC_COND(name, cond)  \
 make_helper(concat(set, name)) {\
-    int len = decode_i_b(eip + 1); \
+    int len = decode_rm_b(eip + 1); \
     OPERAND_W(op_src, (cond));\
+    print_asm(str(concat(set, name)));\
     return len + 1; \
 }                               \
 
