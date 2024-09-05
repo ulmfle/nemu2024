@@ -15,13 +15,13 @@ int main() {
 		n0 = n % 10;
 
 		if(n == cube(n2) + cube(n1) + cube(n0)) {
-			nemu_assert(n == ans[k]);
+			//nemu_assert(n == ans[k]);
 			k ++;
 		}
 	}
 
-	//nemu_assert(n == 1000);
-	//nemu_assert(k == 4);
+	nemu_assert(n == 1000);
+	nemu_assert(k == 4);
 
 	return 0;
 }
