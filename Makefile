@@ -53,7 +53,7 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/fact
+USERPROG := obj/testcase/bubble-sort
 ENTRY := $(USERPROG)
 
 entry: $(ENTRY)
