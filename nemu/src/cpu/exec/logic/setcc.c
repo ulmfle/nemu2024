@@ -4,7 +4,7 @@
 make_helper(concat(set, name)) {\
     int len = decode_rm_b(eip + 1); \
     OPERAND_W(op_src, (cond));\
-    print_asm(str(concat(set, name)));\
+    print_asm(str(concat(set, name)) " %s", op_src->str);\
     return len + 1; \
 }                               \
 
