@@ -6,24 +6,20 @@ make_helper(concat(enter_, SUFFIX)) {
     len += decode_i_b(eip + len + 1);
     int level = op_src->val & 31;
 
-    REG(R_ESP) -= DATA_BYTE;
-    MEM_W(REG(R_ESP), REG(R_EBP));
+    PUSH(REG(R_EBP));
 
-    uint32_t frame_ptr = MEM_R(REG(R_ESP));
+    uint32_t frame_ptr = REG(R_ESP);
 
     if (level) {
         int i = 1;
         for (; i < level; ++i) {
-            REG(R_ESP) -= DATA_BYTE;
-            MEM_W(REG(R_ESP), REG(R_EBP));
+            PUSH(REG(R_EBP));
         }
 
-        REG(R_ESP) -= DATA_BYTE;
-        MEM_W(REG(R_ESP), frame_ptr);
+        PUSH_NBYTE(frame_ptr, 4);
     }
 
-    REG(R_EBP) = frame_ptr;
-    REG(R_ESP) -= (uint32_t)alloc;
+    PUSH((DATA_TYPE)alloc);
 
     return len + 1;
 }
