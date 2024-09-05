@@ -5,8 +5,7 @@
 make_helper(concat(call_rel_,SUFFIX)) {
     int len = decode_si_l(eip + 1);
 
-    cpu.esp -= 4;
-    MEM_W(reg_l(4), eip + len + 1);
+    PUSH_NBYTE(eip + len + 1, 4);
 
     cpu.eip += op_src->simm & ~0u >> (DATA_BYTE == 2 ? 16 : 0);
 
