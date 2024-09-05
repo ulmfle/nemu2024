@@ -7,6 +7,7 @@ static void do_execute() {
     cpu.eflags.CF = 0;
     cpu.eflags.OF = 0;
     update_eflags_pf_zf_sf(res);
+    print_asm_template2();
 }
 
 make_instr_helper(i2rm);
