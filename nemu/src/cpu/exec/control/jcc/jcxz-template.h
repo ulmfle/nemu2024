@@ -3,7 +3,7 @@
 #define instr jcxz
 
 static void do_execute() {
-    if (!reg_w(R_CX)) cpu.eip += op_src->val;
+    if (!reg_w(R_CX)) cpu.eip += (DATA_TYPE_S)op_src->val;
     print_asm_template1();
 }
 

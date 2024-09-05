@@ -3,7 +3,7 @@
 #define instr jg
 
 static void do_execute() {
-    if (!cpu.eflags.ZF & !(cpu.eflags.SF ^ cpu.eflags.OF)) cpu.eip += op_src->val;
+    if (!cpu.eflags.ZF & !(cpu.eflags.SF ^ cpu.eflags.OF)) cpu.eip += (DATA_TYPE_S)op_src->val;
     print_asm_template1();
 }
 

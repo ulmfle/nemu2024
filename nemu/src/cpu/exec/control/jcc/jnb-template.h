@@ -3,7 +3,7 @@
 #define instr jnb
 
 static void do_execute() {
-    if (!cpu.eflags.CF) cpu.eip += op_src->val;
+    if (!cpu.eflags.CF) cpu.eip += (DATA_TYPE_S)op_src->val;
     print_asm_template1();
 }
 
