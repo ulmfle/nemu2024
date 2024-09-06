@@ -4,7 +4,7 @@
 make_helper(concat5(j, name, _, i_, SUFFIX)) {\
     int len = concat(decode_i_, SUFFIX)(eip + 1);\
     if (cond) cpu.eip += (DATA_TYPE_S)op_src->val;\
-    print_asm_template1();\
+    print_asm(str(concat(j, name)) " %s", op_src->str);\
     return len + 1;\
 }
 
