@@ -7,9 +7,9 @@ int k[N] = {0};
 int ans[N] = {12, 15, 18};
 
 int main() {
-    int i;
+    int i,j;
     for (i = 0; i < N; ++i) {
-        k[i] = d[0][i] + d[1][i] + d[2][i];
+        for (j = 0; j < N; ++j) k[i] += d[j][i];
         nemu_assert(ans[i]==k[i]);
     }
     return 0;
