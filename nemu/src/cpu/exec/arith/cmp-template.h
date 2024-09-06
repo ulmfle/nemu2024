@@ -8,7 +8,7 @@ static void do_execute() {
     update_eflags_pf_zf_sf((DATA_TYPE_S)result);
 	cpu.eflags.CF = ((op_dest->val >> (8*DATA_BYTE - 2)) & 1) != ((result >> (8*DATA_BYTE - 2)) & 1);
 	cpu.eflags.OF = MSB((op_dest->val ^ op_src->val) & (op_dest->val ^ result));
-    printf("result : %u, src = %u, dest = %u\n", result, op_dest->val, op_src->val);
+    printf("result : %u, src = %u; reg = %d, dest = %u\n", result, op_dest->val, op_dest->reg, op_src->val);
     print_asm_template2();
 }
 
