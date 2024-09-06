@@ -21,7 +21,7 @@ int main() {
 	}
 
 	nemu_assert(n == 1000);
-	//nemu_assert(k == 4);
+	nemu_assert(k == 4);
 
 	return 0;
 }
