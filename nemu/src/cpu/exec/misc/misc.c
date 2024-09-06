@@ -23,3 +23,12 @@ make_helper(lea) {
 	print_asm("leal %s,%%%s", op_src->str, regsl[m.reg]);
 	return 1 + len;
 }
+
+make_helper(int_b) {
+	decode_i_b(eip + 1);
+	void do_int3();
+	do_int3();
+	print_asm("int %s", op_src->str);
+
+	return 2;
+}
