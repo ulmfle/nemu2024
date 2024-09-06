@@ -198,8 +198,8 @@ static int cmd_d(char *args) {
 }
 
 static int cmd_debug(char *args) {
-	int n;
-	sscanf(args, "%u", &n);
+	int n=1;
+	if (args!=NULL) sscanf(args, "%u", &n);
 	while (n--) {
 		cmd_info("r");
 		cpu_exec(1);
