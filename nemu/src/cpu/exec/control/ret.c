@@ -14,7 +14,7 @@ make_helper(ret_l) {
     decode_i_l(eip + 1);
     uint32_t addr = swaddr_read(cpu.esp, 4);
     cpu.esp += 4;
-    cpu.eip = addr - 1;
+    cpu.eip = addr - 3;
     cpu.esp += op_src->val;
     print_asm("ret %s", op_src->str);
     return 3;
