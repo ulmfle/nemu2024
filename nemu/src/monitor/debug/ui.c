@@ -203,6 +203,7 @@ static int cmd_debug(char *args) {
 	while (n--) {
 		cmd_info("r");
 		cpu_exec(1);
+		cmd_info("r");
 	}
 	return 0;
 }
