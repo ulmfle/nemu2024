@@ -48,6 +48,8 @@ static int cmd_w(char *args);
 
 static int cmd_d(char *args);
 
+static int cmd_debug(char *args);
+
 static int cmd_help(char *args);
 
 static struct {
@@ -63,7 +65,8 @@ static struct {
     { "x", "Evaluate the expression EXPR, use the result as the starting memory address, and output the next N 4-byte values in hexadecimal format.", cmd_x},
 	{ "p", "Evaluate the expression", cmd_p},
 	{ "w", "Create watchpoints", cmd_w},
-	{ "d", "Remove watchpoints", cmd_d}
+	{ "d", "Remove watchpoints", cmd_d},
+	{ "debug", "debug", cmd_debug}
 	/* TODO: Add more commands */
 
 };
@@ -193,6 +196,15 @@ static int cmd_d(char *args) {
 	if (ret == -1) printf("Watchpoint #%u does not exist\n", n);
 	return 0;
 }
+
+static int cmd_debug(char *args) {
+	while (1) {
+		cmd_info("r");
+		cpu_exec(1);
+	}
+	return 0;
+}
+
 
 void ui_mainloop() {
 	while(1) {
