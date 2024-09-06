@@ -6,8 +6,8 @@ static void do_execute() {
     DATA_TYPE res = op_src->val + op_dest->val;
     OPERAND_W(op_dest, res);
     update_eflags_pf_zf_sf(res);
-	//cpu.eflags.CF = ((op_dest->val >> (8*DATA_BYTE - 2)) & 1) != ((res >> (8*DATA_BYTE - 2)) & 1);
-    cpu.eflags.CF = res < op_dest->val;
+	cpu.eflags.CF = ((op_dest->val >> (8*DATA_BYTE - 2)) & 1) != ((res >> (8*DATA_BYTE - 2)) & 1);
+    //cpu.eflags.CF = res < op_dest->val;
 	cpu.eflags.OF = MSB(~(op_dest->val ^ op_src->val) & (op_dest->val ^ res));
 
     print_asm_template2();
