@@ -1,15 +1,16 @@
 #include "trap.h"
 
-int NONAME(int v) {
-    return v;
-}
+#define N 3
+
+int d[N][N] = {{1, 2, 3},{4, 5, 6},{7, 8, 9}};
+int k[N] = {0};
+int ans[N] = {12, 15, 18};
 
 int main() {
-    int a = NONAME(1);
-    //int b = NONAME(2);
-    //int a = 1;
-    //int b = 2;
-    nemu_assert(a==1);
-    //nemu_assert(b==2);
+    int i;
+    for (i = 0; i < N; ++i) {
+        k[i] = d[0][i] + d[1][i] + d[2][i];
+        nemu_assert(ans[i]==k[i]);
+    }
     return 0;
 }
