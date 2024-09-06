@@ -17,7 +17,7 @@ make_helper(concat(test_i2eax_, SUFFIX)) {
     uint32_t res = op_src->val & REG(0);
     cpu.eflags.CF = cpu.eflags.OF = 0;
     update_eflags_pf_zf_sf((DATA_TYPE_S)res);
-    print_asm(str(instr) str(SUFFIX) " %s,%s", op_src->str, REG_NAME(0));
+    print_asm(str(instr) str(SUFFIX) " %s,%%%s", op_src->str, REG_NAME(0));
     return len + 1;
 }
 
