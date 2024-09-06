@@ -8,7 +8,6 @@ static void do_execute() {
     update_eflags_pf_zf_sf((DATA_TYPE_S)result);
 	cpu.eflags.CF = ((op_dest->val >> (8*DATA_BYTE - 2)) & 1) != ((result >> (8*DATA_BYTE - 2)) & 1);
 	cpu.eflags.OF = MSB((op_dest->val ^ op_src->val) & (op_dest->val ^ result));
-    printf("result : %d, src = %d; reg = %d, dest = %d\n", result, op_dest->val, op_dest->reg, op_src->val);
     print_asm_template2();
 }
 
@@ -27,7 +26,6 @@ make_helper(cmp_i2al_b) {
     update_eflags_pf_zf_sf((DATA_TYPE_S)result);
 	cpu.eflags.CF = ((op_dest->val >> (8*DATA_BYTE - 2)) & 1) != ((result >> (8*DATA_BYTE - 2)) & 1);
 	cpu.eflags.OF = MSB((op_dest->val ^ op_src->val) & (op_dest->val ^ result));
-    printf("result : %d, src = %d; SPECREG, dest = %d\n", result, op_dest->val, op_src->val);
     print_asm_template2();
     return 2;
 }
@@ -38,7 +36,6 @@ make_helper(concat(cmp_i2eax_, SUFFIX)) {
     update_eflags_pf_zf_sf((DATA_TYPE_S)result);
 	cpu.eflags.CF = ((op_dest->val >> (8*DATA_BYTE - 2)) & 1) != ((result >> (8*DATA_BYTE - 2)) & 1);
 	cpu.eflags.OF = MSB((op_dest->val ^ op_src->val) & (op_dest->val ^ result));
-    printf("result : %d, src = %d; SPECREG, dest = %d\n", result, op_dest->val, op_src->val);
     print_asm_template2();
     return 2;
 }
