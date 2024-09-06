@@ -26,7 +26,7 @@ make_helper(concat(decode_i_, SUFFIX)) {
 make_helper(concat(decode_si_, SUFFIX)) {
 	op_src->type = OP_TYPE_IMM;
 
-	op_src->simm = instr_fetch(eip, DATA_BYTE);
+	op_src->simm = (DATA_TYPE_S)instr_fetch(eip, DATA_BYTE);
 	/* TODO: Use instr_fetch() to read `DATA_BYTE' bytes of memory pointed
 	 * by `eip'. Interpret the result as an signed immediate, and assign
 	 * it to op_src->simm.
