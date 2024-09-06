@@ -6,7 +6,7 @@ int is_leap_year(int n) {
 }
 
 int main() {
-	nemu_assert(is_leap_year(1) == 1);
+	nemu_assert(is_leap_year(1891) == 1);
 
 	return 0;
 }
