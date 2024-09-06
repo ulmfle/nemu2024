@@ -9,11 +9,10 @@ int ans[] = {0, 0, 1};
 #define NR_DATA (sizeof(ans) / sizeof(ans[0]))
 
 int main() {
-	//for(i = 0; i < NR_DATA; i ++) {
-		nemu_assert(is_leap_year(0 + 1890) == ans[0]);
-		nemu_assert(is_leap_year(1 + 1890) == ans[1]);
-		nemu_assert(is_leap_year(2 + 1890) == ans[2]);
-	//}
+	int i;
+	for(i = 0; i < NR_DATA; i ++) {
+		nemu_assert(is_leap_year(i + 1890) == ans[i]);
+	}
 
 	//nemu_assert(i == NR_DATA);
 
