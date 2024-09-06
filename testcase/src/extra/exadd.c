@@ -9,7 +9,7 @@ int ans[N] = {12, 15, 18};
 int main() {
     int i,j;
     for (i = 0; i < N; ++i) {
-        for (j = 0; j < N; ++j) k[i] += d[j][i];
+        for (j = N-1; j >= 0; ++j) k[i] += d[j][i];
         nemu_assert(ans[i]==k[i]);
     }
     return 0;
