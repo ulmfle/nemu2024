@@ -9,12 +9,6 @@ static void do_execute() {
 
 make_instr_helper(r);
 make_instr_helper(i);
-
-make_helper(concat(push_rm_, SUFFIX)) {
-    int len = concat(decode_rm_, SUFFIX)(eip + 1);
-    PUSH(MEM_R(op_src->addr));
-    print_asm_template1();
-    return len + 1;
-}
+make_instr_helper(rm);
 
 #include "cpu/exec/template-end.h"
