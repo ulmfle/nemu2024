@@ -37,8 +37,8 @@
 // add for convenience
 #define PUSH(data) do { REG(R_ESP) -= DATA_BYTE; MEM_W(REG(R_ESP), data); } while (0)
 
-#define PUSH_NBYTE(data, byte) do { REG(R_ESP) -= byte; swaddr_write(REG(R_ESP), byte, data); } while (0)
-
 #define POP(dest) do { dest = MEM_R(REG(R_ESP)); REG(R_ESP) += DATA_BYTE; } while (0)
+
+#define PUSH_NBYTE(data, byte) do { REG(R_ESP) -= byte; swaddr_write(REG(R_ESP), byte, data); } while (0)
 
 #define POP_NBYTE(dest, byte) do { dest = swaddr_read(REG(R_ESP), byte); REG(R_ESP) += byte; } while (0)
