@@ -1,19 +1,12 @@
 #include "cpu/exec/helper.h"
 
-#define DATA_BYTE 1
-#include "cpu/exec/template-start.h"
-
 make_helper(push_i_b) {
     int len = decode_si_b(eip + 1);
-    cpu.esp -= 4;
-    swaddr_write(cpu.esp, 4, op_src->simm);
+    //cpu.esp -= 4;
+    //swaddr_write(cpu.esp, 4, op_src->simm);
     print_asm("pushb %s",op_src->str);
     return len + 1;
 }
-
-#include "cpu/exec/template-end.h"
-#undef DATA_BYTE
-
 
 #define DATA_BYTE 2
 #include "push-template.h"
