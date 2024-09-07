@@ -16,7 +16,7 @@ make_helper(concat(enter_, SUFFIX)) {
             PUSH(REG(R_EBP));
         }
 
-        PUSH_NBYTE(frame_ptr, 4);
+        PUSH(frame_ptr);
     }
 
     PUSH((DATA_TYPE)alloc);

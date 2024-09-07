@@ -35,10 +35,6 @@
 #define MSB(n) ((DATA_TYPE)(n) >> ((DATA_BYTE << 3) - 1))
 
 // add for convenience
-#define PUSH(data) do { REG(R_ESP) -= DATA_BYTE; MEM_W(REG(R_ESP), data); } while (0)
+#define PUSH(data) do { cpu.esp -= 4; swaddr_write(cpu.esp, 4, data); } while (0)
 
-#define POP(dest) do { dest = MEM_R(REG(R_ESP)); REG(R_ESP) += DATA_BYTE; } while (0)
-
-#define PUSH_NBYTE(data, byte) do { REG(R_ESP) -= byte; swaddr_write(REG(R_ESP), byte, data); } while (0)
-
-#define POP_NBYTE(dest, byte) do { dest = swaddr_read(REG(R_ESP), byte); REG(R_ESP) += byte; } while (0)
+#define POP(dest) do { dest = swaddr_read(cpu.esp, 4) & (DATA_BYTE==4?0xffffffff : ((1 << 8*DATA_BYTE)-1)); cpu.esp += 4; } while (0)
