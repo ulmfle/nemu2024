@@ -173,7 +173,7 @@ static int cmd_x(char *args) {
     while (n>0) {
         printf("0x%08x: ",_expr);
         int t;
-        for (t = 0; t < 4 && n > 0 && _expr <= HW_MEM_SIZE; ++t, --n, _expr+=len) {
+        for (t = 0; t < 4 && n > 0 && _expr < HW_MEM_SIZE; ++t, --n, _expr+=len) {
             printf("0x%08x ", swaddr_read(_expr, len));
         }
         putchar('\n');
