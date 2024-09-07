@@ -3,8 +3,12 @@
 #define instr pop
 
 static void do_execute() {
+    DATA_TYPE res;
     if (op_src->type == OP_TYPE_REG) POP(REG(op_src->reg));
-    else POP(REG(op_src->addr));
+    else {
+        POP(res);
+        OPERAND_W(op_src, res);
+    }
     print_asm_template1();
 }
 
