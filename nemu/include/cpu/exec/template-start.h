@@ -37,4 +37,4 @@
 // add for convenience
 #define PUSH(data) do { cpu.esp -= 4; swaddr_write(cpu.esp, 4, data); } while (0)
 
-#define POP(dest) do { dest = swaddr_read(cpu.esp, 4) & (DATA_BYTE==4?0xffffffff : ((1 << 8*DATA_BYTE)-1)); cpu.esp += 4; } while (0)
+#define POP(dest) do { dest = swaddr_read(cpu.esp, 4) & (DATA_BYTE==4? ~0u : ((1 << 8*DATA_BYTE)-1)); cpu.esp += 4; } while (0)
