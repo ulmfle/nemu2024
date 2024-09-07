@@ -5,7 +5,7 @@
 
 make_helper(push_i_b) {
     int len = decode_si_b(eip + 1);
-    PUSH_NBYTE((uint32_t)op_src->simm, 4);
+    PUSH_NBYTE(op_src->val, 4);
     print_asm("pushb %s",op_src->str);
     return len + 1;
 }
