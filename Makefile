@@ -53,7 +53,7 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/string
+USERPROG := obj/testcase/extra/strcmp-small
 ENTRY := $(USERPROG)
 
 entry: $(ENTRY)
