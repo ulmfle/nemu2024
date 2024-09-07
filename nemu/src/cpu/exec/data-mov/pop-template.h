@@ -3,16 +3,19 @@
 #define instr pop
 
 static void do_execute() {
-    DATA_TYPE res;
-    if (op_src->type == OP_TYPE_REG) POP(REG(op_src->reg));
-    else {
-        POP(res);
-        OPERAND_W(op_src, res);
-    }
+    POP(REG(op_src->reg));
     print_asm_template1();
 }
 
-make_instr_helper(rm);
+make_helper(concat(pop_rm_, SUFFIX)) {
+    int len = concat(decode_rm_, SUFFIX)(eip + 1);
+    DATA_TYPE r;
+    POP(r);
+    OPERAND_W(op_src, r);
+    print_asm_template1();
+    return len + 1;
+}
+
 make_instr_helper(r);
 
 #include "cpu/exec/template-end.h"
