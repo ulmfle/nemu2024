@@ -1,7 +1,7 @@
 #include "trap.h"
+#include "stdio.h"
 
 int main() {
-    asm volatile("push $0x7f");
-    asm volatile("pop %eax");
+    printf("a");
     return 0;
 }
