@@ -4,7 +4,7 @@
 /* solve 0.5x^2 + 0.5x - 0.5 = 0 */
 
 int main() {
-	// FLOAT a = f2F(0.5);
+	FLOAT a = f2F(0.5);
 	// nemu_assert(a == 1<<15);
 	// FLOAT b = f2F(0.5);
 	// FLOAT c = f2F(-0.5);
@@ -21,5 +21,5 @@ int main() {
 	// nemu_assert(Fabs(x1_ans - x1) < f2F(1e-4));
 	// nemu_assert(Fabs(x2_ans - x2) < f2F(1e-4));
 
-	return 0;
+	return a;
 }
