@@ -46,10 +46,10 @@ FLOAT f2F(float a) {
 
 	int _a;
 
-	// asm ("movl %1, %%ebx;"
-	// 	 "movl %%ebx, %0;"
-	// 	 : "=r" ( _a )
-	// 	 : "r" ( a ));
+	asm ("movl %1, %%ebx;"
+		 "movl %%ebx, %0;"
+		 : "=r" ( _a )
+		 : "r" ( a ));
 
 	FLOAT of = (~0u >> 1) + (_a & (1 << 31));
 	char E_pre = (_a & (0xff << 23)) >> 23;
