@@ -46,7 +46,7 @@ FLOAT f2F(float a) {
 
 	int _a;
 
-	asm ("movl %1, %%ebx;"
+	asm volatile ("movl %1, %%ebx;"
 		 "movl %%ebx, %0;"
 		 : "=r" ( _a )
 		 : "r" ( a ));
