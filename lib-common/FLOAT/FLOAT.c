@@ -44,6 +44,7 @@ FLOAT f2F(float a) {
 	 * performing arithmetic operations on it directly?
 	 */
 
+	if (!a) return 0;
 	int _a;
 
 	asm volatile ("movl %1, %%ebx;"
