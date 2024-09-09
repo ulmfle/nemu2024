@@ -47,7 +47,7 @@ FLOAT f2F(float a) {
 	if (!a) return 0;
 	int _a;
 
-	asm volatile ("mov %0, %1" : "=a"(_a) : "a"(a) : "%eax");
+	asm volatile ("mov %0, %1" : "=b"(_a) : "d"(a) : "%eax");
 
 	FLOAT of = (~0u >> 1) + (_a & (1 << 31));
 	char E_pre = (_a & (0xff << 23)) >> 23;
