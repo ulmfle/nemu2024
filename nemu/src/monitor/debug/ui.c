@@ -66,7 +66,9 @@ static struct {
 	{ "p", "Evaluate the expression", cmd_p},
 	{ "w", "Create watchpoints", cmd_w},
 	{ "d", "Remove watchpoints", cmd_d},
+#ifdef DEBUG
 	{ "debug", "debug", cmd_debug}
+#endif
 	/* TODO: Add more commands */
 
 };
@@ -197,6 +199,7 @@ static int cmd_d(char *args) {
 	return 0;
 }
 
+#ifdef DEBUG
 static int cmd_debug(char *args) {
 	int n=1;
 	if (args!=NULL) sscanf(args, "%u", &n);
@@ -207,7 +210,7 @@ static int cmd_debug(char *args) {
 	}
 	return 0;
 }
-
+#endif
 
 void ui_mainloop() {
 	while(1) {

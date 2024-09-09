@@ -1,8 +1,9 @@
 #include "FLOAT.h"
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-	nemu_assert(0);
-	return 0;
+	long long r = (long long)Fabs(a)*(long long)Fabs(b);
+	r >>= 16;
+	return (FLOAT)r + (a & (1 << 31)) ^ (b & (1 << 31));
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
@@ -23,9 +24,13 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * It is OK not to use the template above, but you should figure
 	 * out another way to perform the division.
 	 */
+	long long a_un = (long long)Fabs(a) << 16;
+	FLOAT b_un = Fabs(b);
+	FLOAT r;
 
-	nemu_assert(0);
-	return 0;
+	asm volatile ("div %2" : "=a"(a_un), "=d"(b_un) : "r"(r), "a"(a_un), "d"(b_un));
+
+	return r + (a & (1 << 31)) ^ (b & (1 << 31));
 }
 
 FLOAT f2F(float a) {
@@ -38,14 +43,22 @@ FLOAT f2F(float a) {
 	 * stack. How do you retrieve it to another variable without
 	 * performing arithmetic operations on it directly?
 	 */
+	FLOAT of = (~0u >> 1) + (a & (1 << 31));
+	uint8_t E_pre = (a & (0xff << 23)) >> 23;
+	if (E_pre == 0xff) return of;
+ 	uint8_t E = E_pre ? (E_pre - 127) : 1 - 127;
+	uint32_t M = a & 0x7fffff + (E_pre > 0 ? (1 << 23) : 0);
 
-	nemu_assert(0);
-	return 0;
+	int idx = M&-M;
+	int right_zero = 0;
+	while (idx ^ 1) {idx >>= 1; ++right_zero;}
+
+	FLOAT R = E+right_zero >= 15 ? M >> E+right_zero-15 : M << 15-E+right_zero;
+	return R + (a & (1 << 31));
 }
 
 FLOAT Fabs(FLOAT a) {
-	nemu_assert(0);
-	return 0;
+	return a & (~0u >> 1);
 }
 
 /* Functions below are already implemented */

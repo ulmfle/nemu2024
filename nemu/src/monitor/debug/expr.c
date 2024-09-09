@@ -16,7 +16,8 @@ enum {
 	ADD, SUB,
 	MUL, DIV,
 	REV, POS, NEG, DEREF, REF,
-	BIN, OCT, DEC, HEX
+	BIN, OCT, DEC, HEX,
+	IDENTIFIER
 };
 
 static struct rule {
