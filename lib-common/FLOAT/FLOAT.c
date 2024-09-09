@@ -52,20 +52,21 @@ FLOAT f2F(float a) {
 		 : "=r" ( _a )
 		 : "r" ( a ));
 
-	FLOAT of = (~0u >> 1) + (_a & (1 << 31));
-	char E_pre = (_a & (0xff << 23)) >> 23;
+	// FLOAT of = (~0u >> 1) + (_a & (1 << 31));
+	// char E_pre = (_a & (0xff << 23)) >> 23;
 
-	if (E_pre == 0xff) return of;
+	// if (E_pre == 0xff) return of;
 
-	char E = E_pre ? (E_pre - 127) : 1 - 127;
-	int M = _a & 0x7fffff + (E_pre > 0 ? (1 << 23) : 0);
+	// char E = E_pre ? (E_pre - 127) : 1 - 127;
+	// int M = _a & 0x7fffff + (E_pre > 0 ? (1 << 23) : 0);
 
-	int idx = M&-M;
-	int right_zero = 0;
-	while (idx ^ 1) {idx >>= 1; ++right_zero;}
+	// int idx = M&-M;
+	// int right_zero = 0;
+	// while (idx ^ 1) {idx >>= 1; ++right_zero;}
 
-	FLOAT R = E+right_zero >= 15 ? M >> E+right_zero-15 : M << 15-E+right_zero;
-	return R + (_a & (1 << 31));
+	// FLOAT R = E+right_zero >= 15 ? M >> E+right_zero-15 : M << 15-E+right_zero;
+	// return R + (_a & (1 << 31));
+	return _a;
 }
 
 FLOAT Fabs(FLOAT a) {
