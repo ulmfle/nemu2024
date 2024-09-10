@@ -58,7 +58,7 @@ FLOAT f2F(float a) {
 	if (!M) return 0;
 
 	FLOAT R = E >= 8 ? M << (E-8) : M >> (8-E);
-	return (a >> 31) ? -R : R;
+	return (_a >> 31) ? -R : R;
 }
 
 FLOAT Fabs(FLOAT a) {
