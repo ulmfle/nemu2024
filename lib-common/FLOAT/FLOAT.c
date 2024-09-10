@@ -24,6 +24,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * It is OK not to use the template above, but you should figure
 	 * out another way to perform the division.
 	 */
+
 	//long long a_un = Fabs(a) << 16;
 	unsigned a_un = Fabs(a);
 	unsigned b_un = Fabs(b);
@@ -49,10 +50,10 @@ FLOAT f2F(float a) {
 	int _a;
 	asm volatile ("mov %1, %0" : "=a"(_a) : "r"(a));
 
-	FLOAT of = (~0u >> 1) + (_a & (1 << 31));
+	FLOAT of = (~0u >> 1);
 	char E_pre = (_a & (0xff << 23)) >> 23;
 
-	if (!(E_pre ^ 0xff)) return of;
+	if (!(E_pre ^ 0xff)) return (_a >> 31) ? -of : of;
 
 	char E = E_pre ? (E_pre - 127) : 1 - 127;
     int M = (_a & 0x7fffff) + (E_pre ? (1 << 23) : 0);
