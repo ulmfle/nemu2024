@@ -24,7 +24,6 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * It is OK not to use the template above, but you should figure
 	 * out another way to perform the division.
 	 */
-	int rem;
 	long long a_un = (long long)Fabs(a) << 16;
 	FLOAT b_un = Fabs(b);
 	FLOAT r;
