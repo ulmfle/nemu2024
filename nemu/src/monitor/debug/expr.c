@@ -102,13 +102,13 @@ static bool make_token(char *e) {
 					/*case BIN:case OCT:*/case HEX:
 					/*if (rules[i].token_type == OCT) si = 1; else */si = 2;
 
-					case DEC:case REF:
+					case DEC:case REF:case IDEN:
 						for (; si < substr_len && si < 32; ++si) {
 							tokens[nr_token].str[si] = substr_start[si];
 						}
 
 					case LPR:case RPR:case OR :case AND:case ADD:case SUB:
-					case MUL:case DIV:case EQ :case NEQ:case REV:case IDEN:
+					case MUL:case DIV:case EQ :case NEQ:case REV:
 						tokens[nr_token++].type = rules[i].token_type;
 
 					case NOTYPE:
