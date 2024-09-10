@@ -54,6 +54,7 @@ FLOAT f2F(float a) {
 
 	char E = E_pre ? (E_pre - 127) : 1 - 127;
 	int M = _a & 0x7fffff + (E_pre > 0 ? (1 << 23) : 0);
+
 	if (!M) return 0;
 
 	FLOAT R = E >= 8 ? M << (E-8) : M >> (8-E);
