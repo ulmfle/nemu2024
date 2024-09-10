@@ -53,7 +53,7 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/quadratic-eq
+USERPROG := obj/testcase/extra/FLOAT
 ENTRY := $(USERPROG)
 
 entry: $(ENTRY)
