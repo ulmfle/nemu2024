@@ -18,6 +18,6 @@ int main() {
     int idx;
     for (idx = 1; idx <= 9; ++idx)
         sum += d(idx);
-    //nemu_assert(sum == 1023);
+    nemu_assert(sum == 1013);
     return 0;
 }
