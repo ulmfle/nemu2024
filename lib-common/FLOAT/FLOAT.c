@@ -25,7 +25,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * out another way to perform the division.
 	 */
 
-	unsigned long long a_un = Fabs(a) << 16;
+	unsigned long long a_un = (unsigned long long)Fabs(a) << 16;
 	//unsigned a_un = Fabs(a);
 	unsigned b_un = Fabs(b);
 	//unsigned a_un_l = a_un >> 17, a_un_r = a_un << 15;
