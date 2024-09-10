@@ -28,7 +28,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	FLOAT b_un = Fabs(b);
 	FLOAT r;
 
-	asm volatile ("div %2" : "=a"(r) : "a"((int)(a_un)), "r"(b_un) , "d"((int)(a_un >> 32)));
+	asm volatile ("div %2" : "=a"(r) : "a"((unsigned)(a_un)), "r"(b_un) , "d"((unsigned)(a_un >> 32)));
 
 	return (a >> 31) ^ (b >> 31) ? -r : r;
 }
