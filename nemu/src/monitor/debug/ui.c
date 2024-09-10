@@ -207,27 +207,27 @@ static int cmd_bt(char *args) {
 	swaddr_t prev_ebp, now_ebp, ret_addr, func_addr;
 	uint32_t f_args[4];
 	now_ebp = prev_ebp = reg_l(R_EBP);
-	Log("0x%08x",now_ebp);
 	while (prev_ebp) {
 		now_ebp = prev_ebp;
 		prev_ebp = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("1 0x%08x",now_ebp);
 		ret_addr = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("2 0x%08x",now_ebp);
 		f_args[0] = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("3 0x%08x",now_ebp);
 		f_args[1] = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("4 0x%08x",now_ebp);
 		f_args[2] = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("5 0x%08x",now_ebp);
 		f_args[3] = swaddr_read(now_ebp, 4);
 
-		func_addr = ret_addr;// + (int)swaddr_read(ret_addr - 4, 4);
+		func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
+		printf("0x%08x | %s : ( %u , %u , %u , %u )\n", func_addr\
+													  , get_symbol_name(func_addr)\
+													  , f_args[0]\
+													  , f_args[1]\
+													  , f_args[2]\
+													  , f_args[3]);
 	}
 	return 0;
 }
