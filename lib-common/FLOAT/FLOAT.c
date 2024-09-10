@@ -24,11 +24,13 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * It is OK not to use the template above, but you should figure
 	 * out another way to perform the division.
 	 */
+	//long long a_un = Fabs(a) << 16;
 	FLOAT a_un = Fabs(a);
 	FLOAT b_un = Fabs(b);
 	FLOAT r;
 
-	asm volatile ("div %2" : "=a"(r) : "a"(a_un >> 16), "r"(b_un) , "d"(a_un << 16));
+	//asm volatile ("div %2" : "=a"(r) : "a"((int)(a_un)), "r"(b_un) , "d"((a_un >> 32)));
+	asm volatile ("div %2" : "=a"(r) : "a"(a_un << 16), "r"(b_un) , "d"(a_un >> 16));
 
 	return (a >> 31) ^ (b >> 31) ? -r : r;
 }
