@@ -206,7 +206,7 @@ static int cmd_d(char *args) {
 static int cmd_bt(char *args) {
 	swaddr_t prev_ebp, now_ebp, ret_addr, func_addr;
 	uint32_t f_args[4];
-	now_ebp = prev_ebp = reg_l(R_ESP);
+	now_ebp = prev_ebp = reg_l(R_EBP);
 	Log("0x%08x",now_ebp);
 	while (prev_ebp) {
 		now_ebp = prev_ebp;
