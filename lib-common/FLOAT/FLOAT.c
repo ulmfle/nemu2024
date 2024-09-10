@@ -25,8 +25,8 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * out another way to perform the division.
 	 */
 	//long long a_un = Fabs(a) << 16;
-	FLOAT a_un = Fabs(a);
-	FLOAT b_un = Fabs(b);
+	unsigned a_un = Fabs(a);
+	unsigned b_un = Fabs(b);
 	FLOAT r;
 
 	//asm volatile ("div %2" : "=a"(r) : "a"((int)(a_un)), "r"(b_un) , "d"((a_un >> 32)));
