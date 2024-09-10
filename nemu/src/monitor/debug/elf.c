@@ -81,3 +81,17 @@ void load_elf_tables(int argc, char *argv[]) {
 	fclose(fp);
 }
 
+swaddr_t get_symbol_swaddr(char *iden, uint8_t filter) {
+	int symtab_idx;
+	uint8_t bind, type;
+	for (symtab_idx = 0; symtab_idx < nr_symtab_entry; ++symtab_idx) {
+		bind = ELF32_ST_BIND(symtab[symtab_idx].st_info);
+		type = ELF32_ST_TYPE(symtab[symtab_idx].st_info);
+
+		if (bind != ELF32_ST_BIND(filter) || type != ELF32_ST_TYPE(filter)) continue;
+		if (strcmp(strtab + symtab[symtab_idx].st_name, iden) != 0) continue;
+
+		return symtab[symtab_idx].st_value;
+	}
+	return 0;
+}

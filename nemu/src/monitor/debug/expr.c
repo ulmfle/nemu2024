@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <regex.h>
 
+swaddr_t get_symbol_swaddr(char *iden, uint8_t filter);
+
 enum {
 	NOTYPE = 256,
 	LPR, RPR,
@@ -16,8 +18,8 @@ enum {
 	ADD, SUB,
 	MUL, DIV,
 	REV, POS, NEG, DEREF, REF,
+	IDEN,
 	BIN, OCT, DEC, HEX,
-	IDENTIFIER
 };
 
 static struct rule {
@@ -42,6 +44,7 @@ static struct rule {
 	{"-"          		  , SUB   },					// minus
 	{"\\*"         		  , MUL   },					// multiply
 	{"/"          		  , DIV   },					// divided by
+	{"[^0-9][a-zA-Z_]+"	  , IDEN  },					// identifier
 	{"0b[01]+"			  , BIN   },					// binary number
 	{"0[0-7]+"			  , OCT	  },					// octal number
 	{"0[xX][0-9a-fA-F]+"  , HEX   },					// hexademical number
@@ -94,11 +97,6 @@ static bool make_token(char *e) {
 
 				position += substr_len;
 
-				/* TODO: Now a new token is recognized with rules[i]. Add codes
-				 * to record the token in the array `tokens'. For certain types
-				 * of tokens, some extra actions should be performed.
-				 */
-
 				int si = 0;
 				switch(rules[i].token_type) {
 					/*case BIN:case OCT:*/case HEX:
@@ -110,7 +108,7 @@ static bool make_token(char *e) {
 						}
 
 					case LPR:case RPR:case OR :case AND:case ADD:case SUB:
-					case MUL:case DIV:case EQ :case NEQ:case REV:
+					case MUL:case DIV:case EQ :case NEQ:case REV:case IDEN:
 						tokens[nr_token++].type = rules[i].token_type;
 
 					case NOTYPE:
@@ -206,8 +204,11 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 					if (strcmp(tokens[st].str+1, regsb[idx]) == 0) {value = reg_b(idx);break;}
 					if (strcmp(tokens[st].str+1, regsw[idx]) == 0) {value = reg_w(idx);break;}
 				}
-				break;
 			}
+			case IDEN:
+				value = get_symbol_swaddr(tokens[st].str, (((1) << 4) + ((1) & 0xf)));
+				if (value == 0) {*bad = 1;return 0;}
+				break;
 			case DEC:sscanf(tokens[st].str, "%u", &value); break;
 			case HEX:sscanf(tokens[st].str + 2, "%x", &value); break;
 		}
