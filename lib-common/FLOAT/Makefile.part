@@ -12,9 +12,9 @@ $(FLOAT): $(FLOAT_A_OBJ)
 	ar r $@ $^
 
 $(FLOAT_O):
-	mkdir obj/${LIB_COMMON_DIR}/FLOAT
+	mkdir -p obj/${LIB_COMMON_DIR}/FLOAT
 	cc -c lib-common/FLOAT/FLOAT.c -I lib-common -o ${FLOAT_O} ${FLOAT_CFLAGS}
 
 $(FLOAT_VFPRINTF_O):
-	mkdir obj/${LIB_COMMON_DIR}/FLOAT
+	mkdir -p obj/${LIB_COMMON_DIR}/FLOAT
 	cc -c lib-common/FLOAT/FLOAT_vfprintf.c -I lib-common -o ${FLOAT_VFPRINTF_O} ${FLOAT_CFLAGS} ${FLOAT_VFPRINTF_CFLAGS}
