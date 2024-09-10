@@ -204,6 +204,24 @@ static int cmd_d(char *args) {
 }
 
 static int cmd_bt(char *args) {
+	swaddr_t prev_ebp, now_ebp, ret_addr;
+	uint32_t f_args[4];
+	now_ebp = prev_ebp = reg_l(R_ESP);
+	while (prev_ebp) {
+		now_ebp = prev_ebp;
+		prev_ebp = swaddr_read(now_ebp, 4);
+		now_ebp += 4;
+		ret_addr = swaddr_read(now_ebp, 4);
+		now_ebp += 4;
+		f_args[0] = swaddr_read(now_ebp, 4);
+		now_ebp += 4;
+		f_args[1] = swaddr_read(now_ebp, 4);
+		now_ebp += 4;
+		f_args[2] = swaddr_read(now_ebp, 4);
+		now_ebp += 4;
+		f_args[3] = swaddr_read(now_ebp, 4);
+		//printf("0x%08x:",);
+	}
 	return 0;
 }
 
