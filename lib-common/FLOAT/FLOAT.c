@@ -24,11 +24,12 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	 * It is OK not to use the template above, but you should figure
 	 * out another way to perform the division.
 	 */
+	int rem;
 	long long a_un = (long long)Fabs(a) << 16;
 	FLOAT b_un = Fabs(b);
 	FLOAT r;
 
-	asm volatile ("div %2" : "=a"(r) : "a"(a_un), "r"(b_un));
+	asm volatile ("div %2" : "=a"(r) : "a"((int)(a_un >> 32)), "r"(b_un) , "d"((int)(a_un)));
 
 	return r + (a & (1 << 31)) ^ (b & (1 << 31));
 }
