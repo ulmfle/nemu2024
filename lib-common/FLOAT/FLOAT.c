@@ -44,10 +44,10 @@ FLOAT f2F(float a) {
 	 * performing arithmetic operations on it directly?
 	 */
 
-	if (!a) return 0;
 	int _a;
+	asm volatile ("mov %1, %0" : "=a"(_a) : "r"(a));
 
-	asm volatile ("mov %0, %1" : "=a"(_a) : "r"(a));
+	if (!_a) return 0;
 
 	FLOAT of = (~0u >> 1) + (_a & (1 << 31));
 	char E_pre = (_a & (0xff << 23)) >> 23;
@@ -61,7 +61,7 @@ FLOAT f2F(float a) {
 	int right_zero = 0;
 	while (idx ^ 1) {idx >>= 1; ++right_zero;}
 
-	FLOAT R = E+right_zero >= 15 ? M >> E+right_zero-15 : M << 15-E+right_zero;
+	FLOAT R = ;
 	return R + (_a & (1 << 31));
 	return _a;
 }
