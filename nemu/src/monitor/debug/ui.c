@@ -212,19 +212,19 @@ static int cmd_bt(char *args) {
 		now_ebp = prev_ebp;
 		prev_ebp = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("0x%08x",now_ebp);
+		Log("10x%08x",now_ebp);
 		ret_addr = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("0x%08x",now_ebp);
+		Log("20x%08x",now_ebp);
 		f_args[0] = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("0x%08x",now_ebp);
+		Log("30x%08x",now_ebp);
 		f_args[1] = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("0x%08x",now_ebp);
+		Log("40x%08x",now_ebp);
 		f_args[2] = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
-		Log("0x%08x",now_ebp);
+		Log("50x%08x",now_ebp);
 		f_args[3] = swaddr_read(now_ebp, 4);
 
 		func_addr = ret_addr;// + (int)swaddr_read(ret_addr - 4, 4);
