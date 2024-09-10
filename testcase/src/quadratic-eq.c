@@ -9,10 +9,10 @@ int main() {
 	// FLOAT c = f2F(-0.5);
 
 	// FLOAT dt = f2F(0.25) + f2F(1);
-	FLOAT sqrt_dt = f2F(1.1180339);
+	FLOAT sqrt_dt = f2F(1.11803398874);
 
-	FLOAT x1 = -b + sqrt_dt;
-	FLOAT x2 = -b - sqrt_dt;
+	FLOAT x1 = F_div_F(-b + sqrt_dt, f2F(1));
+	FLOAT x2 = F_div_F(-b - sqrt_dt, f2F(1));
 
 	FLOAT x1_ans = f2F(0.618);
 	FLOAT x2_ans = f2F(-1.618);
