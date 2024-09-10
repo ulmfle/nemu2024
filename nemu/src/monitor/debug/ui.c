@@ -220,7 +220,7 @@ static int cmd_bt(char *args) {
 		f_args[2] = swaddr_read(now_ebp, 4);
 		now_ebp += 4;
 		f_args[3] = swaddr_read(now_ebp, 4);
-		//printf("0x%08x:",);
+		//printf("0x%08x:");
 	}
 	return 0;
 }
