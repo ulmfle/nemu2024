@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <regex.h>
 
-swaddr_t get_symbol_swaddr(char *iden, uint8_t filter);
+swaddr_t getsymaddr_iden(char *iden, uint8_t filter);
 
 enum {
 	NOTYPE = 256,
@@ -207,7 +207,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			}
 			break;
 			case IDEN:
-				value = get_symbol_swaddr(tokens[st].str, (1 << 4) + (1 & 0xf) );
+				value = getsymaddr_iden(tokens[st].str, (1 << 4) + (1 & 0xf) );
 				if (value == 0) {*bad = 1;return 0;}
 				break;
 			case DEC:sscanf(tokens[st].str, "%u", &value); break;

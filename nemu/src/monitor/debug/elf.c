@@ -81,7 +81,7 @@ void load_elf_tables(int argc, char *argv[]) {
 	fclose(fp);
 }
 
-swaddr_t get_symbol_swaddr(char *iden, uint8_t filter) {
+swaddr_t getsymaddr_iden(char *iden, uint8_t filter) {
 	int symtab_idx;
 	uint8_t bind, type;
 	for (symtab_idx = 0; symtab_idx < nr_symtab_entry; ++symtab_idx) {
@@ -93,4 +93,11 @@ swaddr_t get_symbol_swaddr(char *iden, uint8_t filter) {
 		return symtab[symtab_idx].st_value;
 	}
 	return 0;
+}
+
+char *get_symbol_name(swaddr_t addr) {
+	int symtab_idx;
+	for (symtab_idx = 0; symtab_idx < nr_symtab_entry; ++symtab_idx)
+		if (symtab[symtab_idx].st_value == addr) return strtab + symtab[symtab_idx].st_name;
+	return NULL;
 }

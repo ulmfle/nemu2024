@@ -8,6 +8,7 @@
 #include <readline/history.h>
 
 void cpu_exec(uint32_t);
+char *get_symbol_name(swaddr_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -48,6 +49,8 @@ static int cmd_w(char *args);
 
 static int cmd_d(char *args);
 
+static int cmd_bt(char *args);
+
 static int cmd_debug(char *args);
 
 static int cmd_help(char *args);
@@ -66,6 +69,7 @@ static struct {
 	{ "p", "Evaluate the expression", cmd_p},
 	{ "w", "Create watchpoints", cmd_w},
 	{ "d", "Remove watchpoints", cmd_d},
+	{ "d", "Print stack frame chain", cmd_bt},
 #ifdef DEBUG
 	{ "debug", "debug", cmd_debug}
 #endif
@@ -196,6 +200,10 @@ static int cmd_d(char *args) {
 	sscanf(args, "%u", &n);
 	int ret = del_wp(n);
 	if (ret == -1) printf("Watchpoint #%u does not exist\n", n);
+	return 0;
+}
+
+static int cmd_bt(char *args) {
 	return 0;
 }
 
