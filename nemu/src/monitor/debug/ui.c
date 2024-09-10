@@ -69,7 +69,7 @@ static struct {
 	{ "p", "Evaluate the expression", cmd_p},
 	{ "w", "Create watchpoints", cmd_w},
 	{ "d", "Remove watchpoints", cmd_d},
-	{ "d", "Print stack frame chain", cmd_bt},
+	{ "bt", "Print stack frame chain", cmd_bt},
 #ifdef DEBUG
 	{ "debug", "debug", cmd_debug}
 #endif
