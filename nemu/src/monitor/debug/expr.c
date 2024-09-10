@@ -205,6 +205,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 					if (strcmp(tokens[st].str+1, regsw[idx]) == 0) {value = reg_w(idx);break;}
 				}
 			}
+			break;
 			case IDEN:
 				value = get_symbol_swaddr(tokens[st].str, (((1) << 4) + ((1) & 0xf)));
 				if (value == 0) {*bad = 1;return 0;}
