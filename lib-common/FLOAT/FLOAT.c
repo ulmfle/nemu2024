@@ -53,7 +53,7 @@ FLOAT f2F(float a) {
 	if (!(E_pre ^ 0xff)) return of;
 
 	char E = E_pre ? (E_pre - 127) : 1 - 127;
-	int M = _a & 0x7fffff + (E_pre > 0 ? (1 << 23) : 0);
+    int M = (_a & 0x7fffff) + (E_pre ? (1 << 23) : 0);
 
 	if (!M) return 0;
 
