@@ -88,10 +88,11 @@ swaddr_t get_symbol_swaddr(char *iden, uint8_t filter) {
 		bind = ELF32_ST_BIND(symtab[symtab_idx].st_info);
 		type = ELF32_ST_TYPE(symtab[symtab_idx].st_info);
 
+		Log("0x%08x, no", symtab[symtab_idx].st_value);
 		if (bind != ELF32_ST_BIND(filter) || type != ELF32_ST_TYPE(filter)) continue;
 		if (strcmp(strtab + symtab[symtab_idx].st_name, iden) != 0) continue;
 
-		Log("0x%08x", symtab[symtab_idx].st_value);
+		Log("0x%08x, yes", symtab[symtab_idx].st_value);
 		return symtab[symtab_idx].st_value;
 	}
 	return 0;
