@@ -18,7 +18,7 @@ make_helper(concat(call_rm_,SUFFIX)) {
 
     PUSH(eip + len + 1);
 
-    cpu.eip += REG(op_src->reg) & ~0u >> (DATA_BYTE == 2 ? 16 : 0);
+    cpu.eip = REG(op_src->reg) & ~0u >> (DATA_BYTE == 2 ? 16 : 0);
 
     print_asm_template1();
     return len + 1;
