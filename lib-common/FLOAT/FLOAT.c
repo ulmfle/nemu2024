@@ -3,7 +3,7 @@
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
 	long long r = (long long)Fabs(a)*(long long)Fabs(b);
 	r >>= 16;
-	return (FLOAT)r + (a & (1 << 31)) ^ (b & (1 << 31));
+	return (a >> 31) ^ (b >> 31) ? -((FLOAT)r) : (FLOAT)r;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
@@ -30,7 +30,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 
 	asm volatile ("div %2" : "=a"(r) : "a"((int)(a_un >> 32)), "r"(b_un) , "d"((int)(a_un)));
 
-	return r + (a & (1 << 31)) ^ (b & (1 << 31));
+	return (a >> 31) ^ (b >> 31) ? -r : r;
 }
 
 FLOAT f2F(float a) {
@@ -58,11 +58,11 @@ FLOAT f2F(float a) {
 	if (!M) return 0;
 
 	FLOAT R = E >= 8 ? M << (E-8) : M >> (8-E);
-	return R + (_a & (1 << 31));
+	return (a >> 31) ? -R : R;
 }
 
 FLOAT Fabs(FLOAT a) {
-	return a & (~0u >> 1);
+	return a ^ (1 << 31) ? a : (~a+1) & (~0u >> 1);
 }
 
 /* Functions below are already implemented */
