@@ -33,6 +33,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	//asm volatile ("div %2" : "=a"(r) : "a"((int)(a_un)), "r"(b_un) , "d"((a_un >> 32)));
 	asm volatile ("div %2" : "=a"(r) : "a"(a_un << 16), "r"(b_un) , "d"(a_un >> 16));
 
+	r >>= 1;
 	return (a >> 31) ^ (b >> 31) ? -r : r;
 }
 
