@@ -28,7 +28,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	// unsigned long long a_un = (unsigned long long)Fabs(a) << 16;
 	unsigned a_un = Fabs(a);
 	unsigned b_un = Fabs(b);
-	//unsigned a_un_l = a_un >> 17, a_un_r = a_un << 15;
+	unsigned a_un_l = a_un >> 17, a_un_r = a_un << 15;
 	FLOAT r;
 	// asm volatile ("div %2" : "=a"(r) : "a"((unsigned)(a_un)), "r"(b_un) , "d"((unsigned)(a_un >> 32)));
 	asm volatile ("div %2" : "=a"(r) : "a"(a_un_r), "r"(b_un) , "d"(a_un_l));
