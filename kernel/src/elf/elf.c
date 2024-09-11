@@ -36,7 +36,7 @@ uint32_t loader() {
 	nemu_assert(*p_magic == elf_magic);
 
 	/* Load each program segment */
-	uint8_t segbuf[2048];
+	uint8_t segbuf[1024];
 
 	int nr_ph = elf->e_phnum;
 	ph = (Elf32_Phdr *)((void *)buf + elf->e_phoff);
@@ -51,7 +51,7 @@ uint32_t loader() {
 #ifdef HAS_DEVICE
 			ide_read(segbuf, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, 2048);
 #else
-			ramdisk_read(segbuf, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, 2048);
+			ramdisk_read(segbuf, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #endif
 
 			memcpy((void *)(ph[ph_idx].p_vaddr), (void *)segbuf, ph[ph_idx].p_filesz);
