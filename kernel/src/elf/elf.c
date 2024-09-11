@@ -36,7 +36,7 @@ uint32_t loader() {
 	nemu_assert(*p_magic == elf_magic);
 
 	/* Load each program segment */
-	uint8_t segbuf[4096];
+	uint8_t segbuf[9999];
 
 	int nr_ph = elf->e_phnum;
 	ph = (Elf32_Phdr *)((void *)buf + elf->e_phoff);
