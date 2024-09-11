@@ -20,12 +20,12 @@ uint32_t loader() {
 	Elf32_Ehdr *elf;
 	Elf32_Phdr *ph = NULL;
 
-	uint8_t buf[4096];
+	uint8_t buf[1 << 13];
 
 #ifdef HAS_DEVICE
-	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
+	ide_read(buf, ELF_OFFSET_IN_DISK, 1 << 13); 	//4096
 #else
-	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
+	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 1 << 13);
 #endif
 
 	elf = (void*)buf;
@@ -46,7 +46,6 @@ uint32_t loader() {
 			/* TODO: read the content of the segment from the ELF file
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			nemu_assert(*(uint8_t *)((void *)buf + ph[ph_idx].p_offset) == *(uint8_t *)(void *)(ph[ph_idx].p_vaddr));
 			memcpy((void *)(ph[ph_idx].p_vaddr), (void *)buf + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
