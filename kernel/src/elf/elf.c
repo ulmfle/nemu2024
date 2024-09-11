@@ -9,6 +9,7 @@
 void ide_read(uint8_t *, uint32_t, uint32_t);
 #else
 void ramdisk_read(uint8_t *, uint32_t, uint32_t);
+void ramdisk_write(uint8_t *, uint32_t, uint32_t);
 #endif
 
 #define STACK_SIZE (1 << 20)
@@ -36,19 +37,26 @@ uint32_t loader() {
 	nemu_assert(*p_magic == elf_magic);
 
 	/* Load each program segment */
-	for(; true; ) {
-		/* Scan the program header table, load each segment into memory */
-		if(ph->p_type == PT_LOAD) {
+	int nr_ph = elf->e_phnum;
+	int phe_siz = elf->e_phentsize;
+	ph = (void *)elf + elf->e_phoff;
 
-			/* TODO: read the content of the segment from the ELF file 
+	int ph_idx;
+	for (ph_idx = 0; ph_idx < nr_ph; ++ph_idx) {
+		/* Scan the program header table, load each segment into memory */
+		if(ph[ph_idx].p_type == PT_LOAD) {
+			/* TODO: read the content of the segment from the ELF file
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			
-			/* TODO: zero the memory region 
+#ifdef HAS_DEVICE
+			ide_write((uint8_t*)buf + (uint8_t*)ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
+#else
+			ramdisk_write((uint8_t*)buf + (uint8_t*)ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
+#endif
+			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			
-
+			memset(ph[ph_idx].p_vaddr, 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
