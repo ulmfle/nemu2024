@@ -38,7 +38,6 @@ uint32_t loader() {
 
 	/* Load each program segment */
 	int nr_ph = elf->e_phnum;
-	int phe_siz = elf->e_phentsize;
 	ph = (void *)elf + elf->e_phoff;
 
 	int ph_idx;
@@ -51,12 +50,12 @@ uint32_t loader() {
 #ifdef HAS_DEVICE
 			ide_write((uint8_t*)buf + (uint8_t*)ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
 #else
-			ramdisk_write((uint8_t*)buf + (uint8_t*)ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
+			ramdisk_write((uint8_t*)buf + ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
 #endif
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			memset(ph[ph_idx].p_vaddr, 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
+			memset((void *)ph[ph_idx].p_vaddr, 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
