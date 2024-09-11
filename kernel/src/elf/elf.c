@@ -36,10 +36,19 @@ uint32_t loader() {
 	uint32_t *p_magic = (void *)buf;
 	nemu_assert(*p_magic == elf_magic);
 
+	volatile uint32_t entry = elf->e_entry;
+
 	/* Load each program segment */
 	int nr_ph = elf->e_phnum;
-	ph = (void *)elf + elf->e_phoff;
+	int phe_size = elf->e_phentsize;
 
+#ifdef HAS_DEVICE
+	ide_read(buf, ELF_OFFSET_IN_DISK + elf->e_phoff, nr_ph * phe_size);
+#else
+	ramdisk_read(buf, ELF_OFFSET_IN_DISK + elf->e_phoff, nr_ph * phe_size);
+#endif
+
+	ph = (void *)buf;
 	int ph_idx;
 	for (ph_idx = 0; ph_idx < nr_ph; ++ph_idx) {
 		/* Scan the program header table, load each segment into memory */
@@ -66,7 +75,7 @@ uint32_t loader() {
 		}
 	}
 
-	volatile uint32_t entry = elf->e_entry;
+	// volatile uint32_t entry = elf->e_entry;
 
 #ifdef IA32_PAGE
 	mm_malloc(KOFFSET - STACK_SIZE, STACK_SIZE);
