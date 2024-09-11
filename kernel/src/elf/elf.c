@@ -48,14 +48,14 @@ uint32_t loader() {
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
 #ifdef HAS_DEVICE
-			ide_write((uint8_t*)buf + (uint8_t*)ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
+			ide_write((uint8_t*)buf + ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
 #else
 			ramdisk_write((uint8_t*)buf + ph[ph_idx].p_offset, ph[ph_idx].p_vaddr, ph[ph_idx].p_filesz);
 #endif
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			memset((void *)ph[ph_idx].p_vaddr, 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
+			memset((void *)ph[ph_idx].p_vaddr + ph[ph_idx].p_filesz, 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
