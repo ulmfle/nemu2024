@@ -38,7 +38,6 @@ uint32_t loader() {
 	/* Load each program segment */
 	int nr_ph = elf->e_phnum;
 	ph = (Elf32_Phdr *)((void *)buf + elf->e_phoff);
-	nemu_assert(ph->p_type == PT_LOAD);
 
 	int ph_idx;
 	for (ph_idx = 0; ph_idx < nr_ph; ++ph_idx) {
@@ -47,11 +46,11 @@ uint32_t loader() {
 			/* TODO: read the content of the segment from the ELF file
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			memcpy((void *)ph[ph_idx].p_vaddr, (void *)buf + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
+			memcpy((void *)ph[ph_idx].p_vaddr, (void *)buf + ph[ph_idx].p_offset, 1);
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			memset((void *)ph[ph_idx].p_vaddr + ph[ph_idx].p_filesz, 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
+			memset((void *)ph[ph_idx].p_vaddr + ph[ph_idx].p_filesz, 0, 0);
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
