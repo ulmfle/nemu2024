@@ -55,7 +55,7 @@ uint32_t loader() {
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			memset((void *)(ph[ph_idx].p_vaddr) + ph[ph_idx].p_filesz, 0, ph[ph_idx].p_filesz - ph[ph_idx].p_memsz);
+			//memset((void *)(ph[ph_idx].p_vaddr) + ph[ph_idx].p_filesz, 0, ph[ph_idx].p_filesz - ph[ph_idx].p_memsz);
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
