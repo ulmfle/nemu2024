@@ -38,7 +38,7 @@ uint32_t loader() {
 
 	/* Load each program segment */
 	int nr_ph = elf->e_phnum;
-	ph = (void *)buf + elf->e_phoff;
+	ph = (Elf32_Phdr *)((void *)buf + elf->e_phoff);
 
 	int ph_idx;
 	for (ph_idx = 0; ph_idx < nr_ph; ++ph_idx) {
