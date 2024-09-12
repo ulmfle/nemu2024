@@ -20,6 +20,7 @@ int main() {
 			set_bp();
 			nemu_assert(res == ans[ans_idx ++]);
 			loop ++;
+			set_bp();
 		}
 	}
 
