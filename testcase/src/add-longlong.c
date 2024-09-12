@@ -15,8 +15,8 @@ long long ans[] = {0LL, 0x1LL, 0x2LL, 0x7fffffffffffffffLL, 0x8000000000000000LL
 
 int main() {
 	set_bp();
-	for(i = 0; i < 1; i ++) {
-		for(j = 1; j < 2; j ++) {
+	for(i = 0; i < NR_DATA; i ++) {
+		for(j = 0; j < NR_DATA; j ++) {
 			res = add(test_data[i], test_data[j]);
 			set_bp();
 			nemu_assert(res == ans[ans_idx ++]);
