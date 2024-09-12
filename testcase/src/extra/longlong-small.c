@@ -6,7 +6,6 @@ long long add(long long a, long long b) {
 }
 
 int main() {
-    long long ans = 3;
-    nemu_assert(add(1,2) == ans);
+    nemu_assert(add(1,2) == 3LL);
     return 0;
 }
