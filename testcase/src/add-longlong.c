@@ -18,10 +18,10 @@ int main() {
 		for(j = 0; j < NR_DATA; j ++) {
 			if (i==3) set_bp();
 			res = add(test_data[i], test_data[j]);
-			//set_bp();
+			if (i==3) set_bp();
 			nemu_assert(res == ans[ans_idx ++]);
 			loop ++;
-			//set_bp();
+			if (i==3) set_bp();
 		}
 	}
 
