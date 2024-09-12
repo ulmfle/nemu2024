@@ -44,7 +44,7 @@ static struct rule {
 	{"-"          		  , SUB   },					// minus
 	{"\\*"         		  , MUL   },					// multiply
 	{"/"          		  , DIV   },					// divided by
-	{"[a-zA-Z_][a-zA-Z_]+"	  , IDEN  },					// identifier
+	{"^[a-zA-Z_][a-zA-Z0-9_]"	  , IDEN  },					// identifier
 	{"0b[01]+"			  , BIN   },					// binary number
 	{"0[0-7]+"			  , OCT	  },					// octal number
 	{"0[xX][0-9a-fA-F]+"  , HEX   },					// hexademical number
