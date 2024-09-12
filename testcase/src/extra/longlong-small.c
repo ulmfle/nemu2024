@@ -8,8 +8,8 @@ long long add(long long a, long long b) {
 long long res;
 int i, j, ans_idx = 0;
 int loop = 0;
-long long test_data[] = {1,2,3};
-long long ans[] = {2,3,4,3,4,5,4,5,6};
+long long test_data[] = {1LL,2LL,3LL};
+long long ans[] = {2LL,3LL,4LL,3LL,4LL,5LL,4LL,5LL,6LL};
 #define NR_DATA (sizeof(test_data) / sizeof(test_data[0]))
 
 int main() {
