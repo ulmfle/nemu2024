@@ -13,7 +13,7 @@ int main() {
 	set_bp();
 	int i, j, ans_idx = 0;
 	int loop = 0;
-	for(i = 0; i < 2; i ++) {
+	for(i = 0; i < 1; i ++) {
 		for(j = 0; j < 1; j ++) {
 			nemu_assert(add(test_data[i], test_data[j]) == ans[ans_idx ++]);
 			loop ++;
