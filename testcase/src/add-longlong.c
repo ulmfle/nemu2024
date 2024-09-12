@@ -1,7 +1,6 @@
 #include "trap.h"
 
 long long add(long long a, long long b) {
-	set_bp();
 	long long c = a + b;
 	return c;
 }
