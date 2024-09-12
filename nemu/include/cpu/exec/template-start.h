@@ -37,4 +37,4 @@
 // add for convenience
 #define PUSH(data) do { cpu.esp -= DATA_BYTE; MEM_W(cpu.esp, data); } while (0)
 
-#define POP(dest) do { dest = MEM_R(cpu.esp); cpu.esp -= DATA_BYTE; } while (0)
+#define POP(dest) do { dest = MEM_R(cpu.esp); cpu.esp += DATA_BYTE; } while (0)
