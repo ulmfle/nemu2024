@@ -204,6 +204,7 @@ static int cmd_d(char *args) {
 }
 
 static int cmd_bt(char *args) {
+	uint16_t idx = 0;
 	swaddr_t prev_ebp, now_ebp, ret_addr, func_addr;
 	uint32_t f_args[4];
 	now_ebp = prev_ebp = reg_l(R_EBP);
@@ -222,7 +223,7 @@ static int cmd_bt(char *args) {
 		f_args[3] = swaddr_read(now_ebp, 4);
 
 		func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
-		printf("ret:0x%08x | %s : ( %u , %u , %u , %u )\n", ret_addr\
+		printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx++, ret_addr\
 													  , get_symbol_name(func_addr)\
 													  , f_args[0]\
 													  , f_args[1]\
