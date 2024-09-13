@@ -81,18 +81,34 @@ void load_elf_tables(int argc, char *argv[]) {
 	fclose(fp);
 }
 
-swaddr_t getsymaddr_iden(char *iden, uint8_t filter) {
+swaddr_t getsymaddr(uint8_t filter, void *cmpsrc, int (*cond)(int, void *)) {
 	int symtab_idx;
 	uint8_t bind, type;
 	for (symtab_idx = 0; symtab_idx < nr_symtab_entry; ++symtab_idx) {
 		bind = ELF32_ST_BIND(symtab[symtab_idx].st_info);
 		type = ELF32_ST_TYPE(symtab[symtab_idx].st_info);
-
 		if (bind != ELF32_ST_BIND(filter) || type != ELF32_ST_TYPE(filter)) continue;
-		if (strcmp(strtab + symtab[symtab_idx].st_name, iden) != 0) continue;
+
+		if (cond(symtab_idx, cmpsrc) != true) continue;
 		return symtab[symtab_idx].st_value;
 	}
 	return 0;
+}
+
+int cond_iden(int idx, void *src) {
+	return !strcmp(strtab + symtab[idx].st_name, (char *)src);
+}
+
+int cond_addr(int idx, void *src) {
+	return (symtab[idx].st_value < *(Elf32_Addr *)src) && (*(Elf32_Addr *)src < symtab[idx].st_value + symtab[idx].st_size);
+}
+
+swaddr_t getsymaddr_iden(char *iden, uint8_t filter) {
+	return getsymaddr(filter, iden, cond_iden);
+}
+
+swaddr_t getsymaddr_addr(swaddr_t addr, uint8_t filter) {
+	return getsymaddr(filter, &addr, cond_addr);
 }
 
 char *get_symbol_name(swaddr_t addr) {

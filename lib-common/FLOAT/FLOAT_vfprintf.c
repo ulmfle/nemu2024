@@ -1,9 +1,10 @@
+#include <sys/mman.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "FLOAT.h"
 
-extern char _vfprintf_internal;
-extern char _fpmaxtostr;
+extern char _vfprintf_internal;		//?
+extern char _fpmaxtostr;			//?
 extern int __stdio_fwrite(char *buf, int len, FILE *stream);
 
 __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
@@ -63,7 +64,11 @@ static void modify_vfprintf() {
 		return 0;
 	} else if (ppfs->conv_num <= CONV_S) {  /* wide char or string */
 #endif
-
+	//attention : format_FLOAT , &_fpmaxtostr
+	uint32_t inc = (uint32_t)format_FLOAT - (uint32_t)&_fpmaxtostr;
+	uint32_t *rel = (uint32_t *)(&_vfprintf_internal + 775);
+	mprotect((void *)(((uint32_t)rel - 101) & 0xfffff000), 4096*2 , PROT_READ | PROT_WRITE | PROT_EXEC);
+	*rel += inc;
 }
 
 static void modify_ppfs_setargs() {
