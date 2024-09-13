@@ -232,7 +232,7 @@ static int cmd_bt(char *args) {
 													  , f_args[2]\
 													  , f_args[3]);
 	}
-	printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx, ret_addr, "main", f_args[0], f_args[1], f_args[2], f_args[3]);
+	// printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx, ret_addr, "main", f_args[0], f_args[1], f_args[2], f_args[3]);
 	return 0;
 }
 
