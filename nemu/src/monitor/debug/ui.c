@@ -204,7 +204,7 @@ static int cmd_d(char *args) {
 }
 
 static int cmd_bt(char *args) {
-	uint16_t idx = 0;
+	uint32_t idx = 0;
 	swaddr_t prev_ebp, now_ebp, ret_addr, func_addr;
 	uint32_t f_args[4];
 	now_ebp = prev_ebp = reg_l(R_EBP);
