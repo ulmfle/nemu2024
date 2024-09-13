@@ -89,14 +89,14 @@ swaddr_t getsymaddr(uint8_t filter, void *cmpsrc, int (*cond)(int, void *)) {
 		type = ELF32_ST_TYPE(symtab[symtab_idx].st_info);
 		if (bind != ELF32_ST_BIND(filter) || type != ELF32_ST_TYPE(filter)) continue;
 
-		if (cond(symtab_idx, cmpsrc) != 0) continue;
+		if (cond(symtab_idx, cmpsrc) != true) continue;
 		return symtab[symtab_idx].st_value;
 	}
 	return 0;
 }
 
 int cond_iden(int idx, void *src) {
-	return strcmp(strtab + symtab[idx].st_name, (char *)src);
+	return !strcmp(strtab + symtab[idx].st_name, (char *)src);
 }
 
 int cond_addr(int idx, void *src) {
