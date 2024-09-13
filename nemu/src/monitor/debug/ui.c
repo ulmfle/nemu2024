@@ -225,7 +225,7 @@ static int cmd_bt(char *args) {
 
 		// func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
 		func_addr = getsymaddr_addr(ret_addr, (((1) << 4) + ((2) & 0xf)));
-		if (func_addr != 0) printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx++, ret_addr\
+		printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx++, ret_addr\
 													  , get_symbol_name(func_addr)\
 													  , f_args[0]\
 													  , f_args[1]\
