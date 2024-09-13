@@ -222,7 +222,9 @@ static int cmd_bt(char *args) {
 		now_ebp += 4;
 		f_args[3] = swaddr_read(now_ebp, 4);
 
-		func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
+		// func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
+		func_addr = ret_addr;
+		while (get_symbol_name(func_addr) == NULL) --func_addr;
 		printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx++, ret_addr\
 													  , get_symbol_name(func_addr)\
 													  , f_args[0]\
