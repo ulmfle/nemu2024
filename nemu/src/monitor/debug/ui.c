@@ -226,8 +226,8 @@ static int cmd_bt(char *args) {
 		char *ret;
 		func_addr = ret_addr;
 		do ret = get_symbol_name(--func_addr); while (ret == NULL);
-		if (ret) printf("#%u ret:0x%08x | 0x%08x : ( %u , %u , %u , %u )\n", idx++, ret_addr\
-													  , func_addr\
+		if (func_addr != 0) printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx++, ret_addr\
+													  , get_symbol_name(func_addr)\
 													  , f_args[0]\
 													  , f_args[1]\
 													  , f_args[2]\
