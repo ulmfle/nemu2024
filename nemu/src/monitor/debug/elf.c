@@ -100,7 +100,9 @@ int cond_iden(int idx, void *src) {
 }
 
 int cond_addr(int idx, void *src) {
-	return symtab[idx].st_value < *(Elf32_Addr *)src && *(Elf32_Addr *)src < symtab[idx].st_value + symtab[idx].st_size;
+	printf("%d ",symtab[idx].st_value);
+	printf("%d\n",symtab[idx].st_value + symtab[idx].st_value + symtab[idx].st_size);
+	return (symtab[idx].st_value < *(Elf32_Addr *)src) && (*(Elf32_Addr *)src < symtab[idx].st_value + symtab[idx].st_size);
 }
 
 swaddr_t getsymaddr_iden(char *iden, uint8_t filter) {
