@@ -9,6 +9,7 @@
 
 void cpu_exec(uint32_t);
 char *get_symbol_name(swaddr_t);
+swaddr_t getsymaddr_addr(swaddr_t, uint8_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -223,9 +224,7 @@ static int cmd_bt(char *args) {
 		f_args[3] = swaddr_read(now_ebp, 4);
 
 		// func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
-		char *ret;
-		func_addr = ret_addr;
-		do ret = get_symbol_name(--func_addr); while (ret == NULL);
+		func_addr = getsymaddr_addr(ret_addr, (((1) << 4) + ((2) & 0xf)));
 		if (func_addr != 0) printf("#%u ret:0x%08x | %s : ( %u , %u , %u , %u )\n", idx++, ret_addr\
 													  , get_symbol_name(func_addr)\
 													  , f_args[0]\
