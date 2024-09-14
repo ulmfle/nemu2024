@@ -19,8 +19,8 @@
 #define CO_L1_MASK (CB_SIZE - 1)
 #define CI_L1_MASK (((~0u) ^ (CT_L1_MASK)) ^ (CO_L1_MASK))
 
-#define GET_CT_L1(addr) ((addr) & CT_L1_MASK >> (27 - TAG_CL1_WIDTH))
-#define GET_CI_L1(addr) (((addr) & CI_L1_MASK) >> CB_SIZE_WIDTH)
+#define GET_CT_L1(addr) ((addr) & CT_L1_MASK)
+#define GET_CI_L1(addr) ((addr) & CI_L1_MASK)
 #define GET_CO_L1(addr) ((addr) & CO_L1_MASK)
 
 // #define GET_CT(addr, ln) concat(GET_CT_L, ln)(addr)
