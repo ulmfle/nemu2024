@@ -38,7 +38,8 @@ struct {\
 struct {\
     void *cb_pool;\
     void (*init)(void *);\
-    void *(*check_hit)(void *, hwaddr_t);\
+    void *(*check_read_hit)(void *, hwaddr_t);\
+    void *(*check_write_hit)(void *, hwaddr_t);\
     void *(*replace)(void *, hwaddr_t, uint8_t *);\
     uint32_t (*read)(void *, hwaddr_t, size_t, bool *);\
     void (*write)(void *, hwaddr_t, uint32_t, size_t, bool *);\

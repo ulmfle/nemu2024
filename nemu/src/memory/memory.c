@@ -29,7 +29,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 	bool hit_l, hit_r;
 	cache_l1.write(&cache_l1, addr, data, len - of, &hit_l);
-	if (of) cache_l1.read(&cache_l1, addr + len - of, of, &hit_r);
+	if (of) cache_l1.write(&cache_l1, addr + len - of, *(&data + len - of), of, &hit_r);
 
 	dram_write(addr, len, data);	//write through and not write allocate
 }
