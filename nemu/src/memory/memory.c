@@ -6,11 +6,10 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	
+	Log("addr:0x%08x len : %u",addr, (unsigned)len);
 	uint32_t val;
 	int of = GET_CO_L1(addr) + len - CB_SIZE + 1;
 	of = of > 0 ? of : 0;
-	Log("of:%d",of);
 	bool hit_l = false, hit_r = true;
 
 	val = cache_l1.read(&cache_l1, addr, len - of, &hit_l) << of;
