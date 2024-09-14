@@ -21,11 +21,11 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		// (cache_l1.replace(&cache_l1, addr, (uint8_t *)hwa_to_va(addr));
 		if (of) cache_l1.replace(&cache_l1, addr + len/* - of + 1*//*, (uint8_t *)hwa_to_va(addr)*/);
 	}
+	Log("0x%08x ofed:%d", addr, of);
 	return val;
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	Log("0x%08x", addr);
 	int of = GET_CO_L1(addr) + len - CB_SIZE + 1;
 	of = of > 0 ? of : 0;
 
@@ -34,6 +34,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	if (of) cache_l1.write(&cache_l1, addr + len - of, *(&data + len - of), of, &hit_r);
 
 	dram_write(addr, len, data);	//write through and not write allocate
+	Log("0x%08x ofed:%d", addr, of);
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
