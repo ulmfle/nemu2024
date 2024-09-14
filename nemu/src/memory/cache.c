@@ -52,6 +52,7 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
 
 static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
     CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(this, addr));
+    Log("L1 write isHit : %d\n", cb != NULL);
     if (cb != NULL) {
         *hit = true;
         cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len);
