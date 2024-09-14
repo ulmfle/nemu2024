@@ -16,7 +16,12 @@ static int random_rep(void *_cb_pool) {
 }
 
 static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
-    return *(uint32_t *)((((CB_L1 *)this)->buf) + off) & (~((~0u) << (8*len)));
+    if (len == 1) return unalign_rw((uint32_t *)((((CB_L1 *)this)->buf) + off), 1);
+    if (len == 2) return unalign_rw((uint32_t *)((((CB_L1 *)this)->buf) + off), 2);
+    if (len == 3) return unalign_rw((uint32_t *)((((CB_L1 *)this)->buf) + off), 3);
+    if (len == 4) return unalign_rw((uint32_t *)((((CB_L1 *)this)->buf) + off), 4);
+    return 0;
+    //return *(uint32_t *)((((CB_L1 *)this)->buf) + off) & (~((~0u) << (8*len)));
 }
 
 static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
