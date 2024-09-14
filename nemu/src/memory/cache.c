@@ -39,15 +39,15 @@ static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
 }
 
 static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
-    Log("L1 READ\n");
     CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr));
+    Log("L1 READ isHit : %d\n", cb != NULL);
     if (cb != NULL) {
         *hit = true;
         return cb->read(cb, GET_CO_L1(addr), len);
-    } else {
-        *hit = false;
-        return 0;
     }
+    *hit = false;
+    return 0;
+
 }
 
 static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
