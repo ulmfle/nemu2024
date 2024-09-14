@@ -20,7 +20,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		// (cache_l1.replace(&cache_l1, addr, (uint8_t *)hwa_to_va(addr));
 		if (of) cache_l1.replace(&cache_l1, addr + len);
 	}
-	Log("0x%08x ofed:%d", addr, of);
+	Log("0x%08x len:%d ofed:%d", addr, (unsigned)len, of);
 	return val;
 }
 
