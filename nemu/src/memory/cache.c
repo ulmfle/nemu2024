@@ -5,7 +5,7 @@ static CB_L1 cl1_block[NR_CL1_BLOCK];
 Cache_L1 cache_l1;
 
 static int random_rep(void *_cb_pool) {
-    srand((unsigned)time(NULL));
+    srand((unsigned)time(0));
     return rand() % ASSOC_CL1;
 }
 
