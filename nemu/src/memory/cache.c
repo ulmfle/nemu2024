@@ -2,10 +2,7 @@
 
 #ifdef DEBUG
 void show_all(uint8_t *data, size_t len) {
-    while (len--) {
-        printf("%d ", *data++);
-    }
-    printf("\n");
+    while (len--) printf("%d ", *data++); printf("\n");
 }
 #endif
 
@@ -28,7 +25,6 @@ static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
     for (idx = off; idx < off + len; ++idx) {
         dst[idx] = *data++;
     }
-    show_all(dst, 64);
 }
 
 static void *check_l1_hit(void *this, hwaddr_t addr) {
@@ -41,7 +37,6 @@ static void *check_l1_hit(void *this, hwaddr_t addr) {
 }
 
 static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
-    Log("IDX: %d TAG: %x", GET_CI_L1(addr), GET_CT_L1(addr));
     int dst = random_rep(((Cache_L1 *)this)->cb_pool);
     CB_L1 *dst_cb = &(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)][dst]);
     dst_cb->tag = GET_CT_L1(addr);
@@ -63,7 +58,6 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
 
 static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
     CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(this, addr));
-    if (cb != NULL) Log("L1 WRITE Hit");
     if (cb != NULL) {
         *hit = true;
         cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len);

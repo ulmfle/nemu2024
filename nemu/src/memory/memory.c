@@ -12,7 +12,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	bool hit_l = false, hit_r = true;
 
 	val = cache_l1.read(&cache_l1, addr, len - of, &hit_l) << of;
-	if (of) val = cache_l1.read(&cache_l1, addr + len - of, of, &hit_r);
+	if (of) val += cache_l1.read(&cache_l1, addr + len - of, of, &hit_r) & ((1 << of) - 1);
 
 	if (hit_l == false || hit_r == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
