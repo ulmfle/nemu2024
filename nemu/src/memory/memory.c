@@ -6,6 +6,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+	Log("");
 	uint32_t val;
 	int of = GET_CO_L1(addr) + len - CB_SIZE + 1;
 	of = of > 0 ? of : 0;
@@ -24,6 +25,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+	Log("");
 	int of = GET_CO_L1(addr) + len - CB_SIZE + 1;
 	of = of > 0 ? of : 0;
 
