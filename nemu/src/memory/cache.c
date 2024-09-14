@@ -30,8 +30,8 @@ struct {\
 struct {\
     void *cb_pool;\
     void (*init)();\
-    uint32_t (*read)(void *, hwaddr_t, size_t);\
-    void (*write)(void *, hwaddr_t ,uint32_t, size_t);\
+    uint32_t (*read)(void *, hwaddr_t, size_t, bool *);\
+    void (*write)(void *, hwaddr_t ,uint32_t, size_t, bool *);\
 }
 
 typedef struct Cache_L1 Cache_L1;
@@ -74,11 +74,11 @@ static void l1_init() {
     }
 }
 
-uint32_t l1_read(void *this, hwaddr_t addr, size_t len) {
+uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
     return 0;
 }
 
-void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len) {
+void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
 
 }
 
