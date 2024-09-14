@@ -10,7 +10,6 @@ static int random_rep(void *_cb_pool) {
 }
 
 static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
-    Log("Cache: %p read\n", this);
     return *(uint32_t *)((((CB_L1 *)this)->buf) + off) & (~((~0u) << (8*len)));
 }
 
@@ -40,6 +39,7 @@ static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
 }
 
 static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
+    Log("L1 READ\n");
     CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr));
     if (cb != NULL) {
         *hit = true;
