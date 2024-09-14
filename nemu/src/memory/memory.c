@@ -32,6 +32,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	if (of) cache_l1.write(&cache_l1, addr + len - of, *(&data + len - of), of, &hit_r);
 
 	dram_write(addr, len, data);	//write through and not write allocate
+	Log("addr:0x%08x len : %u hit: %d",addr, (unsigned)len, hit_l || hit_r);
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
