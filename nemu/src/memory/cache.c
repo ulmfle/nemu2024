@@ -6,7 +6,6 @@ Cache_L1 cache_l1;
 
 static int random_rep(void *_cb_pool) {
     srand((unsigned)time(NULL));
-    Log("%d",rand() % ASSOC_CL1);
     return rand() % ASSOC_CL1;
 }
 
@@ -22,7 +21,7 @@ static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
     }
 }
 
-static void *check_l1_read_hit(void *this, hwaddr_t addr) {
+static void *check_l1_hit(void *this, hwaddr_t addr) {
     int idx;
     CB_L1 *p_cb = ((Cache_L1 *)this)->assoc[GET_CI_L1(addr)];
     for (idx = 0; idx < ASSOC_CL1; ++idx) {
@@ -31,17 +30,9 @@ static void *check_l1_read_hit(void *this, hwaddr_t addr) {
     return NULL;
 }
 
-static void *check_l1_write_hit(void *this, hwaddr_t addr) {
-    int idx;
-    CB_L1 *p_cb = ((Cache_L1 *)this)->assoc[GET_CI_L1(addr)];
-    for (idx = 0; idx < ASSOC_CL1; ++idx) {
-        if (!p_cb[idx].valid) return (void *)(p_cb + idx);
-    }
-    return NULL;
-}
-
 static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
     int dst = random_rep(((Cache_L1 *)this)->cb_pool);
+    Log("rand: %d", dst);
     CB_L1 *dst_cb = &(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)][dst]);
     dst_cb->tag = GET_CT_L1(addr);
     dst_cb->valid = 1;
@@ -50,7 +41,7 @@ static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
 }
 
 static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
-    CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_read_hit(&cache_l1, addr));
+    CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr));
     if (cb != NULL) {
         *hit = true;
         return cb->read(cb, GET_CO_L1(addr), len);
@@ -61,7 +52,8 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
 }
 
 static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
-    CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_write_hit(this, addr));
+    CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(this, addr));
+    if (cb != NULL) Log("L1 WRITE Hit");
     if (cb != NULL) {
         *hit = true;
         cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len);
@@ -72,8 +64,7 @@ static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool 
 
 static void l1_init(void *this) {
     ((Cache_L1 *)this)->cb_pool = (void *)cl1_block;
-    ((Cache_L1 *)this)->check_read_hit = check_l1_read_hit;
-    ((Cache_L1 *)this)->check_write_hit = check_l1_write_hit;
+    ((Cache_L1 *)this)->check_hit = check_l1_hit;
     ((Cache_L1 *)this)->replace = l1_replace;
     ((Cache_L1 *)this)->read = l1_read;
     ((Cache_L1 *)this)->write = l1_write;
