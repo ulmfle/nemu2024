@@ -6,6 +6,9 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+	Log("CO:0x%08x", CO_L1_MASK);
+	Log("CI:0x%08x", CI_L1_MASK);
+	Log("CT:0x%08x", CT_L1_MASK);
 	Log("CO:0x%08x", GET_CO_L1(0x12345678));
 	Log("CI:0x%08x", GET_CI_L1(0x12345678));
 	Log("CT:0x%08x", GET_CT_L1(0x12345678));
