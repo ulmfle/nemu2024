@@ -16,7 +16,8 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 
 	if (hit_l == false || hit_r == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
-		cache_l1.replace(&cache_l1, addr/*, (uint8_t *)hwa_to_va(addr)*/);
+		cache_l1.replace(&cache_l1, addr);
+		// (cache_l1.replace(&cache_l1, addr, (uint8_t *)hwa_to_va(addr));
 		if (of) cache_l1.replace(&cache_l1, addr + len/* - of + 1*//*, (uint8_t *)hwa_to_va(addr)*/);
 	}
 	return val;
