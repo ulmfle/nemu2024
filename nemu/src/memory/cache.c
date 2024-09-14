@@ -1,5 +1,14 @@
 #include "cache.h"
 
+#ifdef DEBUG
+void show_all(uint8_t *data, size_t len) {
+    while (len--) {
+        printf("%d ", *data++);
+    }
+    printf("\n");
+}
+#endif
+
 static CB_L1 cl1_block[NR_CL1_BLOCK];
 
 Cache_L1 cache_l1;
@@ -19,6 +28,7 @@ static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
     for (idx = off; idx < off + len; ++idx) {
         dst[idx] = *data++;
     }
+    show_all(dst, 64);
 }
 
 static void *check_l1_hit(void *this, hwaddr_t addr) {
