@@ -16,10 +16,9 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 
 	if (hit_l == false || hit_r == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
-		cache_l1.replace(&cache_l1, addr);
-		if (of) cache_l1.replace(&cache_l1, addr + len);
+		cache_l1.replace(&cache_l1, addr/*, (uint8_t *)hwa_to_va(addr)*/);
+		if (of) cache_l1.replace(&cache_l1, addr + len/* - of + 1*//*, (uint8_t *)hwa_to_va(addr)*/);
 	}
-	Log("addr:0x%08x len : %u hit: %d",addr, (unsigned)len, hit_l || hit_r);
 	return val;
 }
 
@@ -32,7 +31,6 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	if (of) cache_l1.write(&cache_l1, addr + len - of, *(&data + len - of), of, &hit_r);
 
 	dram_write(addr, len, data);	//write through and not write allocate
-	Log("addr:0x%08x len : %u",addr, (unsigned)len);
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
