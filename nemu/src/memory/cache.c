@@ -32,7 +32,6 @@ static void *check_l1_hit(void *this, hwaddr_t addr) {
 
 static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
     int dst = random_rep(((Cache_L1 *)this)->cb_pool);
-    Log("rand: %d", dst);
     CB_L1 *dst_cb = &(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)][dst]);
     dst_cb->tag = GET_CT_L1(addr);
     dst_cb->valid = 1;
