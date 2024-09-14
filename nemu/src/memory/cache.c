@@ -23,7 +23,7 @@ static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
     uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf);
     int idx;
     for (idx = off; idx < off + len; ++idx) {
-        dst[idx] = *data++;
+        dst[idx] = data[idx];
     }
 }
 
