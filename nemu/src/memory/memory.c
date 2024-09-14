@@ -1,19 +1,37 @@
 #include "common.h"
+#include "cache.h"
 
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
-
-uint32_t l1_read(void *, hwaddr_t, size_t, bool *);
-void l1_write(void *, hwaddr_t, uint32_t, size_t ,bool *);
-
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+	uint32_t val;
+	int of = GET_CO_L1(addr) + len - CB_SIZE + 1;
+	of = of > 0 ? of : 0;
+	bool hit_l = false, hit_r = true;
+
+	val = cache_l1.read(&cache_l1, addr, len - of, &hit_l) << of;
+	if (of) val = cache_l1.read(&cache_l1, addr + len - of, of, &hit_r);
+
+	if (hit_l == false || hit_r == false) {
+		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+		cache_l1.replace(&cache_l1, addr, (uint8_t *)hwa_to_va(addr));
+		if (of) cache_l1.replace(&cache_l1, addr + len - of, (uint8_t *)hwa_to_va(addr));
+	}
+
+	return val;
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	dram_write(addr, len, data);
+	int of = GET_CO_L1(addr) + len - CB_SIZE + 1;
+	of = of > 0 ? of : 0;
+
+	bool hit_l, hit_r;
+	cache_l1.write(&cache_l1, addr, data, len - of, &hit_l);
+	if (of) cache_l1.read(&cache_l1, addr + len - of, of, &hit_r);
+
+	dram_write(addr, len, data);	//write through and not write allocate
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {

@@ -1,71 +1,71 @@
-#include "common.h"
-#include "memory/memory.h"
-#include <stdlib.h>
-
-#define CB_SIZE_WIDTH 6
-#define NR_CL1_BLOCK_WIDTH 10
-#define ASSOC_CL1_WIDTH 3
-#define TAG_CL1_WIDTH (27 - CB_SIZE_WIDTH - NR_CL1_BLOCK_WIDTH + ASSOC_CL1_WIDTH)
-
-#define CB_SIZE (1 << CB_SIZE_WIDTH)
-#define NR_CL1_BLOCK (1 << NR_CL1_BLOCK_WIDTH)
-#define ASSOC_CL1 (1 << ASSOC_CL1_WIDTH)
-
-#define CT_L1_MASK ()
-#define CI_L1_MASK ()
-#define CO_L1_MASK ()
-
-#define GET_CT_L1(addr) ((addr) & CT_L1_MASK)
-#define GET_CI_L1(addr) ((addr) & CI_L1_MASK)
-#define GET_CO_L1(addr) ((addr) & CO_L1_MASK)
-
-#define CB_BASE \
-struct {\
-    uint8_t buf[CB_SIZE];\
-    uint32_t (*read)(void *, uint8_t, size_t);\
-    void (*write)(void *, uint8_t, uint32_t, size_t);\
-}
-
-#define CACHE_BASE \
-struct {\
-    void *cb_pool;\
-    void (*init)();\
-    uint32_t (*read)(void *, hwaddr_t, size_t, bool *);\
-    void (*write)(void *, hwaddr_t ,uint32_t, size_t, bool *);\
-}
-
-typedef struct Cache_L1 Cache_L1;
-
-// l1 cache block
-typedef struct CB_L1 {
-    CB_BASE;
-    uint32_t tag : TAG_CL1_WIDTH;
-    bool valid;
-} CB_L1;
-
-static struct Cache_L1 {
-    CACHE_BASE;
-    uint8_t (*assoc)[ASSOC_CL1];    //8-way set associative
-} cache_l1;
+#include "cache.h"
 
 static CB_L1 cl1_block[NR_CL1_BLOCK];
 
-static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
-    Assert(off + len < CB_SIZE, "CB read error\n");
-    return *(uint32_t *)((((CB_L1 *)this)->buf) + off);
+Cache_L1 cache_l1;
+
+static int random_rep(void *_cb_pool) {
+    srand((unsigned)time(NULL));
+    return rand() % ASSOC_CL1;
 }
 
-static void cb_l1_write(void *this, uint8_t off, uint32_t data, size_t len) {
-    Assert(off + len < CB_SIZE, "CB write error\n");
-    uint8_t *p_data = (uint8_t *)&data;
+static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
+    return *(uint32_t *)((((CB_L1 *)this)->buf) + off) & (~((~0u) << (8*len)));
+}
+
+static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
     uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf);
     int idx;
     for (idx = off; idx < off + len; ++idx) {
-        dst[idx] = *p_data++;
+        dst[idx] = *data++;
     }
 }
 
-static void l1_init() {
+static void *check_l1_hit(void *this, hwaddr_t addr) {
+    int idx;
+    CB_L1 *p_cb = ((Cache_L1 *)this)->assoc[GET_CI_L1(addr)];
+    for (idx = 0; idx < ASSOC_CL1; ++idx) {
+        if (p_cb[idx].valid && p_cb[idx].tag == GET_CT_L1(addr)) return (void *)(p_cb + idx);
+    }
+    return NULL;
+}
+
+static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
+    int dst = random_rep(((Cache_L1 *)this)->cb_pool);
+    CB_L1 *dst_cb = &(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)][dst]);
+    dst_cb->tag = GET_CT_L1(addr);
+    dst_cb->write(dst_cb, 0, chunk, CB_SIZE);
+    return dst_cb;
+}
+
+static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
+    CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr));
+    if (cb != NULL) {
+        *hit = true;
+        return cb->read(cb, GET_CO_L1(addr), len);
+    } else {
+        *hit = false;
+        return 0;
+    }
+}
+
+static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
+    CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(this, addr));
+    if (cb != NULL) {
+        *hit = true;
+        cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len);
+    } else {
+        *hit = false;
+    }
+}
+
+static void l1_init(void *this) {
+    ((Cache_L1 *)this)->cb_pool = (void *)cl1_block;
+    ((Cache_L1 *)this)->check_hit = check_l1_hit;
+    ((Cache_L1 *)this)->replace = l1_replace;
+    ((Cache_L1 *)this)->read = l1_read;
+    ((Cache_L1 *)this)->write = l1_write;
+    ((Cache_L1 *)this)->assoc = (CB_L1 (*)[8])(((Cache_L1 *)this)->cb_pool);
     int idx;
     for (idx = 0; idx < NR_CL1_BLOCK; ++idx) {
         cl1_block[idx].valid = 0;
@@ -74,24 +74,7 @@ static void l1_init() {
     }
 }
 
-uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
-    return 0;
-}
-
-void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
-
-}
-
-
-static void cache_l1_init_internal() {
-    cache_l1.cb_pool = (void *)cl1_block;
+void init_cache() {
     cache_l1.init = l1_init;
-    cache_l1.read = l1_read;
-    cache_l1.write = l1_write;
-    cache_l1.assoc = (uint8_t (*)[8])cache_l1.cb_pool;
-}
-
-void cache_init() {
-    cache_l1_init_internal();
     cache_l1.init(&cache_l1);
 }
