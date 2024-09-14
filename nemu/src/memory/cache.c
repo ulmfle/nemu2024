@@ -6,6 +6,7 @@ Cache_L1 cache_l1;
 
 static int random_rep(void *_cb_pool) {
     srand((unsigned)time(NULL));
+    Log("%d",rand() % ASSOC_CL1);
     return rand() % ASSOC_CL1;
 }
 
@@ -50,7 +51,6 @@ static void *l1_replace(void *this, hwaddr_t addr, uint8_t *chunk) {
 
 static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
     CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_read_hit(&cache_l1, addr));
-    if (cb != NULL) Log("L1 WRITE Hit idx:%x", addr);
     if (cb != NULL) {
         *hit = true;
         return cb->read(cb, GET_CO_L1(addr), len);
@@ -62,7 +62,6 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
 
 static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
     CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_write_hit(this, addr));
-    if (cb != NULL) Log("L1 WRITE Hit idx:%x", addr);
     if (cb != NULL) {
         *hit = true;
         cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len);
