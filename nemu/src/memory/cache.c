@@ -11,6 +11,23 @@ static int random_rep(void *_cb_pool) {
     return rand() % ASSOC_CL1;
 }
 
+static CB_L1 *find_replace(hwaddr_t addr, int (*method)(void *)) {
+    CB_L1 *p_cb,*dst_cb;
+    p_cb = cache_l1.assoc[GET_CI_L1(addr)];
+
+    int dst,idx,flag = 1;
+    for (idx = 0; idx < ASSOC_CL1; ++idx) {
+        if (!p_cb[idx].valid) {dst_cb = &p_cb[idx];flag = 0;break;}
+    }
+
+    if (flag) {
+        dst = method(cache_l1.cb_pool);
+        dst_cb = &p_cb[dst];
+    }
+
+    return dst_cb;
+}
+
 static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
     return (*(uint32_t *)((((CB_L1 *)this)->buf) + off)) & (((1 << (len << 3))) - 1);
 }
@@ -30,34 +47,17 @@ static void *check_l1_hit(void *this, hwaddr_t addr) {
     return NULL;
 }
 
-static CB_L1 *find_l1_replace(hwaddr_t addr, int (*method)(void *)) {
-    CB_L1 *p_cb,*dst_cb;
-    p_cb = cache_l1.assoc[GET_CI_L1(addr)];
-
-    int dst,idx,flag = 1;
-    for (idx = 0; idx < ASSOC_CL1; ++idx) {
-        if (!p_cb[idx].valid) {dst_cb = &p_cb[idx];flag = 0;break;}
-    }
-
-    if (flag) {
-        dst = random_rep(cache_l1.cb_pool);
-        dst_cb = &p_cb[dst];
-    }
-
-    return dst_cb;
-}
-
 static void l1_replace(void *this, hwaddr_t addr) {
     CB_L1 *dst_cb, *dst_cb_of = NULL;
 
-    dst_cb = find_l1_replace(addr, random_rep);
+    dst_cb = find_replace(addr, random_rep);
     dst_cb->tag = GET_CT_L1(addr);
     dst_cb->valid = 1;
     dst_cb->write(dst_cb, 0, hwa_to_va((addr & (~CO_L1_MASK))), CB_SIZE);   //attention
 
     if (l1_of) {
         hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + CO_L1_MASK + 1;
-        dst_cb_of = find_l1_replace(addr_of, random_rep);
+        dst_cb_of = find_replace(addr_of, random_rep);
         dst_cb_of->tag = GET_CT_L1(addr_of);
         dst_cb_of->valid = 1;
         dst_cb_of->write(dst_cb, 0, hwa_to_va(addr_of), CB_SIZE);   //attention
