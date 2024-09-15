@@ -142,9 +142,11 @@ static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
     cb = this->check_read_hit(this, addr);
     if (of) cb_of = this->check_read_hit(this, addr + len);
     if (((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL))) {
+        Log("a");
         *hit = false;
         return 0;
     }
+    Log("b");
     *hit = true;
     val = cb->read(cb, GET_CO_L1(addr), len - of);
     if (of) val += (cb_of->read(cb_of, 0, of) << ((len - of) << 3));
@@ -161,9 +163,11 @@ static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *
     cb = this->check_read_hit(this, addr);
     if (of) cb_of = this->check_read_hit(this, addr + len);
     if (((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL))) {
+        Log("a");
         *hit = false;
         return;
     }
+    Log("b");
     *hit = true;
     uint8_t *of_data = ((uint8_t *)&data) + len - of;
     cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - of);
