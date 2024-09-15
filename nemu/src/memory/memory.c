@@ -19,7 +19,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		cache_l1.read_replace((Cache *)&cache_l1, addr);
 		cache_l1.read_replace((Cache *)&cache_l1, addr + len);
 	}
-	Log("time:%lu",timer);
+	Log("time:%lu, val:%08x",timer, val);
 	return val;
 }
 
