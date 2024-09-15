@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <time.h>       //for random
 
-#define CB_SIZE_WIDTH 8
+#define CB_SIZE_WIDTH 6
 #define NR_CL1_BLOCK_WIDTH 10
 #define ASSOC_CL1_WIDTH 3
 #define TAG_CL1_WIDTH (27 - CB_SIZE_WIDTH - NR_CL1_BLOCK_WIDTH + ASSOC_CL1_WIDTH)
