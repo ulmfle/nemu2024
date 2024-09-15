@@ -26,8 +26,6 @@ static CB *find_replace(hwaddr_t addr, int (*method)(void *)) {
 }
 
 static uint32_t cb_read(CB *this, uint8_t off, size_t len) {
-    int idx;
-    for (idx = 0; idx < CB_SIZE; ++idx) printf("%02x ",this->buf[idx]);
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
@@ -79,14 +77,11 @@ static uint32_t l1_read(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
     cb = this->check_read_hit((Cache *)&cache_l1, addr);
     if (l1_of) cb_of = this->check_read_hit((Cache *)&cache_l1, addr + len);
     if (((l1_of == 0) && (cb == NULL)) || ((l1_of > 0) && (cb == NULL || cb_of == NULL))) {
-        Log("");
         *hit = false;
         return 0;
     }
     *hit = true;
-    Log("");
     val = cb->read(cb, GET_CO_L1(addr), len - l1_of);
-    Log("val:%08x, of:%d",val,l1_of);
     if (l1_of) val += (cb_of->read(cb_of, 0, l1_of) << ((len - l1_of) << 3));
 
     l1_of = 0;
