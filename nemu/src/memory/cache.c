@@ -29,7 +29,7 @@ static uint32_t cb_read(CB *this, uint8_t off, size_t len) {
     int idx;
     for (idx = 0; idx < CB_SIZE; ++idx) printf("%02x ",this->buf[idx]);
     Log("off:%d val: 0x%08x len:%u",off,(*(uint32_t *)(this->buf + off)), (unsigned)len);
-    return (*(uint32_t *)(this->buf + off));
+    return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
 static void cb_write(CB *this, uint8_t off, uint8_t *data, size_t len) {
