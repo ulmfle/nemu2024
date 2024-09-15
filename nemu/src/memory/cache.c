@@ -30,7 +30,7 @@ static uint32_t cb_read(CB *this, uint8_t off, size_t len) {
 }
 
 static void cb_write(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    memcpy(this->buf, data, len);
+    memcpy(this->buf + off, data, len);
 }
 
 static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
@@ -82,9 +82,7 @@ static uint32_t l1_read(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
     *hit = true;
 
     val = cb->read(cb, GET_CO_L1(addr), len - l1_of);
-    Log("0x%08x", val);
     if (l1_of) val += (cb_of->read(cb_of, 0, l1_of) << ((len - l1_of) << 3));
-    Log("0x%08x", val);
     return val;
 }
 
