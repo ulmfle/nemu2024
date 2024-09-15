@@ -76,6 +76,7 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
     Log("of %d cb: %p cb_of %p", l1_of, (void *)cb, (void *)cb_of);
 
     if (((l1_of == 0) && (cb == NULL)) || ((l1_of > 0) && (cb == NULL || cb_of == NULL))) {
+        Log("should not reach here if cb != NULL");
         *hit = false;
         return 0;
     }
