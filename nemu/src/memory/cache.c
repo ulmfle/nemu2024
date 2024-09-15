@@ -1,11 +1,5 @@
 #include "cache.h"
 
-#ifdef DEBUG
-void show_all(uint8_t *data, size_t len) {
-    while (len--) printf("%d ", *data++); printf("\n");
-}
-#endif
-
 static int l1_of;
 static CB_L1 cl1_block[NR_CL1_BLOCK];
 
@@ -21,11 +15,8 @@ static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
 }
 
 static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
-    uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf);
-    int idx;
-    for (idx = off; idx < off + len; ++idx) {
-        dst[idx] = data[idx];
-    }
+    uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf) + off;
+    memcpy(dst, data, len);
 }
 
 static void *check_l1_hit(void *this, hwaddr_t addr) {
@@ -77,13 +68,20 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
 }
 
 static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
-    CB_L1 *cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(this, addr));
-    if (cb != NULL) {
-        *hit = true;
-        cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len);
-    } else {
+    l1_of = GET_CO_L1(addr) + len - CB_SIZE + 1;
+    l1_of = l1_of > 0 ? l1_of : 0;
+    CB_L1 *cb,*cb_of = NULL;
+    cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(this, addr));
+    if (l1_of) cb_of = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr + len));
+
+    if (((l1_of == 0) && (cb == NULL)) || ((l1_of > 0) && (cb == NULL || cb_of == NULL))) {
         *hit = false;
+        return;
     }
+
+    uint8_t *of_data = ((uint8_t *)&data) + len - l1_of;
+    cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - l1_of);
+    if (l1_of) cb_of->write(cb_of, 0, of_data, l1_of);
 }
 
 static void l1_init(void *this) {
