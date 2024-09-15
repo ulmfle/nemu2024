@@ -134,7 +134,6 @@ static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
 
 //base
 static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
-    Log("");
     uint32_t val;
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
@@ -156,7 +155,6 @@ static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
 
 //base
 static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
-    Log("");
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
     of = of > 0 ? of : 0;
@@ -184,7 +182,6 @@ static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l1_read_replace(Cache *this, hwaddr_t addr) {
-    Log("");
     CB_L1 *dst_cb = NULL;
     FIND_REPLACE(1);
     CB *src_cb = cache_l2.check_read_hit((Cache *)&cache_l2, addr);
@@ -198,7 +195,7 @@ static void l1_read_replace(Cache *this, hwaddr_t addr) {
 }
 
 static void l1_write_replace(Cache *this, hwaddr_t addr) {
-    return;                                                     //write through and not write allocate
+    return;                                                     //not write allocate
 }
 
 static CB *l2_check_read_hit(Cache *this, hwaddr_t addr) {
@@ -218,12 +215,36 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_read_replace(Cache *this, hwaddr_t addr) {
-    Log("");
     CB_L2 *dst_cb = NULL;
-    FIND_REPLACE(2);
-    dst_cb->tag = GET_CT(addr, level);
+
+    CB_L2 *p_cb = ((Cache_L2 *)this)->assoc[GET_CI(addr, 2)];
+    int idx;
+
+    for (idx = 0; idx < ASSOC_CL2; ++idx) {
+        if (p_cb[idx].dirty) {
+            dst_cb = p_cb + idx;
+            break;
+        }
+    }
+
+    if (dst_cb == NULL) {
+        for (idx = 0; idx < ASSOC_CL2; ++idx) {
+            if (!p_cb[idx].valid) {
+                dst_cb = p_cb + idx;
+                break;
+            }
+        }
+    }
+
+    if (dst_cb == NULL) {
+        srand((unsigned)time(NULL));
+        dst_cb = p_cb + (rand() % ASSOC_CL2);
+    }
+
+    dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CB_SIZE))), CB_SIZE);
+    dst_cb->dirty = 0;
     if (of != 0) {
         of = 0;
         l2_read_replace(this, addr + CB_SIZE + 1);
@@ -231,7 +252,15 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_write_replace(Cache *this, hwaddr_t addr) {
-
+    CB_L2 *dst_cb = NULL;
+    FIND_REPLACE(2);
+    dst_cb->tag = GET_CT(addr, 2);
+    dst_cb->valid = 1;
+    dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CB_SIZE))), CB_SIZE);    //write allocate
+    if (of != 0) {
+        of = 0;
+        l2_write_replace(this, addr + CB_SIZE + 1);
+    }
 }
 
 static void init_cache_internal() {
@@ -289,6 +318,16 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
         return 0;
     }
 
+}
+
+void cache_write(hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
+    bool hit_l1, hit_l2;
+    cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);   //write through
+    cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
+    if (hit_l2 == false) {
+        cache_l2.write_replace((Cache *)&cache_l2, addr);
+        cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
+    }
 }
 
 //main
