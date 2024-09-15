@@ -51,6 +51,7 @@ static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l1_replace(Cache *this, hwaddr_t addr) {
+    Log("REPLACED");
     CB *dst_cb;
     dst_cb = find_replace(addr, random_rep);
     dst_cb->tag = GET_CT_L1(addr);
