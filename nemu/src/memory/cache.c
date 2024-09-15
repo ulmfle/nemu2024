@@ -113,8 +113,7 @@ typedef struct {
     CB_L2 (*assoc)[ASSOC_CL2];
 } Cache_L2;
 
-int of;
-
+static int of;
 static CB_L1 l1_block[NR_CL1_BLOCK];
 static CB_L2 l2_block[NR_CL2_BLOCK];
 
@@ -123,11 +122,13 @@ Cache_L2 cache_l2;
 
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
+    Log("");
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
+    Log("");
     memcpy(this->buf + off, data, len);
 }
 
@@ -222,7 +223,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_write_replace(Cache *this, hwaddr_t addr) {
-    
+
 }
 
 static void init_cache_internal() {
