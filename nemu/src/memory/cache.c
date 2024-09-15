@@ -28,7 +28,6 @@ static CB *find_replace(hwaddr_t addr, int (*method)(void *)) {
 static uint32_t cb_read(CB *this, uint8_t off, size_t len) {
     int idx;
     for (idx = 0; idx < CB_SIZE; ++idx) printf("%02x ",this->buf[idx]);
-    Log("off:%d val: 0x%08x len:%u",off,(*(uint32_t *)(this->buf + off)), (unsigned)len);
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
@@ -40,7 +39,6 @@ static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
     int idx;
     CB *p_cb = (CB *)(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)]);
     for (idx = 0; idx < ASSOC_CL1; ++idx) {
-        Log("0x%08x %d 0x%08x", GET_CT_L1(addr),p_cb[idx].valid,p_cb[idx].tag);
         if (p_cb[idx].valid && p_cb[idx].tag == GET_CT_L1(addr)) return (p_cb + idx);
     }
     return NULL;
@@ -55,7 +53,6 @@ static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l1_replace(Cache *this, hwaddr_t addr) {
-    Log("REPLACED");
     CB *dst_cb;
     dst_cb = find_replace(addr, random_rep);
     dst_cb->tag = GET_CT_L1(addr);
