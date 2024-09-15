@@ -77,11 +77,12 @@ static uint32_t l1_read(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
     cb = this->check_read_hit((Cache *)&cache_l1, addr);
     if (l1_of) cb_of = this->check_read_hit((Cache *)&cache_l1, addr + len);
     if (((l1_of == 0) && (cb == NULL)) || ((l1_of > 0) && (cb == NULL || cb_of == NULL))) {
+        Log("");
         *hit = false;
         return 0;
     }
     *hit = true;
-
+    Log("");
     val = cb->read(cb, GET_CO_L1(addr), len - l1_of);
     if (l1_of) val += (cb_of->read(cb_of, 0, l1_of) << ((len - l1_of) << 3));
 
