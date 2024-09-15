@@ -29,6 +29,7 @@ static void *check_l1_hit(void *this, hwaddr_t addr) {
 }
 
 static void l1_replace(void *this, hwaddr_t addr) {
+    Log("REPLACED addr: 0x%08x", addr);
     int dst,idx,flag = 1;
     CB_L1 *p_cb, *dst_cb;
     p_cb = ((Cache_L1 *)this)->assoc[GET_CI_L1(addr)];
