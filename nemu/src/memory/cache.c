@@ -1,6 +1,5 @@
 #include "cache.h"
 
-uint64_t timer;
 int l1_of;
 static CB_L1 l1_block[NR_CL1_BLOCK];
 Cache_L1 cache_l1;
