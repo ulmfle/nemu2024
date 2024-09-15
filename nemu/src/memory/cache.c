@@ -50,7 +50,7 @@ static void l1_replace(void *this, hwaddr_t addr) {
 
     if (l1_of) {
         hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + CO_L1_MASK + 1;
-        dst_cb_of->tag = GET_CT_L1(addr);
+        dst_cb_of->tag = GET_CT_L1(addr_of);
         dst_cb_of->valid = 1;
         dst_cb_of->write(dst_cb, 0, hwa_to_va(addr_of), CB_SIZE);   //attention
         l1_of = 0;
