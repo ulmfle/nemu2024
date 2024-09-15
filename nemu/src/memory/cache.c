@@ -37,6 +37,7 @@ static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
     int idx;
     CB *p_cb = (CB *)(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)]);
     for (idx = 0; idx < ASSOC_CL1; ++idx) {
+        Log("t:%d v:%d", p_cb[idx].tag, p_cb[idx].valid);
         if (p_cb[idx].valid && p_cb[idx].tag == GET_CT_L1(addr)) return (p_cb + idx);
     }
     return NULL;
@@ -72,6 +73,7 @@ static uint32_t l1_read(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
     uint32_t val;
     l1_of = GET_CO_L1(addr) + len - CB_SIZE + 1;
     l1_of = l1_of > 0 ? l1_of : 0;
+
     CB *cb,*cb_of = NULL;
     cb = this->check_read_hit((Cache *)&cache_l1, addr);
     if (l1_of) cb_of = this->check_read_hit((Cache *)&cache_l1, addr + len);
