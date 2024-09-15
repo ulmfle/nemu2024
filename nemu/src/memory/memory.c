@@ -22,10 +22,10 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	bool hit_l1;
-	cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);
+	//bool hit_l1;
+	//cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);
 
-	if (hit_l1) timer+=200;
+	timer+=200;
 
 	dram_write(addr, len, data);	//write through and not write allocate
 	//Log("time:%lu",timer);
