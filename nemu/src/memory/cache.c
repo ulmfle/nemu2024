@@ -1,14 +1,21 @@
 #include "cache.h"
 
 int l1_of;
-static CB_L1 l1_block[NR_CL1_BLOCK];
-Cache_L1 cache_l1;
+int l2_of;
 
+static CB_L1 l1_block[NR_CL1_BLOCK];
+//static CB_L2 l2_block[NR_CL2_BLOCK];
+
+Cache_L1 cache_l1;
+Cache_L2 cache_l2;
+
+//stand-alone
 static int random_rep(void *cb_pool) {
     srand((unsigned)time(0));
     return rand() % ASSOC_CL1;
 }
 
+//stand-alone
 static CB *find_replace(hwaddr_t addr, int (*method)(void *)) {
     CB *p_cb,*dst_cb;
     p_cb = (CB *)cache_l1.assoc[GET_CI_L1(addr)];
@@ -24,18 +31,8 @@ static CB *find_replace(hwaddr_t addr, int (*method)(void *)) {
     return dst_cb;
 }
 
-static uint32_t cb_read(CB *this, uint8_t off, size_t len) {
-    // int idx;
-    // for (idx = 0; idx < CB_SIZE; ++idx) printf("%02x ",this->buf[idx]);
-    // Log("off:%d val: 0x%08x len:%u",off,(*(uint32_t *)(this->buf + off)), (unsigned)len);
-    return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
-}
-
-static void cb_write(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    memcpy(this->buf + off, data, len);
-}
-
-static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
+//stand-alone
+static CB *check_hit(Cache *this, hwaddr_t addr) {
     int idx;
     CB *p_cb = (CB *)(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)]);
     for (idx = 0; idx < ASSOC_CL1; ++idx) {
@@ -44,12 +41,21 @@ static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
     return NULL;
 }
 
+
+static uint32_t cb_read(CB *this, uint8_t off, size_t len) {
+    return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
+}
+
+static void cb_write(CB *this, uint8_t off, uint8_t *data, size_t len) {
+    memcpy(this->buf + off, data, len);
+}
+
 static CB *l1_check_read_hit(Cache *this, hwaddr_t addr) {
-    return l1_check_hit(this, addr);
+    return check_hit(this, addr);
 }
 
 static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
-    return l1_check_hit(this, addr);
+    return check_hit(this, addr);
 }
 
 static void l1_replace(Cache *this, hwaddr_t addr) {
@@ -58,8 +64,10 @@ static void l1_replace(Cache *this, hwaddr_t addr) {
     dst_cb->tag = GET_CT_L1(addr);
     dst_cb->valid = 1;
     dst_cb->write(dst_cb, 0, hwa_to_va((addr & (~CO_L1_MASK))), CB_SIZE);
-
-    l1_of = 0;
+    if (l1_of != 0) {
+        l1_of = 0;
+        l1_replace(this, addr + CO_L1_MASK + 1);
+    }
 }
 
 static void l1_read_replace(Cache *this, hwaddr_t addr) {
@@ -114,6 +122,12 @@ static void cache_l1_init(Cache *this) {
     CB_INIT(1);
     ((Cache_L1 *)this)->assoc = (CB_L1 (*)[8])l1_block;
 }
+
+// static void cache_l2_init(Cache *this) {
+//     CACHE_INIT(2);
+//     CB_INIT(2);
+
+// }
 
 void init_cache() {
     cache_l1.init = cache_l1_init;

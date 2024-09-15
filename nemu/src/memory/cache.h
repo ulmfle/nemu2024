@@ -7,21 +7,37 @@
 #include <time.h>       //for random
 
 #define CB_SIZE_WIDTH 6
+
 #define NR_CL1_BLOCK_WIDTH 10
 #define ASSOC_CL1_WIDTH 3
 #define TAG_CL1_WIDTH (32 - CB_SIZE_WIDTH - NR_CL1_BLOCK_WIDTH + ASSOC_CL1_WIDTH)
+
+#define NR_CL2_BLOCK_WIDTH 12
+#define ASSOC_CL2_WIDTH 16
+#define TAG_CL2_WIDTH (32 - CB_SIZE_WIDTH - NR_CL2_BLOCK_WIDTH + ASSOC_CL2_WIDTH)
 
 #define CB_SIZE (1 << CB_SIZE_WIDTH)
 #define NR_CL1_BLOCK (1 << NR_CL1_BLOCK_WIDTH)
 #define ASSOC_CL1 (1 << ASSOC_CL1_WIDTH)
 
+#define NR_CL2_BLOCK (1 << NR_CL2_BLOCK_WIDTH)
+#define ASSOC_CL2 (1 << ASSOC_CL2_WIDTH)
+
 #define CT_L1_MASK (~0u << (32 - TAG_CL1_WIDTH))
 #define CO_L1_MASK (CB_SIZE - 1)
 #define CI_L1_MASK (((~0u) ^ (CT_L1_MASK)) ^ (CO_L1_MASK))
 
+#define CT_L2_MASK (~0u << (32 - TAG_CL2_WIDTH))
+#define CO_L2_MASK (CB_SIZE - 1)
+#define CI_L2_MASK (((~0u) ^ (CT_L2_MASK)) ^ (CO_L2_MASK))
+
 #define GET_CT_L1(addr) (((addr) & CT_L1_MASK) >> (32 - TAG_CL1_WIDTH))
 #define GET_CI_L1(addr) (((addr) & CI_L1_MASK) >> CB_SIZE_WIDTH)
 #define GET_CO_L1(addr) ((addr) & CO_L1_MASK)
+
+#define GET_CT_L2(addr) (((addr) & CT_L2_MASK) >> (32 - TAG_CL2_WIDTH))
+#define GET_CI_L2(addr) (((addr) & CI_L2_MASK) >> CB_SIZE_WIDTH)
+#define GET_CO_L2(addr) ((addr) & CO_L2_MASK)
 
 #define CB_BASE \
 struct {\
@@ -84,8 +100,12 @@ typedef struct {
     CB_L1 (*assoc)[ASSOC_CL1];
 } Cache_L1;
 
+typedef struct {
+    CACHE_BASE;
+    CB_L2 (*assoc)[ASSOC_CL2];
+} Cache_L2;
 
 extern Cache_L1 cache_l1;
-extern int l1_of;
+extern Cache_L2 cache_l2;
 
 #endif
