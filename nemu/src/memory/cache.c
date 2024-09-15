@@ -73,10 +73,7 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
     cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr));
     if (l1_of) cb_of = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr + len));
 
-    Log("of %d cb: %p cb_of %p", l1_of, (void *)cb, (void *)cb_of);
-
     if (((l1_of == 0) && (cb == NULL)) || ((l1_of > 0) && (cb == NULL || cb_of == NULL))) {
-        Log("should not reach here if cb != NULL");
         *hit = false;
         return 0;
     }
