@@ -55,6 +55,7 @@ typedef struct Cache_L1 {
     CB_L1 (*assoc)[ASSOC_CL1];    //8-way set associative
 } Cache_L1;
 
+extern uint64_t timer;
 extern Cache_L1 cache_l1;
 extern uint8_t *hw_mem;
 

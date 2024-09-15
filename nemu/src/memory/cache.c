@@ -2,6 +2,7 @@
 
 Cache_L1 cache_l1;
 
+uint64_t timer;
 static int l1_of;
 static CB_L1 cl1_block[NR_CL1_BLOCK];
 
@@ -77,10 +78,8 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
         return 0;
     }
 
-    hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + (CO_L1_MASK + 1);
-
     val = cb->read(cb, GET_CO_L1(addr), len - l1_of);
-    if (l1_of) val += (cb_of->read(cb_of, GET_CO_L1(addr_of), l1_of) << ((len - l1_of) << 3));
+    if (l1_of) val += (cb_of->read(cb_of, 0, l1_of) << ((len - l1_of) << 3));
 
     l1_of = 0;
     return val;
