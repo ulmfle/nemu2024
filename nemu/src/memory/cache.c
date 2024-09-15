@@ -81,6 +81,7 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
         return 0;
     }
 
+    *hit = true;
     val = cb->read(cb, GET_CO_L1(addr), len - l1_of);
     if (l1_of) val += (cb_of->read(cb_of, 0, l1_of) << ((len - l1_of) << 3));
 
@@ -102,6 +103,7 @@ static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool 
         return;
     }
 
+    *hit = true;
     uint8_t *of_data = ((uint8_t *)&data) + len - l1_of;
     cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - l1_of);
     if (l1_of) cb_of->write(cb_of, 0, of_data, l1_of);
