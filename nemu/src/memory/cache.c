@@ -134,6 +134,7 @@ static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
 
 //base
 static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
+    Log("");
     uint32_t val;
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
@@ -153,6 +154,7 @@ static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
 
 //base
 static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
+    Log("");
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
     of = of > 0 ? of : 0;
