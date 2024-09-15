@@ -7,12 +7,12 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	uint32_t val;
-	// bool hit_l1=0;
-	// val = cache_l1.read(&cache_l1, addr, len, &hit_l1);
-	// if (hit_l1 == 0) {
+	bool hit_l1=0;
+	val = cache_l1.read(&cache_l1, addr, len, &hit_l1);
+	if (hit_l1 == 0) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
-	// 	cache_l1.replace(&cache_l1, addr);
-	// }
+		cache_l1.replace(&cache_l1, addr);
+	}
 	return val;
 }
 
