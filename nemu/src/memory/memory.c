@@ -6,12 +6,10 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	Log("addr: 0x%08x len: %u", addr, (unsigned)len);
 	uint32_t val;
 	bool hit_l1=0;
 	val = cache_l1.read((Cache *)&cache_l1, addr, len, &hit_l1);
 
-	Log("hit: %d", hit_l1);
 	if (hit_l1) timer+=2; else timer+=200;
 
 	if (hit_l1 == 0) {
@@ -24,11 +22,9 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	Log("addr: 0x%08x len: %u data :0x%08x", addr, (unsigned)len, data);
 	bool hit_l1;
 	cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);
 
-	Log("hit: %d", hit_l1);
 	if (hit_l1) timer+=200;
 
 	dram_write(addr, len, data);	//write through and not write allocate
