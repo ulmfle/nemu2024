@@ -128,7 +128,7 @@ static uint32_t cbread(CB *this, uint8_t off, size_t len) {
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    Log("%d %d %p", off, (unsigned)len, this->buf);
+    Log("%d %d", off, (unsigned)len);
     memcpy(this->buf + off, data, len);
 }
 
@@ -184,6 +184,7 @@ static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l1_read_replace(Cache *this, hwaddr_t addr) {
+    Log("");
     CB_L1 *dst_cb = NULL;
     FIND_REPLACE(1);
     CB *src_cb = cache_l2.check_read_hit((Cache *)&cache_l2, addr);
@@ -217,6 +218,7 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_read_replace(Cache *this, hwaddr_t addr) {
+    Log("");
     CB_L2 *dst_cb = NULL;
     FIND_REPLACE(2);
     dst_cb->tag = GET_CT(addr, level);
