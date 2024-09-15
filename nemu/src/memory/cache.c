@@ -1,9 +1,9 @@
 #include "cache.h"
 
+Cache_L1 cache_l1;
+
 static int l1_of;
 static CB_L1 cl1_block[NR_CL1_BLOCK];
-
-Cache_L1 cache_l1;
 
 static int random_rep(void *_cb_pool) {
     srand((unsigned)time(0));
@@ -49,6 +49,7 @@ static void l1_replace(void *this, hwaddr_t addr) {
 }
 
 static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
+    Log("");
     uint32_t val;
     l1_of = GET_CO_L1(addr) + len - CB_SIZE + 1;
     l1_of = l1_of > 0 ? l1_of : 0;
@@ -63,7 +64,7 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
 
     hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + (CO_L1_MASK + 1);
     val = cb->read(cb, addr, len - l1_of);
-    if (l1_of) val += cb_of->read(cb_of, addr_of, l1_of);
+    if (l1_of) val += (cb_of->read(cb_of, addr_of, l1_of) << ((len - l1_of) << 3));
     return val;
 }
 
