@@ -128,7 +128,7 @@ static uint32_t cbread(CB *this, uint8_t off, size_t len) {
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    Log("%d %d", off, (unsigned)len);
+    Log("%d %d %p", off, (unsigned)len, this->buf);
     memcpy(this->buf + off, data, len);
 }
 
