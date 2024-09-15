@@ -122,13 +122,13 @@ Cache_L2 cache_l2;
 
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
-    Log("");
+    Log("%d %d", off, (unsigned)len);
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    Log("");
+    Log("%d %d", off, (unsigned)len);
     memcpy(this->buf + off, data, len);
 }
 
