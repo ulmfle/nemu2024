@@ -31,7 +31,6 @@ static void *check_l1_hit(void *this, hwaddr_t addr) {
 }
 
 static void l1_replace(void *this, hwaddr_t addr) {
-    Log("REPLACED addr: 0x%08x", addr);
     int dst,idx,flag = 1;
     CB_L1 *p_cb, *dst_cb, *dst_cb_of = NULL;
 
@@ -59,47 +58,46 @@ static void l1_replace(void *this, hwaddr_t addr) {
 }
 
 static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
-    Log("");
     uint32_t val;
     l1_of = GET_CO_L1(addr) + len - CB_SIZE + 1;
     l1_of = l1_of > 0 ? l1_of : 0;
-    Log("");
+
     CB_L1 *cb,*cb_of = NULL;
     cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr));
+
     if (l1_of) cb_of = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr + len));
-    Log("");
     if (((l1_of == 0) && (cb == NULL)) || ((l1_of > 0) && (cb == NULL || cb_of == NULL))) {
         *hit = false;
         return 0;
     }
-    Log("");
+
     hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + (CO_L1_MASK + 1);
+
     val = cb->read(cb, addr, len - l1_of);
     if (l1_of) val += (cb_of->read(cb_of, addr_of, l1_of) << ((len - l1_of) << 3));
-    Log("");
+
     l1_of = 0;
-    Log("");
     return val;
 }
 
 static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
-    Log("");
+
     l1_of = GET_CO_L1(addr) + len - CB_SIZE + 1;
     l1_of = l1_of > 0 ? l1_of : 0;
     CB_L1 *cb,*cb_of = NULL;
-    Log("");
+
     cb = (CB_L1 *)(((Cache_L1 *)this)->check_hit(this, addr));
     if (l1_of) cb_of = (CB_L1 *)(((Cache_L1 *)this)->check_hit(&cache_l1, addr + len));
-    Log("");
+
     if (((l1_of == 0) && (cb == NULL)) || ((l1_of > 0) && (cb == NULL || cb_of == NULL))) {
         *hit = false;
         return;
     }
-    Log("");
+
     uint8_t *of_data = ((uint8_t *)&data) + len - l1_of;
     cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - l1_of);
     if (l1_of) cb_of->write(cb_of, 0, of_data, l1_of);
-    Log("");
+
     l1_of = 0;
 }
 
