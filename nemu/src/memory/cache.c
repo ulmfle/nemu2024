@@ -73,8 +73,8 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
 
     hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + (CO_L1_MASK + 1);
 
-    val = cb->read(cb, addr, len - l1_of);
-    if (l1_of) val += (cb_of->read(cb_of, addr_of, l1_of) << ((len - l1_of) << 3));
+    val = cb->read(cb, GET_CO_L1(addr), len - l1_of);
+    if (l1_of) val += (cb_of->read(cb_of, GET_CO_L1(addr_of), l1_of) << ((len - l1_of) << 3));
 
     l1_of = 0;
     return val;
