@@ -37,7 +37,7 @@ static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
     int idx;
     CB *p_cb = (CB *)(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)]);
     for (idx = 0; idx < ASSOC_CL1; ++idx) {
-        Log("t:%d v:%d", p_cb[idx].tag, p_cb[idx].valid);
+        Log("addr_t: %d t:%d v:%d", GET_CT_L1(addr), p_cb[idx].tag, p_cb[idx].valid);
         if (p_cb[idx].valid && p_cb[idx].tag == GET_CT_L1(addr)) return (p_cb + idx);
     }
     return NULL;
