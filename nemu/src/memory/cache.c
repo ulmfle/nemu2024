@@ -243,6 +243,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 
     dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
+    if (dst_cb->dirty) memcpy(hwa_to_va(((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH)))), dst_cb->buf, CB_SIZE);
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CB_SIZE))), CB_SIZE);
     dst_cb->dirty = 0;
     if (of != 0) {
@@ -320,12 +321,12 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
 
 }
 
-void cache_write(hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
+void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     bool hit_l1, hit_l2;
     cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);   //write through
     cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
     if (hit_l2 == false) {
-        cache_l2.write_replace((Cache *)&cache_l2, addr);
+        cache_l2.write_replace((Cache *)&cache_l2, addr);           //write allocate
         cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
     }
 }
