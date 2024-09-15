@@ -17,7 +17,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		cache_l1.read_replace((Cache *)&cache_l1, addr);
 		cache_l1.read_replace((Cache *)&cache_l1, addr + len);
 	}
-	Log("timer:%lu", timer);
+	//Log("timer:%lu", timer);
 	return val;
 }
 
@@ -28,7 +28,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	if (hit_l1) timer+=200;
 
 	dram_write(addr, len, data);	//write through and not write allocate
-	Log("timer:%lu", timer);
+	//Log("timer:%lu", timer);
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {

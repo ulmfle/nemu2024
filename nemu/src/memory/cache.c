@@ -55,7 +55,7 @@ static void l1_replace(Cache *this, hwaddr_t addr) {
     dst_cb = find_replace(addr, random_rep);
     dst_cb->tag = GET_CT_L1(addr);
     dst_cb->valid = 1;
-    dst_cb->write(dst_cb, 0, hwa_to_va((addr & (~CO_L1_MASK))), CB_SIZE);   //attention
+    dst_cb->write(dst_cb, 0, hwa_to_va((addr & (~CO_L1_MASK))), CB_SIZE);
 
     l1_of = 0;
 }
