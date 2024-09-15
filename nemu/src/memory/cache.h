@@ -23,10 +23,6 @@
 #define GET_CI_L1(addr) (((addr) & CI_L1_MASK) >> CB_SIZE_WIDTH)
 #define GET_CO_L1(addr) ((addr) & CO_L1_MASK)
 
-// #define GET_CT(addr, ln) concat(GET_CT_L, ln)(addr)
-// #define GET_CO(addr, ln) concat(GET_CO_L, ln)(addr)
-// #define GET_CI(addr, ln) concat(GET_CI_L, ln)(addr)
-
 #define CB_BASE \
 struct {\
     uint8_t buf[CB_SIZE];\
