@@ -11,6 +11,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	bool hit_l1=0;
 	val = cache_l1.read((Cache *)&cache_l1, addr, len, &hit_l1);
 
+	Log("hit: %d", hit_l1);
 	if (hit_l1) timer+=2; else timer+=200;
 
 	if (hit_l1 == 0) {
@@ -26,6 +27,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	bool hit_l1;
 	cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);
 
+	Log("hit: %d", hit_l1);
 	if (hit_l1) timer+=200;
 
 	dram_write(addr, len, data);	//write through and not write allocate
