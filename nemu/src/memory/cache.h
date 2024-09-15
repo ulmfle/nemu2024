@@ -87,5 +87,6 @@ typedef struct {
 
 extern uint64_t timer;
 extern Cache_L1 cache_l1;
+extern int l1_of;
 
 #endif
