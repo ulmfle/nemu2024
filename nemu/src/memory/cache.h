@@ -26,41 +26,66 @@
 #define CB_BASE \
 struct {\
     uint8_t buf[CB_SIZE];\
-    uint32_t (*read)(void *, uint8_t, size_t);\
-    void (*write)(void *, uint8_t, uint8_t *, size_t);\
+    uint8_t tag;\
+    bool valid;\
+    uint32_t (*read)(struct CB *, uint8_t, size_t);\
+    void (*write)(struct CB *, uint8_t, uint8_t *, size_t);\
 }
 
 #define CACHE_BASE \
 struct {\
     void *cb_pool;\
-    void (*init)(void *);\
-    void *(*check_hit)(void *, hwaddr_t);\
-    void (*replace)(void *, hwaddr_t);\
-    uint32_t (*read)(void *, hwaddr_t, size_t, bool *);\
-    void (*write)(void *, hwaddr_t, uint32_t, size_t, bool *);\
+    void (*init)(struct Cache *);\
+    CB *(*check_read_hit)(struct Cache *, hwaddr_t);\
+    CB *(*check_write_hit)(struct Cache *, hwaddr_t);\
+    void (*read_replace)(struct Cache *, hwaddr_t);\
+    void (*write_replace)(struct Cache *, hwaddr_t);\
+    uint32_t (*read)(struct Cache *, hwaddr_t, size_t, bool *);\
+    void (*write)(struct Cache *, hwaddr_t, uint32_t, size_t, bool *);\
 }
+
+#define CB_INIT(level) \
+    int idx;\
+    concat(CB_L, level) *pool = this->cb_pool;\
+    for (idx = 0; idx < NR_CL1_BLOCK; ++idx) {\
+        pool[idx].valid = 0;\
+        pool[idx].read = cb_read;\
+        pool[idx].write = cb_write;\
+    }
+
+#define CACHE_INIT(level)\
+    this->cb_pool = (void *)concat3(l, level, _block);\
+    this->check_read_hit = concat3(l, level, _check_read_hit);\
+    this->check_write_hit = concat3(l, level, _check_write_hit);\
+    this->read_replace = concat3(l, level, _read_replace);\
+    this->write_replace = concat3(l, level, _write_replace);\
+    this->read = concat3(l, level, _read);\
+    this->write = concat3(l, level, _write)
 
 typedef struct CB {
     CB_BASE;
 } CB;
 
+typedef struct {
+    CB_BASE;
+} CB_L1;
+
+typedef struct {
+    CB_BASE;
+    bool dirty;
+} CB_L2;
+
 typedef struct Cache {
     CACHE_BASE;
 } Cache;
 
-typedef struct CB_L1 {
-    CB_BASE;
-    uint32_t tag : TAG_CL1_WIDTH;
-    bool valid;
-} CB_L1;
-
-typedef struct Cache_L1 {
+typedef struct {
     CACHE_BASE;
-    CB_L1 (*assoc)[ASSOC_CL1];    //8-way set associative
+    CB_L1 (*assoc)[ASSOC_CL1];
 } Cache_L1;
+
 
 extern uint64_t timer;
 extern Cache_L1 cache_l1;
-extern uint8_t *hw_mem;
 
 #endif
