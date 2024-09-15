@@ -177,7 +177,16 @@ static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l1_read_replace(Cache *this, hwaddr_t addr) {
-    
+    CB_L1 *dst_cb = NULL;
+    FIND_REPLACE(1);
+    CB *src_cb = cache_l2.check_read_hit((Cache *)&cache_l2, addr);
+    dst_cb->tag = GET_CT(addr, level);
+    dst_cb->valid = 1;
+    dst_cb->write((CB *)dst_cb, 0, src_cb->buf, CB_SIZE);
+    if (of != 0) {
+        of = 0;
+        l1_read_replace(this, addr + CB_SIZE + 1);
+    }
 }
 
 static void l1_write_replace(Cache *this, hwaddr_t addr) {
