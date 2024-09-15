@@ -26,8 +26,6 @@ static CB *find_replace(hwaddr_t addr, int (*method)(void *)) {
 }
 
 static uint32_t cb_read(CB *this, uint8_t off, size_t len) {
-    int idx;
-    for (idx = 0; idx < CB_SIZE; ++idx) printf("%02x ",this->buf[idx]);
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));   //attention
 }
 
