@@ -26,7 +26,7 @@
 #define CB_BASE \
 struct {\
     uint8_t buf[CB_SIZE];\
-    uint8_t tag;\
+    uint32_t tag;\
     bool valid;\
     uint32_t (*read)(struct CB *, uint8_t, size_t);\
     void (*write)(struct CB *, uint8_t, uint8_t *, size_t);\
