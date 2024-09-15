@@ -40,6 +40,14 @@ struct {\
     void (*write)(void *, hwaddr_t, uint32_t, size_t, bool *);\
 }
 
+typedef struct CB {
+    CB_BASE;
+} CB;
+
+typedef struct Cache {
+    CACHE_BASE;
+} Cache;
+
 typedef struct CB_L1 {
     CB_BASE;
     uint32_t tag : TAG_CL1_WIDTH;
