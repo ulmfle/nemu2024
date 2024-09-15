@@ -15,8 +15,12 @@ static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
 }
 
 static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
-    uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf) + off;
-    memcpy(dst, data, len);
+    uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf);
+    //memcpy(dst, data, len);
+    int idx;
+    for (idx = off; idx < off + len; ++idx) {
+        dst[idx] = data[idx];
+    }
 }
 
 static void *check_l1_hit(void *this, hwaddr_t addr) {
