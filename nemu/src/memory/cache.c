@@ -89,7 +89,7 @@ static uint32_t l1_read(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
     *hit = true;
     Log("");
     val = cb->read(cb, GET_CO_L1(addr), len - l1_of);
-    Log("val:%08x",val);
+    Log("val:%08x, of:%d",val,l1_of);
     if (l1_of) val += (cb_of->read(cb_of, 0, l1_of) << ((len - l1_of) << 3));
 
     l1_of = 0;
