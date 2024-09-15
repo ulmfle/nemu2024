@@ -31,7 +31,8 @@ static void *check_l1_hit(void *this, hwaddr_t addr) {
 static void l1_replace(void *this, hwaddr_t addr) {
     Log("REPLACED addr: 0x%08x", addr);
     int dst,idx,flag = 1;
-    CB_L1 *p_cb, *dst_cb;
+    CB_L1 *p_cb, *dst_cb, *dst_cb_of = NULL;
+
     p_cb = ((Cache_L1 *)this)->assoc[GET_CI_L1(addr)];
     for (idx = 0; idx < ASSOC_CL1; ++idx) {
         if (!p_cb[idx].valid) {dst_cb = &p_cb[idx];flag = 0;break;}
@@ -39,14 +40,20 @@ static void l1_replace(void *this, hwaddr_t addr) {
 
     if (flag) {
         dst = random_rep(((Cache_L1 *)this)->cb_pool);
-        dst_cb = &(((Cache_L1 *)this)->assoc[GET_CI_L1(addr)][dst]);
+        dst_cb = &p_cb[dst];
     }
 
     dst_cb->tag = GET_CT_L1(addr);
     dst_cb->valid = 1;
     dst_cb->write(dst_cb, 0, hwa_to_va((addr & (~CO_L1_MASK))), CB_SIZE);   //attention
 
-    if (l1_of) l1_replace(this, (addr & (~CO_L1_MASK)) + (CO_L1_MASK + 1));
+    if (l1_of) {
+        hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + CO_L1_MASK + 1;
+        dst_cb_of->tag = GET_CT_L1(addr);
+        dst_cb_of->valid = 1;
+        dst_cb_of->write(dst_cb, 0, hwa_to_va(addr_of), CB_SIZE);   //attention
+        l1_of = 0;
+    }
 }
 
 static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
