@@ -21,6 +21,7 @@ static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
 }
 
 static void *check_l1_hit(void *this, hwaddr_t addr) {
+    Log("tag: %u", GET_CT_L1(addr));
     int idx;
     CB_L1 *p_cb = ((Cache_L1 *)this)->assoc[GET_CI_L1(addr)];
     for (idx = 0; idx < ASSOC_CL1; ++idx) {
