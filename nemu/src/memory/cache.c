@@ -11,12 +11,10 @@ static int random_rep(void *_cb_pool) {
 }
 
 static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
-    Log("off: %d LEN: %d", off, (unsigned)len);
     return (*(uint32_t *)((((CB_L1 *)this)->buf) + off)) & (((1 << (len << 3))) - 1);
 }
 
 static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
-    Log("off: %d LEN: %d", off, (unsigned)len);
     uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf);
     memcpy(dst, data, len);
 }
