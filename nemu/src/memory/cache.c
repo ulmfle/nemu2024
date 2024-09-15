@@ -177,7 +177,7 @@ static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l1_read_replace(Cache *this, hwaddr_t addr) {
-
+    
 }
 
 static void l1_write_replace(Cache *this, hwaddr_t addr) {
