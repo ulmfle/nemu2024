@@ -11,7 +11,7 @@ static int random_rep(void *_cb_pool) {
 }
 
 static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
-    Log("");
+    Log("off: %d LEN: %d", off, (unsigned)len);
     return (*(uint32_t *)((((CB_L1 *)this)->buf) + off)) & (((1 << (len << 3))) - 1);
 }
 
