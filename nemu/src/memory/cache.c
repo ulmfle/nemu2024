@@ -75,7 +75,7 @@ static void l1_write_replace(Cache *this, hwaddr_t addr) {
 
 static uint32_t l1_read(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
     uint32_t val;
-    l1_of = GET_CO_L1(addr) + len - CB_SIZE + 1;
+    l1_of = GET_CO_L1(addr) + len - CB_SIZE;
     l1_of = l1_of > 0 ? l1_of : 0;
 
     CB *cb,*cb_of = NULL;
