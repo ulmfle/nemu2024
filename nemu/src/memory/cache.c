@@ -275,21 +275,20 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
     uint32_t val;
     bool hit_l1, hit_l2;
     val = cache_l1.read((Cache *)&cache_l1, addr, len, &hit_l1);
-    if (hit_l1 == 0) {
-        val = cache_l2.read((Cache *)&cache_l2, addr, len, &hit_l2);
-        cache_l1.read_replace((Cache *)&cache_l1, addr);
-    } else {
+    if (hit_l1 == 0) val = cache_l2.read((Cache *)&cache_l2, addr, len, &hit_l2);
+    else {
         *hit = true;
         return val;
     }
-
-    if (hit_l2 == 0) {
+    if (hit_l2 != 0) {
+        cache_l1.read_replace((Cache *)&cache_l1, addr);
+        *hit = true;
+        return val;
+    } else {
         *hit = false;
         return 0;
-    } else {
-        *hit = true;
-        return val;
     }
+
 }
 
 //main
