@@ -16,11 +16,7 @@ static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
 
 static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
     uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf);
-    //memcpy(dst, data, len);
-    int idx;
-    for (idx = off; idx < off + len; ++idx) {
-        dst[idx] = data[idx];
-    }
+    memcpy(dst, data, len);
 }
 
 static void *check_l1_hit(void *this, hwaddr_t addr) {
@@ -68,6 +64,8 @@ static uint32_t l1_read(void *this, hwaddr_t addr, size_t len, bool *hit) {
     hwaddr_t addr_of = (addr & (~CO_L1_MASK)) + (CO_L1_MASK + 1);
     val = cb->read(cb, addr, len - l1_of);
     if (l1_of) val += (cb_of->read(cb_of, addr_of, l1_of) << ((len - l1_of) << 3));
+
+    l1_of = 0;
     return val;
 }
 
@@ -86,6 +84,8 @@ static void l1_write(void *this, hwaddr_t addr, uint32_t data, size_t len, bool 
     uint8_t *of_data = ((uint8_t *)&data) + len - l1_of;
     cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - l1_of);
     if (l1_of) cb_of->write(cb_of, 0, of_data, l1_of);
+
+    l1_of = 0;
 }
 
 static void l1_init(void *this) {
