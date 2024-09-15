@@ -16,7 +16,7 @@ static uint32_t cb_l1_read(void *this, uint8_t off, size_t len) {
 }
 
 static void cb_l1_write(void *this, uint8_t off, uint8_t *data, size_t len) {
-    Log("");
+    Log("off: %d LEN: %d", off, (unsigned)len);
     uint8_t *dst = (uint8_t *)(((CB_L1 *)this)->buf);
     memcpy(dst, data, len);
 }
