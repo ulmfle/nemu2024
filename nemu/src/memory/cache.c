@@ -64,7 +64,6 @@ struct {\
 
 #define NORMAL_CHECK_HIT(level) \
     do {\
-        printf("\n");\
         int idx;\
         concat(CB_L, level) *p_cb = (concat(CB_L, level) *)(((concat(Cache_L, level) *)this)->assoc[concat(GET_CI_L, level)(addr)]);\
         for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
@@ -304,6 +303,7 @@ void init_cache() {
 
 //main
 uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
+    Log("");
     uint32_t val;
     bool hit_l1, hit_l2;
     val = cache_l1.read((Cache *)&cache_l1, addr, len, &hit_l1);
@@ -327,6 +327,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
 }
 
 void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
+    Log("");
     bool hit_l1, hit_l2;
     cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);   //write through
     cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
@@ -338,6 +339,7 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
 
 //main
 void cache_replace(hwaddr_t addr) {
+    Log("");
     cache_l2.read_replace((Cache *)&cache_l2, addr);
     cache_l1.read_replace((Cache *)&cache_l1, addr);
 }
