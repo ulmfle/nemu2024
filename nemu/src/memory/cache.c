@@ -236,7 +236,9 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 
     dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
-    if (dst_cb->dirty) memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);     //write back
+    if (dst_cb->dirty) {
+        memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE); //write back
+    }
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);
     dst_cb->dirty = 0;
     if (of != 0) {
@@ -263,14 +265,14 @@ static void init_cache_internal() {
     cache_l1.check_write_hit = l1_check_write_hit;
     cache_l1.read_replace = l1_read_replace;
     cache_l1.write_replace = l1_write_replace;
-    cache_l1.assoc = (CB_L1 (*)[8])cache_l1.cb_pool;
+    cache_l1.assoc = (CB_L1 (*)[ASSOC_CL1])cache_l1.cb_pool;
 
     cache_l2.cb_pool = (void *)l2_block;
     cache_l2.check_read_hit = l2_check_read_hit;
     cache_l2.check_write_hit = l2_check_write_hit;
     cache_l2.read_replace = l2_read_replace;
     cache_l2.write_replace = l2_write_replace;
-    cache_l2.assoc = (CB_L2 (*)[16])cache_l2.cb_pool;
+    cache_l2.assoc = (CB_L2 (*)[ASSOC_CL2])cache_l2.cb_pool;
 
     cache_l1.read = cache_l2.read = cread;
     cache_l1.write = cache_l2.write = cwrite;
