@@ -256,7 +256,7 @@ static void l2_write_replace(Cache *this, hwaddr_t addr) {
     FIND_REPLACE(2);
     dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
-    dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CB_SIZE))), CB_SIZE);    //write allocate
+    dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);    //write allocate
     if (of != 0) {
         of = 0;
         l2_write_replace(this, addr + CB_SIZE + 1);
