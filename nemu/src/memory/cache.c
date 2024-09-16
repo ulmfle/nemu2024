@@ -342,7 +342,7 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
 
 //main
 void cache_replace(hwaddr_t addr) {
-    Log("");
+    Log("addr 0x%08x",addr);
     cache_l2.read_replace((Cache *)&cache_l2, addr);
     cache_l1.read_replace((Cache *)&cache_l1, addr);
 }
