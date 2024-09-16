@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>       //for random
 
-#define level 2
+#define BOTTOM 2
 
 #define CB_SIZE_WIDTH 6
 
@@ -24,7 +24,7 @@
 
 #define CT_L1_MASK (~0u << (32 - TAG_CL1_WIDTH))
 #define CO_L1_MASK (CB_SIZE - 1)
-#define CI_L1_MASK (((~0u) ^ (CT_L1_MASK)) ^ (concat3(CO_L, level, _MASK)))
+#define CI_L1_MASK (((~0u) ^ (CT_L1_MASK)) ^ (CO_L1_MASK))
 
 #define CT_L2_MASK (~0u << (32 - TAG_CL2_WIDTH))
 #define CO_L2_MASK (CB_SIZE - 1)
@@ -32,7 +32,7 @@
 
 #define GET_CT_L1(addr) (((addr) & CT_L1_MASK) >> (32 - TAG_CL1_WIDTH))
 #define GET_CI_L1(addr) (((addr) & CI_L1_MASK) >> CB_SIZE_WIDTH)
-#define GET_CO_L1(addr) ((addr) & concat3(CO_L, level, _MASK))
+#define GET_CO_L1(addr) ((addr) & CO_L1_MASK)
 
 #define GET_CT_L2(addr) (((addr) & CT_L2_MASK) >> (32 - TAG_CL2_WIDTH))
 #define GET_CI_L2(addr) (((addr) & CI_L2_MASK) >> CB_SIZE_WIDTH)
@@ -185,7 +185,7 @@ static void l1_read_replace(Cache *this, hwaddr_t addr) {
     CB_L1 *dst_cb = NULL;
     FIND_REPLACE(1);
     CB *src_cb = cache_l2.check_read_hit((Cache *)&cache_l2, addr);
-    dst_cb->tag = GET_CT(addr, level);
+    dst_cb->tag = GET_CT(addr, 1);
     dst_cb->valid = 1;
     dst_cb->write((CB *)dst_cb, 0, src_cb->buf, CB_SIZE);
     if (of != 0) {
