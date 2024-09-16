@@ -219,10 +219,12 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
             break;
         }
     }
-    for (idx = 0; idx < ASSOC_CL2; ++idx) {
-        if (!p_cb[idx].valid) {
-            dst_cb = p_cb + idx;
-            break;
+    if (dst_cb != NULL) {
+        for (idx = 0; idx < ASSOC_CL2; ++idx) {
+            if (!p_cb[idx].valid) {
+                dst_cb = p_cb + idx;
+                break;
+            }
         }
     }
     if (dst_cb == NULL) {
