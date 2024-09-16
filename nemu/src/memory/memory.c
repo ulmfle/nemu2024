@@ -9,18 +9,18 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	uint32_t val;
-	bool hit;
-	val = cache_read(addr, len, &hit);
-	if (hit == false) {
+	// bool hit;
+	// val = cache_read(addr, len, &hit);
+	// if (hit == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
-		cache_replace(addr);
-	}
+	// 	cache_replace(addr);
+	// }
 	return val;
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	//dram_write(addr, len, data);		why not work?
-	cache_write(addr, data, len);
+	dram_write(addr, len, data);
+	// cache_write(addr, data, len);
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
