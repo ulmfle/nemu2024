@@ -67,6 +67,7 @@ struct {\
         int idx;\
         concat(CB_L, level) *p_cb = (concat(CB_L, level) *)(((concat(Cache_L, level) *)this)->assoc[concat(GET_CI_L, level)(addr)]);\
         for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
+            Log("ci:%08x addr_tag:%08x, tag: %08x, valid:%d",GET_CI(addr, level), GET_CT(addr, level), p_cb[idx].tag, p_cb[idx].valid);\
             if (p_cb[idx].valid && p_cb[idx].tag == concat(GET_CT_L, level)(addr)) return (CB *)(p_cb + idx);\
         }\
         return NULL;\
@@ -122,12 +123,23 @@ Cache_L2 cache_l2;
 
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
+    int idx;
+    for (idx = 0; idx < 64; ++idx) printf("%02x ", this->buf[idx]);
+    printf("\n");
+    Log("off %d len %d val: 0x%08x",off, (unsigned)len, (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3)));
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
+    Log("BEFORE off %d len %d", off, (unsigned)len);
+    int idx;
+    for (idx = 0; idx < 64; ++idx) printf("%02x ", this->buf[idx]);
+    printf("\n");
     memcpy(this->buf + off, data, len);
+    Log("AFTER off %d len %d", off, (unsigned)len);
+    for (idx = 0; idx < 64; ++idx) printf("%02x ", this->buf[idx]);
+    printf("\n");
 }
 
 //base
@@ -237,8 +249,12 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
     dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
     if (dst_cb->dirty) {
-        memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE); //write back
+        //write back
+        memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);
     }
+
+    Log("L2 REPLACED, addr:%08x, tag: %08x, valid:%d, dirty:%d",(addr & (~CO_L2_MASK)), dst_cb->tag, dst_cb->valid, dst_cb->dirty);
+
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);
     dst_cb->dirty = 0;
     if (of != 0) {
