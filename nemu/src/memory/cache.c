@@ -67,7 +67,7 @@ struct {\
         int idx;\
         concat(CB_L, level) *p_cb = (concat(CB_L, level) *)(((concat(Cache_L, level) *)this)->assoc[concat(GET_CI_L, level)(addr)]);\
         for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
-            Log("ci:0x%08x valid: %d tag: 0x%08x hit_tag: 0x%08x",concat(GET_CI_L, level)(addr) , p_cb[idx].valid, p_cb[idx].tag, concat(GET_CT_L, level)(addr));\
+            Log("addr:0x%08x ci:0x%08x valid:%d tag:0x%08x hit_tag:0x%08x", addr,concat(GET_CI_L, level)(addr) , p_cb[idx].valid, p_cb[idx].tag, concat(GET_CT_L, level)(addr));\
             if (p_cb[idx].valid && p_cb[idx].tag == concat(GET_CT_L, level)(addr)) return (CB *)(p_cb + idx);\
         }\
         return NULL;\
@@ -327,6 +327,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
 
 }
 
+//main
 void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     printf("\n");
     bool hit_l1, hit_l2;
