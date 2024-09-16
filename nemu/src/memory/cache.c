@@ -217,7 +217,6 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
 
 static void l2_read_replace(Cache *this, hwaddr_t addr) {
     CB_L2 *dst_cb = NULL;
-
     CB_L2 *p_cb = ((Cache_L2 *)this)->assoc[GET_CI(addr, 2)];
     int idx;
 
@@ -244,9 +243,8 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 
     dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
-    if (dst_cb->dirty) memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CB_SIZE))), dst_cb->buf, CB_SIZE);
-    Log("dst_addr: 0x%08x", (addr & (~CB_SIZE)));
-    dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CB_SIZE))), CB_SIZE);
+    if (dst_cb->dirty) memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);
+    dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);
     dst_cb->dirty = 0;
     if (of != 0) {
         of = 0;
