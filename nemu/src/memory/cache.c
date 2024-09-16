@@ -67,7 +67,7 @@ struct {\
         int idx;\
         concat(CB_L, level) *p_cb = (concat(CB_L, level) *)(((concat(Cache_L, level) *)this)->assoc[concat(GET_CI_L, level)(addr)]);\
         for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
-            Log("ci:%08x addr_tag:%08x, tag: %08x, valid:%d",GET_CI(addr, level), GET_CT(addr, level), p_cb[idx].tag, p_cb[idx].valid);\
+            Log("addr: %08x ci:%08x addr_tag:%08x, tag: %08x, valid:%d",addr,GET_CI(addr, level), GET_CT(addr, level), p_cb[idx].tag, p_cb[idx].valid);\
             if (p_cb[idx].valid && p_cb[idx].tag == concat(GET_CT_L, level)(addr)) return (CB *)(p_cb + idx);\
         }\
         return NULL;\
@@ -212,6 +212,7 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
     int idx;
     CB_L2 *p_cb = (CB_L2 *)(((Cache_L2 *)this)->assoc[GET_CI(addr, 2)]);
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
+        Log("addr: %08x ci:%08x addr_tag:%08x, tag: %08x, valid:%d",addr,GET_CI(addr, 2), GET_CT(addr, 2), p_cb[idx].tag, p_cb[idx].valid);
         if (p_cb[idx].valid && p_cb[idx].tag == GET_CT(addr, 2)) {
             p_cb[idx].dirty = 1;
             return (CB *)(p_cb + idx);
@@ -226,6 +227,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
     int idx;
 
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
+        Log("addr: %08x ci:%08x, dirty:%d",addr,GET_CI(addr, 2), p_cb[idx].dirty);
         if (p_cb[idx].dirty) {
             dst_cb = p_cb + idx;
             break;
@@ -234,6 +236,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 
     if (dst_cb == NULL) {
         for (idx = 0; idx < ASSOC_CL2; ++idx) {
+            Log("addr: %08x ci:%08x, valid:%d",addr,GET_CI(addr, 2), p_cb[idx].valid);
             if (!p_cb[idx].valid) {
                 dst_cb = p_cb + idx;
                 break;
@@ -250,6 +253,10 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
     dst_cb->valid = 1;
     if (dst_cb->dirty) {
         //write back
+        Log("Dirty write back addr %08x dst_buf:",(((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK)));
+        int idx;
+        for (idx = 0; idx < 64; ++idx) printf("%02x ", dst_cb->buf[idx]);
+        printf("\n");
         memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);
     }
 
