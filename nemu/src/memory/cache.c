@@ -236,7 +236,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 
     dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
-    if (dst_cb->dirty) memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);
+    if (dst_cb->dirty) memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);     //write back
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);
     dst_cb->dirty = 0;
     if (of != 0) {
@@ -286,6 +286,7 @@ static void init_cache_internal() {
         l2_block[l2_idx].read = cbread;
         l2_block[l2_idx].write = cbwrite;
         l2_block[l2_idx].valid = 0;
+        l2_block[l2_idx].dirty = 0;
     }
 }
 
