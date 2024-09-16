@@ -15,13 +15,12 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr);
 	}
-	//Log("final val: 0x%08x", val);
 	return val;
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	Log("addr: 0x%08x val: 0x%08x len:%d",addr, data, (unsigned)len);
-	//dram_write(addr, len, data);		?
+	//dram_write(addr, len, data);		why not work?
 	cache_write(addr, data, len);
 }
 

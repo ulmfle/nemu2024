@@ -200,7 +200,6 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
     int idx;
     CB_L2 *p_cb = (CB_L2 *)(((Cache_L2 *)this)->assoc[GET_CI(addr, 2)]);
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
-        Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
         if (p_cb[idx].valid && p_cb[idx].tag == GET_CT(addr, 2)) {
             p_cb[idx].dirty = 1;
             return (CB *)(p_cb + idx);
@@ -296,15 +295,11 @@ void init_cache() {
 
 //main
 uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
-    //printf("\n");
-    //Log("");
     uint32_t val;
     bool hit_l1, hit_l2;
     val = cache_l1.read((Cache *)&cache_l1, addr, len, &hit_l1);
-    //Log("l1 %d l2 %d",hit_l1, hit_l2);
     if (hit_l1 == 0) {
         val = cache_l2.read((Cache *)&cache_l2, addr, len, &hit_l2);
-        //Log("l1 %d l2 %d",hit_l1, hit_l2);
     } else {
         *hit = true;
         return val;
@@ -334,7 +329,6 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
 
 //main
 void cache_replace(hwaddr_t addr) {
-    //Log("addr 0x%08x",addr);
     cache_l2.read_replace((Cache *)&cache_l2, addr);
     cache_l1.read_replace((Cache *)&cache_l1, addr);
 }
