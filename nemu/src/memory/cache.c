@@ -327,7 +327,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
 
 //main
 void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
-    Log("");
+    //Log("");
     bool hit_l1, hit_l2;
     cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);   //write through
     cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
