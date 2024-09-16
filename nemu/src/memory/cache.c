@@ -205,7 +205,7 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
     int idx;
     CB_L2 *p_cb = (CB_L2 *)(((Cache_L2 *)this)->assoc[GET_CI(addr, 2)]);
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
-        //Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
+        Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
         if (p_cb[idx].valid && p_cb[idx].tag == GET_CT(addr, 2)) {
             p_cb[idx].dirty = 1;
             return (CB *)(p_cb + idx);
