@@ -124,7 +124,7 @@ Cache_L2 cache_l2;
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
     int idx;
-    for (idx = 0; idx < CB_SIZE; ++idx) printf("%02x ", this->buf[idx]);
+    for (idx = off; idx < CB_SIZE; ++idx) printf("%02x ", this->buf[idx]);
     printf("\n");
     Log("%d %d", off, (unsigned)len);
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
