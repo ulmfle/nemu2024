@@ -244,7 +244,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
     dst_cb->dirty = 0;
     if (of != 0) {
         of = 0;
-        l2_read_replace(this, addr + CO_L2_MASK + 1);
+        l2_read_replace(this, (addr & (~CO_L2_MASK)) + CO_L2_MASK + 1);
     }
 }
 
