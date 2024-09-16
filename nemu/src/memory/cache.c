@@ -304,8 +304,11 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
     uint32_t val;
     bool hit_l1, hit_l2;
     val = cache_l1.read((Cache *)&cache_l1, addr, len, &hit_l1);
-    if (hit_l1 == 0) val = cache_l2.read((Cache *)&cache_l2, addr, len, &hit_l2);
-    else {
+    Log("l1 %d l2 %d",hit_l1, hit_l2);
+    if (hit_l1 == 0) {
+        val = cache_l2.read((Cache *)&cache_l2, addr, len, &hit_l2);
+        Log("l1 %d l2 %d",hit_l1, hit_l2);
+    } else {
         *hit = true;
         return val;
     }
@@ -325,8 +328,8 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     cache_l1.write((Cache *)&cache_l1, addr, data, len, &hit_l1);   //write through
     cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
     if (hit_l2 == false) {
-        cache_l2.write_replace((Cache *)&cache_l2, addr);           //write allocate
-        cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);
+        cache_l2.write_replace((Cache *)&cache_l2, addr);
+        cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);   //write allocate (move to L2 and write again)
     }
 }
 
