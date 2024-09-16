@@ -67,6 +67,7 @@ struct {\
         int idx;\
         concat(CB_L, level) *p_cb = (concat(CB_L, level) *)(((concat(Cache_L, level) *)this)->assoc[concat(GET_CI_L, level)(addr)]);\
         for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
+            Log("valid 0x%08x tag 0x%08x addr_tag: 0x%08x addr : 0x%08x", p_cb[idx].valid, p_cb[idx].tag, GET_CT(addr, level) , addr);\
             if (p_cb[idx].valid && p_cb[idx].tag == concat(GET_CT_L, level)(addr)) return (CB *)(p_cb + idx);\
         }\
         return NULL;\
