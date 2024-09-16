@@ -134,11 +134,11 @@ static uint32_t cbread(CB *this, uint8_t off, size_t len) {
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
     Log("BEFORE off %d len %d", off, (unsigned)len);
     int idx;
-    for (idx = 0; idx < 64; ++idx) printf("%02x ", this->buf[idx]);
+    for (idx = off; idx < 64; ++idx) printf("%02x ", this->buf[idx]);
     printf("\n");
     memcpy(this->buf + off, data, len);
     Log("AFTER off %d len %d", off, (unsigned)len);
-    for (idx = 0; idx < 64; ++idx) printf("%02x ", this->buf[idx]);
+    for (idx = off; idx < 64; ++idx) printf("%02x ", this->buf[idx]);
     printf("\n");
 }
 
