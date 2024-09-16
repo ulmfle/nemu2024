@@ -235,7 +235,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
         dst_cb = p_cb + (rand() % ASSOC_CL2);
     }
 
-    Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
+    Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,dst_cb->valid, dst_cb->dirty, dst_cb->tag, GET_CT(addr, 2));
 
     dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
