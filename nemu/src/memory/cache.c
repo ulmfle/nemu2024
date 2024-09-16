@@ -122,16 +122,11 @@ Cache_L2 cache_l2;
 
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
-    // int idx;
-    // for (idx = off; idx < CB_SIZE; ++idx) printf("%02x ", this->buf[idx]);
-    //printf("\n");
-    //Log("%d %d", off, (unsigned)len);
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    //Log("%d %d", off, (unsigned)len);
     memcpy(this->buf + off, data, len);
 }
 
@@ -159,8 +154,8 @@ static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
     of = of > 0 ? of : 0;
-    cb = this->check_read_hit(this, addr);
-    if (of) cb_of = this->check_read_hit(this, addr + len);
+    cb = this->check_write_hit(this, addr);
+    if (of) cb_of = this->check_write_hit(this, addr + len);
     if (((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL))) {
         *hit = false;
         return;
@@ -220,7 +215,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
     int idx;
 
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
-        Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
+        //Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
         if (p_cb[idx].dirty) {
             dst_cb = p_cb + idx;
             break;
@@ -229,7 +224,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 
     if (dst_cb == NULL) {
         for (idx = 0; idx < ASSOC_CL2; ++idx) {
-            Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
+            //Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
             if (!p_cb[idx].valid) {
                 dst_cb = p_cb + idx;
                 break;
