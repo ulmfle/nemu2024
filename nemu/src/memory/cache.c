@@ -220,6 +220,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
     int idx;
 
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
+        Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
         if (p_cb[idx].dirty) {
             dst_cb = p_cb + idx;
             break;
@@ -228,6 +229,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 
     if (dst_cb == NULL) {
         for (idx = 0; idx < ASSOC_CL2; ++idx) {
+            Log("ci: 0x%08x valid: %d dirty:%d tag: 0x%08x hit_tag: 0x%08x",GET_CI(addr, 2) ,p_cb[idx].valid, p_cb[idx].dirty, p_cb[idx].tag, GET_CT(addr, 2));
             if (!p_cb[idx].valid) {
                 dst_cb = p_cb + idx;
                 break;
