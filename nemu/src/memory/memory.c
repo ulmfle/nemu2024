@@ -21,7 +21,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	Log("addr: 0x%08x val: 0x%08x len:%d",addr, data, (unsigned)len);
-	//dram_write(addr, len, data);
+	//dram_write(addr, len, data);		?
 	cache_write(addr, data, len);
 }
 
