@@ -66,9 +66,15 @@ static void modify_vfprintf() {
 #endif
 	//attention : format_FLOAT , &_fpmaxtostr
 	uint32_t inc = (uint32_t)format_FLOAT - (uint32_t)&_fpmaxtostr;
-	uint32_t *rel = (uint32_t *)(&_vfprintf_internal + 775);
+	void *rel = (void *)(&_vfprintf_internal + 775);
 	mprotect((void *)(((uint32_t)rel - 101) & 0xfffff000), 4096*2 , PROT_READ | PROT_WRITE | PROT_EXEC);
-	*rel += inc;
+	*(uint32_t *)rel += inc;
+	rel = (void *)((uint8_t *)rel - 9);
+	*((uint8_t *)(rel--)) = 0x90;
+	*((uint8_t *)(rel--)) = 0xf2;
+	*((uint8_t *)(rel--)) = 0xff;
+	*((uint8_t *)(rel)) = 0x8;
+
 }
 
 static void modify_ppfs_setargs() {
