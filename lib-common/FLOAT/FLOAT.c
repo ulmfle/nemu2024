@@ -65,8 +65,7 @@ FLOAT f2F(float a) {
 }
 
 FLOAT Fabs(FLOAT a) {
-	//return a ^ (1 << 31) ? a : (~a+1) & (~0u >> 1);
-	return a > 0 ? a : -a;
+	return a >= 0 ? a : (~a+1) & (~0u >> 1);
 }
 
 /* Functions below are already implemented */
