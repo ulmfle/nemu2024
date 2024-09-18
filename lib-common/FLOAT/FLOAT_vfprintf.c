@@ -86,6 +86,12 @@ static void modify_vfprintf() {
 	rel = (void *)((uint8_t *)rel - 12);
 	*(uint32_t *)rel = 0x9032ff08;
 
+	rel = (void *)(&_vfprintf_internal + (0x8049db2 - 0x8049ace));
+	*(uint16_t *)rel = 0x9090;
+
+	rel = (void *)(&_vfprintf_internal + (0x8049db6 - 0x8049ace));
+	*(uint16_t *)rel = 0x9090;
+
 }
 
 static void modify_ppfs_setargs() {
