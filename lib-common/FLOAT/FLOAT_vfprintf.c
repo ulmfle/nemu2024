@@ -81,7 +81,7 @@ static void modify_vfprintf() {
 	//attention : format_FLOAT , &_fpmaxtostr
 	uint32_t inc = (uint32_t)format_FLOAT - (uint32_t)&_fpmaxtostr;
 	void *rel = (void *)(&_vfprintf_internal + 775);
-	mprotect((void *)(((uint32_t)rel - 101) & 0xfffff000), 4096*2 , PROT_READ | PROT_WRITE | PROT_EXEC);
+	//mprotect((void *)(((uint32_t)rel - 101) & 0xfffff000), 4096*2 , PROT_READ | PROT_WRITE | PROT_EXEC);
 	*(uint32_t *)rel += inc;
 	rel = (void *)((uint8_t *)rel - 12);
 	*(uint32_t *)rel = 0x9032ff08;
