@@ -17,7 +17,11 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	 */
 
 	char buf[80];
-	int len = sprintf(buf, "0x%08x", f);
+	int len = 0;
+	if (f < 0) len += sprintf(buf + len, "%c", '-');
+	len += sprintf(buf + len, "", Fabs(f));
+	// uint32_t tmp = ((uint16_t)Fabs(f));
+	//len += sprintf(buf + 4, "%-06d", (tmp * ((int)(1e5))) / (1 << 16) );
 	return __stdio_fwrite(buf, len, stream);
 }
 
@@ -69,11 +73,8 @@ static void modify_vfprintf() {
 	void *rel = (void *)(&_vfprintf_internal + 775);
 	mprotect((void *)(((uint32_t)rel - 101) & 0xfffff000), 4096*2 , PROT_READ | PROT_WRITE | PROT_EXEC);
 	*(uint32_t *)rel += inc;
-	rel = (void *)((uint8_t *)rel - 9);
-	*((uint8_t *)(rel--)) = 0x90;
-	*((uint8_t *)(rel--)) = 0xf2;
-	*((uint8_t *)(rel--)) = 0xff;
-	*((uint8_t *)(rel)) = 0x8;
+	rel = (void *)((uint8_t *)rel - 12);
+	*(uint32_t *)rel = 0x9032ff08;
 
 }
 
