@@ -5,6 +5,7 @@
 
 extern char _vfprintf_internal;		//?
 extern char _fpmaxtostr;			//?
+extern char _ppfs_setargs;
 extern int __stdio_fwrite(char *buf, int len, FILE *stream);
 
 __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
@@ -16,12 +17,21 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	 *         0x00013333    "1.199996"
 	 */
 
+	const int digit = 6;
+	int idx = digit;
+	uint64_t t = 1;
+	while (idx--) t *= 10;
+
 	char buf[80];
-	int len = 0;
+	int len = 0, sublen = 0;
+	uint64_t fll = ((uint16_t)Fabs(f));
 	if (f < 0) len += sprintf(buf + len, "%c", '-');
-	len += sprintf(buf + len, "%u", Fabs(f));
-	uint32_t tmp = ((uint16_t)Fabs(f));
-	len += sprintf(buf + 4, "%-06d", (tmp * ((int)(1e5))) / (1 << 16) );
+	len += sprintf(buf + len, "%u.", Fabs(f) >> 16);
+	sublen = sprintf(buf + len, "%-d", (fll * t) / (1 << 16) );
+	//for (; sublen < digit; ++sublen) buf[len + sublen] = '0';
+
+	for (idx = len + sublen; idx < len + digit; ++idx) buf[idx] = '0';
+	len += digit;
 	return __stdio_fwrite(buf, len, stream);
 }
 
@@ -129,10 +139,10 @@ static void modify_ppfs_setargs() {
 				GET_VA_ARG(p,wc,wchar_t,ppfs->arg);
 				break;
 				/* PA_FLOAT */
-			case PA_DOUBLE:
+			case PA_DOUBLE:	0x7
 				GET_VA_ARG(p,d,double,ppfs->arg);
 				break;
-			case (PA_DOUBLE|PA_FLAG_LONG_DOUBLE):
+			case (PA_DOUBLE|PA_FLAG_LONG_DOUBLE):	0x807
 				GET_VA_ARG(p,ld,long double,ppfs->arg);
 				break;
 			default:
@@ -177,6 +187,8 @@ static void modify_ppfs_setargs() {
 	}
 #endif
 
+	uint8_t p = &_ppfs_setargs + (0x804a0a2 - 0x804a033) + 1;
+	*p = 28;
 }
 
 void init_FLOAT_vfprintf() {
