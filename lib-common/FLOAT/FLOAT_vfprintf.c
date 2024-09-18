@@ -195,7 +195,7 @@ static void modify_ppfs_setargs() {
 
 	uint8_t *p = &_ppfs_setargs + (0x804a0a2 - 0x804a033);
 	*p++ = 0xe9;
-	*p++ = 0x32;
+	*p++ = 0x2f;
 	*p++ = 0x00;
 	*p++ = 0x00;
 	*p++ = 0x00;
