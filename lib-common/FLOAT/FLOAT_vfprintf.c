@@ -87,10 +87,10 @@ static void modify_vfprintf() {
 	*(uint32_t *)rel = 0x9032ff08;
 
 	rel = (void *)(&_vfprintf_internal + (0x8049db2 - 0x8049ace));
-	*(uint16_t *)rel = 0x9090;
+	*(uint16_t *)rel = 0x9090;	//nop fill
 
 	rel = (void *)(&_vfprintf_internal + (0x8049db6 - 0x8049ace));
-	*(uint16_t *)rel = 0x9090;
+	*(uint16_t *)rel = 0x9090;	//nop fill
 
 }
 
@@ -194,7 +194,7 @@ static void modify_ppfs_setargs() {
 #endif
 
 	uint8_t *p = &_ppfs_setargs + (0x804a0a2 - 0x804a033);
-	*p++ = 0xeb;
+	*p++ = 0xe9;
 	*p++ = 0x32;
 }
 
