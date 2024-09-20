@@ -45,6 +45,8 @@
 #include "string/movs.h"
 #include "string/lods.h"
 
+#include "sreg/ldt.h"
+
 #include "misc/misc.h"
 
 #include "special/special.h"
