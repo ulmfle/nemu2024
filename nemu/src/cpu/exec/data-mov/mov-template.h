@@ -40,7 +40,7 @@ make_helper(mov_cr02r) {
 
 make_helper(mov_r2cr0) {
     int len = decode_rm_l(eip + 1);
-
+	cpu.cr0.val = op_src->val;
 
     print_asm("mov" str(SUFFIX) " %%%s,%%%s", REG_NAME(R_EAX), "CR0");
     return len + 1;
