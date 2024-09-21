@@ -59,7 +59,7 @@ struct {\
     /*virtual...=0*/ void (*read_replace)(struct Cache *, hwaddr_t);\
     /*virtual...=0*/ void (*write_replace)(struct Cache *, hwaddr_t);\
     /*virtual*/ uint32_t (*read)(struct Cache *, hwaddr_t, size_t, bool *);\
-    /*virtual*/ uint32_t (*write)(struct Cache *, hwaddr_t, uint32_t, size_t, bool *);\
+    /*virtual*/ void (*write)(struct Cache *, hwaddr_t, uint32_t, size_t, bool *);\
 }
 
 #define NORMAL_CHECK_HIT(level) \
@@ -84,6 +84,7 @@ struct {\
         srand((unsigned)time(NULL));\
         dst_cb = p_cb + (rand() % concat(ASSOC_CL, level));\
     }
+
 
 typedef struct CB {
     CB_BASE;
@@ -112,14 +113,13 @@ typedef struct {
     CB_L2 (*assoc)[ASSOC_CL2];
 } Cache_L2;
 
-typedef uint32_t (*atomic)(CB *, CB *, hwaddr_t, uint32_t, size_t);
-
 static int of;
 static CB_L1 l1_block[NR_CL1_BLOCK];
 static CB_L2 l2_block[NR_CL2_BLOCK];
 
 Cache_L1 cache_l1;
 Cache_L2 cache_l2;
+
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
@@ -132,16 +132,17 @@ static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
 
 //base
 static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
+    uint32_t val;
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
     of = of > 0 ? of : 0;
     cb = this->check_read_hit(this, addr);
     if (of) cb_of = this->check_read_hit(this, addr + len);
-    
-    *hit = !(((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL)));
-    if (!*hit) return 0;
-
-    uint32_t val;
+    if (((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL))) {
+        *hit = false;
+        return 0;
+    }
+    *hit = true;
     val = cb->read(cb, GET_CO_L1(addr), len - of);
     if (of) val += (cb_of->read(cb_of, 0, of) << ((len - of) << 3));
     of = 0;
@@ -149,20 +150,21 @@ static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
 }
 
 //base
-static uint32_t cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
+static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
     of = of > 0 ? of : 0;
     cb = this->check_write_hit(this, addr);
     if (of) cb_of = this->check_write_hit(this, addr + len);
-    
-    *hit = !(((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL)));
-    if (!*hit) return 0;
-    
+    if (((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL))) {
+        *hit = false;
+        return;
+    }
+    *hit = true;
     uint8_t *of_data = ((uint8_t *)&data) + len - of;
     cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - of);
     if (of) cb_of->write(cb_of, 0, of_data, of);
-    return of = 0;
+    of = 0;
 }
 
 static CB *l1_check_read_hit(Cache *this, hwaddr_t addr) {
