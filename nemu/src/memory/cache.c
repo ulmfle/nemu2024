@@ -120,37 +120,6 @@ static CB_L2 l2_block[NR_CL2_BLOCK];
 
 Cache_L1 cache_l1;
 Cache_L2 cache_l2;
-
-//stand-alone 
-uint32_t atomic_read(CB *cb, CB *cb_of, hwaddr_t addr, uint32_t data, size_t len) {
-    uint32_t val;
-    val = cb->read(cb, GET_CO_L1(addr), len - of);
-    if (of) val += (cb_of->read(cb_of, 0, of) << ((len - of) << 3));
-    of = 0;
-    return val;
-}
-
-//stand-alone 
-uint32_t atomic_write(CB *cb, CB *cb_of, hwaddr_t addr, uint32_t data, size_t len) {
-    uint8_t *of_data = ((uint8_t *)&data) + len - of;
-    cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - of);
-    if (of) cb_of->write(cb_of, 0, of_data, of);
-    return of = 0;
-}
-
-//stand-alone
-static uint32_t check_do_hit(Cache *cache, hwaddr_t addr, size_t len, uint32_t data, bool *hit, atomic atm) {
-    CB *cb,*cb_of = NULL;
-    of = GET_CO_L1(addr) + len - CB_SIZE;
-    of = of > 0 ? of : 0;
-    cb = cache->check_read_hit(cache, addr);
-    if (of) cb_of = cache->check_read_hit(cache, addr + len);
-    
-    *hit = !(((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL)));
-    if (!*hit) return 0;
-    return atm(cb, cb_of, addr, data, len);
-}
-
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
@@ -163,12 +132,37 @@ static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
 
 //base
 static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
-    return check_do_hit(this, addr, len, 0, hit, atomic_read);
+    CB *cb,*cb_of = NULL;
+    of = GET_CO_L1(addr) + len - CB_SIZE;
+    of = of > 0 ? of : 0;
+    cb = this->check_read_hit(this, addr);
+    if (of) cb_of = this->check_read_hit(this, addr + len);
+    
+    *hit = !(((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL)));
+    if (!*hit) return 0;
+
+    uint32_t val;
+    val = cb->read(cb, GET_CO_L1(addr), len - of);
+    if (of) val += (cb_of->read(cb_of, 0, of) << ((len - of) << 3));
+    of = 0;
+    return val;
 }
 
 //base
 static uint32_t cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
-    return check_do_hit(this, addr, len, data, hit, atomic_write);
+    CB *cb,*cb_of = NULL;
+    of = GET_CO_L1(addr) + len - CB_SIZE;
+    of = of > 0 ? of : 0;
+    cb = this->check_write_hit(this, addr);
+    if (of) cb_of = this->check_write_hit(this, addr + len);
+    
+    *hit = !(((of == 0) && (cb == NULL)) || ((of > 0) && (cb == NULL || cb_of == NULL)));
+    if (!*hit) return 0;
+    
+    uint8_t *of_data = ((uint8_t *)&data) + len - of;
+    cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - of);
+    if (of) cb_of->write(cb_of, 0, of_data, of);
+    return of = 0;
 }
 
 static CB *l1_check_read_hit(Cache *this, hwaddr_t addr) {
@@ -223,7 +217,6 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
             break;
         }
     }
-
     if (dst_cb == NULL) {
         for (idx = 0; idx < ASSOC_CL2; ++idx) {
             if (!p_cb[idx].valid) {
@@ -232,7 +225,6 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
             }
         }
     }
-
     if (dst_cb == NULL) {
         srand((unsigned)time(NULL));
         dst_cb = p_cb + (rand() % ASSOC_CL2);
@@ -242,12 +234,10 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
         //write back
         memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);
     }
-
     dst_cb->valid = 1;
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);
     dst_cb->dirty = 0;
     dst_cb->tag = GET_CT(addr, 2);
-
     if (of != 0) {
         of = 0;
         l2_read_replace(this, (addr & (~CO_L2_MASK)) + CO_L2_MASK + 1);
