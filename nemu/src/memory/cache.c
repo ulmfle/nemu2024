@@ -63,16 +63,17 @@ struct {\
 }
 
 #define NORMAL_CHECK_HIT(level) \
-    do {\
-        int idx;\
-        concat(CB_L, level) *p_cb = (concat(CB_L, level) *)(((concat(Cache_L, level) *)this)->assoc[concat(GET_CI_L, level)(addr)]);\
-        for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
-            if (p_cb[idx].valid && p_cb[idx].tag == concat(GET_CT_L, level)(addr)) return (CB *)(p_cb + idx);\
-        }\
-        return NULL;\
-    } while (0)
+do {\
+    int idx;\
+    concat(CB_L, level) *p_cb = (concat(CB_L, level) *)(((concat(Cache_L, level) *)this)->assoc[concat(GET_CI_L, level)(addr)]);\
+    for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
+        if (p_cb[idx].valid && p_cb[idx].tag == concat(GET_CT_L, level)(addr)) return (CB *)(p_cb + idx);\
+    }\
+    return NULL;\
+} while (0)
 
 #define FIND_REPLACE(level) \
+do {\
     concat(CB_L, level) *p_cb = ((concat(Cache_L, level) *)this)->assoc[GET_CI(addr, level)];\
     int idx;\
     for (idx = 0; idx < concat(ASSOC_CL, level); ++idx) {\
@@ -83,7 +84,8 @@ struct {\
     if (dst_cb == NULL) {\
         srand((unsigned)time(NULL));\
         dst_cb = p_cb + (rand() % concat(ASSOC_CL, level));\
-    }
+    }\
+} while (0)
 
 
 typedef struct CB {
