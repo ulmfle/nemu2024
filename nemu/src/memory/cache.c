@@ -125,16 +125,19 @@ Cache_L2 cache_l2;
 
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
+    Log("");
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
+    Log("");
     memcpy(this->buf + off, data, len);
 }
 
 //base
 static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
+    Log("");
     uint32_t val;
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
@@ -154,6 +157,7 @@ static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
 
 //base
 static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
+    Log("");
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
     of = of > 0 ? of : 0;
@@ -171,14 +175,17 @@ static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *
 }
 
 static CB *l1_check_read_hit(Cache *this, hwaddr_t addr) {
+    Log("");
     NORMAL_CHECK_HIT(1);
 }
 
 static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
+    Log("");
     NORMAL_CHECK_HIT(1);
 }
 
 static void l1_read_replace(Cache *this, hwaddr_t addr) {
+    Log("");
     CB_L1 *dst_cb = NULL;
     FIND_REPLACE(1);
     CB *src_cb = cache_l2.check_read_hit((Cache *)&cache_l2, addr);
@@ -196,10 +203,12 @@ static void l1_write_replace(Cache *this, hwaddr_t addr) {
 }
 
 static CB *l2_check_read_hit(Cache *this, hwaddr_t addr) {
+    Log("");
     NORMAL_CHECK_HIT(2);
 }
 
 static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
+    Log("");
     int idx;
     CB_L2 *p_cb = (CB_L2 *)(((Cache_L2 *)this)->assoc[GET_CI(addr, 2)]);
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
@@ -212,6 +221,7 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_read_replace(Cache *this, hwaddr_t addr) {
+    Log("");
     CB_L2 *dst_cb = NULL;
     CB_L2 *p_cb = ((Cache_L2 *)this)->assoc[GET_CI(addr, 2)];
 
@@ -250,6 +260,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_write_replace(Cache *this, hwaddr_t addr) {
+    Log("");
     CB_L2 *dst_cb = NULL;
     FIND_REPLACE(2);
     dst_cb->tag = GET_CT(addr, 2);
