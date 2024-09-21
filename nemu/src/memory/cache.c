@@ -209,6 +209,7 @@ void init_cache() {
 //main
 uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
     uint32_t val = 0;
+    
     if (GET_CO(addr + len) < GET_CO(addr)) {
         bool hit_l, hit_r;
         val += cache_read(addr, len - GET_CO(addr + len) - 1, &hit_l);
