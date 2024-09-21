@@ -137,7 +137,7 @@ static CB *l2_check_read_hit(Cache *this, hwaddr_t addr) {
 
 static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
     CB *ret = normal_check_hit(ASSOC(2)[GET_CI(addr, 2)], ASSOC_CL2, GET_CT(addr, 2));
-    ret->dirty = 1;
+    if (ret != NULL) ret->dirty = 1;
     return ret;
 }
 
