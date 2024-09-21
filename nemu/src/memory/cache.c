@@ -135,8 +135,7 @@ uint32_t atomic_write(CB *cb, CB *cb_of, hwaddr_t addr, uint32_t data, size_t le
     uint8_t *of_data = ((uint8_t *)&data) + len - of;
     cb->write(cb, GET_CO_L1(addr), (uint8_t *)&data, len - of);
     if (of) cb_of->write(cb_of, 0, of_data, of);
-    of = 0;
-    return 0;
+    return of = 0;
 }
 
 //stand-alone
