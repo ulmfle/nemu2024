@@ -223,6 +223,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
             break;
         }
     }
+
     if (dst_cb == NULL) {
         for (idx = 0; idx < ASSOC_CL2; ++idx) {
             if (!p_cb[idx].valid) {
@@ -231,6 +232,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
             }
         }
     }
+
     if (dst_cb == NULL) {
         srand((unsigned)time(NULL));
         dst_cb = p_cb + (rand() % ASSOC_CL2);
@@ -240,10 +242,12 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
         //write back
         memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);
     }
+
     dst_cb->valid = 1;
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);
     dst_cb->dirty = 0;
     dst_cb->tag = GET_CT(addr, 2);
+
     if (of != 0) {
         of = 0;
         l2_read_replace(this, (addr & (~CO_L2_MASK)) + CO_L2_MASK + 1);
