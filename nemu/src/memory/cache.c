@@ -241,7 +241,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
 void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     Log("addr %08x len %d nxt : %d", addr, (int)len, (int)len - GET_CO(addr) - 1);
     if (GET_CO(addr + len) < GET_CO(addr)) {
-        cache_write(addr, data, len - GET_CO(addr) - 1);
+        cache_write(addr, data, len - GET_CO(addr + len) - 1);
         cache_write(addr + len - GET_CO(addr + len), data >> ((len - GET_CO(addr + len) - 1) << 3), GET_CO(addr + len) + 1);
         return;
     }
