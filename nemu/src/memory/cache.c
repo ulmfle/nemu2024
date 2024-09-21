@@ -209,13 +209,13 @@ void init_cache() {
 //main
 uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
     Log("addr %08x len %u", addr, (unsigned)len);
-    if (len == 0) return 0;
     uint32_t val = 0;
     
-    if (GET_CO(addr + len) < GET_CO(addr)) {
+    int of = GET_CO(addr) + len - CB_SIZE;
+    if (of > 0) {
         bool hit_l, hit_r;
-        val += cache_read(addr, len - GET_CO(addr + len) - 1, &hit_l);
-        val += cache_read(addr + len - GET_CO(addr + len), GET_CO(addr + len) + 1, &hit_r) << ((len - GET_CO(addr + len) - 1) << 3);
+        val += cache_read(addr, len - of, &hit_l);
+        val += cache_read(addr + len - GET_CO(addr + len), of, &hit_r) << ((len - of) << 3);
         *hit = hit_l && hit_r;
         return val;
     }
@@ -241,10 +241,10 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
 //main
 void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     Log("addr %08x len %d", addr, (int)len);
-    if (len == 0) return;
-    if (GET_CO(addr + len) < GET_CO(addr)) {
-        cache_write(addr, data, len - GET_CO(addr + len) - 1);
-        cache_write(addr + len - GET_CO(addr + len), data >> ((len - GET_CO(addr + len) - 1) << 3), GET_CO(addr + len) + 1);
+    int of = GET_CO(addr) + len - CB_SIZE;
+    if (of > 0) {
+        cache_write(addr, data, len - of);
+        cache_write(addr + len - GET_CO(addr + len), data >> ((len - of) << 3), of);
         return;
     }
 
@@ -260,7 +260,8 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
 //main
 void cache_replace(hwaddr_t addr, size_t len) {
     Log("addr %08x len %u", addr, (unsigned)len);
-    if (GET_CO(addr + len) < GET_CO(addr)) {
+    int of = GET_CO(addr) + len - CB_SIZE;
+    if (of > 0) {
         cache_replace(addr, 0);
         cache_replace(addr + len, 0);
         return;
