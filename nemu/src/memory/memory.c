@@ -1,5 +1,7 @@
 #include "common.h"
 
+extern uint64_t timer;
+
 uint32_t cache_read(hwaddr_t, size_t, bool *);
 void cache_replace(hwaddr_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
@@ -11,6 +13,9 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	uint32_t val;
 	bool hit;
 	val = cache_read(addr, len, &hit);
+
+	if (hit) timer+=2; else timer+=200;
+
 	if (hit == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr);

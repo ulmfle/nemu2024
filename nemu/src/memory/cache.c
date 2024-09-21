@@ -113,6 +113,7 @@ typedef struct {
     CB_L2 (*assoc)[ASSOC_CL2];
 } Cache_L2;
 
+uint64_t timer;
 static int of;
 static CB_L1 l1_block[NR_CL1_BLOCK];
 static CB_L2 l2_block[NR_CL2_BLOCK];
