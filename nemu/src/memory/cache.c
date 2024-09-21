@@ -125,19 +125,19 @@ Cache_L2 cache_l2;
 
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
-    Log("");
+    Log("off %d len %d", off, (unsigned)len);
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
 }
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    Log("");
-    memcpy(this->buf + off, data, len);
+    Log("off %d len %d data: %08x", off, (unsigned)len, *(uint32_t *)data);
+    memcpy(this->buf + off, data, (unsigned)len);
 }
 
 //base
 static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
-    Log("");
+    Log("addr : %08x len : %d", addr ,(unsigned)len);
     uint32_t val;
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
@@ -157,7 +157,7 @@ static uint32_t cread(Cache *this, hwaddr_t addr, size_t len, bool *hit) {
 
 //base
 static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *hit) {
-    Log("");
+    Log("addr : %08x len : %d data: %08x", addr ,(unsigned)len, data);
     CB *cb,*cb_of = NULL;
     of = GET_CO_L1(addr) + len - CB_SIZE;
     of = of > 0 ? of : 0;
@@ -175,17 +175,17 @@ static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *
 }
 
 static CB *l1_check_read_hit(Cache *this, hwaddr_t addr) {
-    Log("");
+    Log("addr %08x", addr);
     NORMAL_CHECK_HIT(1);
 }
 
 static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
-    Log("");
+    Log("addr %08x", addr);
     NORMAL_CHECK_HIT(1);
 }
 
 static void l1_read_replace(Cache *this, hwaddr_t addr) {
-    Log("");
+    Log("addr %08x", addr);
     CB_L1 *dst_cb = NULL;
     FIND_REPLACE(1);
     CB *src_cb = cache_l2.check_read_hit((Cache *)&cache_l2, addr);
@@ -203,12 +203,12 @@ static void l1_write_replace(Cache *this, hwaddr_t addr) {
 }
 
 static CB *l2_check_read_hit(Cache *this, hwaddr_t addr) {
-    Log("");
+    Log("addr %08x", addr);
     NORMAL_CHECK_HIT(2);
 }
 
 static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
-    Log("");
+    Log("addr %08x", addr);
     int idx;
     CB_L2 *p_cb = (CB_L2 *)(((Cache_L2 *)this)->assoc[GET_CI(addr, 2)]);
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
@@ -221,7 +221,7 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_read_replace(Cache *this, hwaddr_t addr) {
-    Log("");
+    Log("addr %08x", addr);
     CB_L2 *dst_cb = NULL;
     CB_L2 *p_cb = ((Cache_L2 *)this)->assoc[GET_CI(addr, 2)];
 
@@ -232,6 +232,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
             break;
         }
     }
+
     if (dst_cb == NULL) {
         for (idx = 0; idx < ASSOC_CL2; ++idx) {
             if (!p_cb[idx].valid) {
@@ -240,6 +241,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
             }
         }
     }
+
     if (dst_cb == NULL) {
         srand((unsigned)time(NULL));
         dst_cb = p_cb + (rand() % ASSOC_CL2);
@@ -249,10 +251,12 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
         //write back
         memcpy(hwa_to_va((((addr & (~CT_L2_MASK)) ^ (dst_cb->tag << (32 - TAG_CL2_WIDTH))) & (~CO_L2_MASK))), dst_cb->buf, CB_SIZE);
     }
+
     dst_cb->valid = 1;
     dst_cb->write((CB *)dst_cb, 0, hwa_to_va((addr & (~CO_L2_MASK))), CB_SIZE);
     dst_cb->dirty = 0;
     dst_cb->tag = GET_CT(addr, 2);
+
     if (of != 0) {
         of = 0;
         l2_read_replace(this, (addr & (~CO_L2_MASK)) + CO_L2_MASK + 1);
@@ -260,7 +264,7 @@ static void l2_read_replace(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_write_replace(Cache *this, hwaddr_t addr) {
-    Log("");
+    Log("addr %08x", addr);
     CB_L2 *dst_cb = NULL;
     FIND_REPLACE(2);
     dst_cb->tag = GET_CT(addr, 2);
@@ -339,7 +343,6 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     if (hit_l2 == false) {
         cache_l2.write_replace((Cache *)&cache_l2, addr);
         cache_l2.write((Cache *)&cache_l2, addr, data, len, &hit_l2);   //write allocate (move to L2 and write again)
-        cache_l1.write_replace((Cache *)&cache_l2, addr);
     }
 }
 
