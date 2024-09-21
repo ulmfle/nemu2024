@@ -89,6 +89,8 @@ void restart() {
 	cpu.eip = ENTRY_START;
 	cpu.eflags.val = 2;
 	cpu.cr0.val = 0;
+	cpu.cs.hid_desc.s = 1;
+	cpu.ds.hid_desc.s = 1;
 
 	/* Initialize cache */
 	init_cache();

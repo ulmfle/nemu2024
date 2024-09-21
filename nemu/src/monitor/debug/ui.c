@@ -185,7 +185,7 @@ static int cmd_x(char *args) {
         printf("0x%08x: ",_expr);
         int t;
         for (t = 0; t < 4 && n > 0 && _expr < HW_MEM_SIZE; ++t, --n, _expr+=len) {
-            printf("0x%08x ", swaddr_read(_expr, len));
+            printf("0x%08x ", swaddr_read(_expr, len, cpu.ds.sel.index));
         }
         putchar('\n');
     }
@@ -215,17 +215,17 @@ static int cmd_bt(char *args) {
 	now_ebp = prev_ebp = reg_l(R_EBP);
 	while (prev_ebp) {
 		now_ebp = prev_ebp;
-		prev_ebp = swaddr_read(now_ebp, 4);
+		prev_ebp = swaddr_read(now_ebp, 4, cpu.ss.sel.index);
 		now_ebp += 4;
-		ret_addr = swaddr_read(now_ebp, 4);
+		ret_addr = swaddr_read(now_ebp, 4, cpu.ss.sel.index);
 		now_ebp += 4;
-		f_args[0] = swaddr_read(now_ebp, 4);
+		f_args[0] = swaddr_read(now_ebp, 4, cpu.ss.sel.index);
 		now_ebp += 4;
-		f_args[1] = swaddr_read(now_ebp, 4);
+		f_args[1] = swaddr_read(now_ebp, 4, cpu.ss.sel.index);
 		now_ebp += 4;
-		f_args[2] = swaddr_read(now_ebp, 4);
+		f_args[2] = swaddr_read(now_ebp, 4, cpu.ss.sel.index);
 		now_ebp += 4;
-		f_args[3] = swaddr_read(now_ebp, 4);
+		f_args[3] = swaddr_read(now_ebp, 4, cpu.ss.sel.index);
 
 		// func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
 		// why sometime no "main" ?

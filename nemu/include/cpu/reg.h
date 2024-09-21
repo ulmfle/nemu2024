@@ -57,11 +57,11 @@ typedef union {
 		union {
 			struct {
 				uint8_t accessed : 1;
-				uint8_t type : 3;
+				uint8_t type_app : 3;
 			};
 
 			uint8_t type_sys : 4;
-		};
+		} type;
 
 		uint8_t s : 1;
 		uint8_t dpl : 2;
