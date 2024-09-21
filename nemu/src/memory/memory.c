@@ -1,7 +1,7 @@
 #include "common.h"
 
 uint32_t cache_read(hwaddr_t, size_t, bool *);
-void cache_replace(hwaddr_t);
+void cache_replace(hwaddr_t, size_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
@@ -13,7 +13,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	val = cache_read(addr, len, &hit);
 	if (hit == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
-		cache_replace(addr);
+		cache_replace(addr, len);
 	}
 	return val;
 }

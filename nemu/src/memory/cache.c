@@ -254,6 +254,12 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
 }
 
 //main
-void cache_replace(hwaddr_t addr) {
+void cache_replace(hwaddr_t addr, size_t len) {
+    if (GET_CO(addr + len) < GET_CO(addr)) {
+        cache_replace(addr, 0);
+        cache_replace(addr + len, 0);
+        return;
+    }
+
     l2.read_replace(&l2, addr);
 }
