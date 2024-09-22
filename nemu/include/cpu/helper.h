@@ -9,7 +9,7 @@
 #define make_helper(name) int name(swaddr_t eip)
 
 static inline uint32_t instr_fetch(swaddr_t addr, size_t len) {
-	return swaddr_read(addr, len, cpu.cs.sel.index);
+	return swaddr_read(addr, len, SR_CS);
 }
 
 /* Instruction Decode and EXecute */

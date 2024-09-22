@@ -181,7 +181,7 @@ make_helper(concat(decode_rm_imm_, SUFFIX)) {
 
 void concat(write_operand_, SUFFIX) (Operand *op, DATA_TYPE src) {
 	if(op->type == OP_TYPE_REG) { REG(op->reg) = src; }
-	else if(op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, src, cpu.ds.sel.index); }
+	else if(op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, src, SR_DS); }
 	else { assert(0); }
 }
 

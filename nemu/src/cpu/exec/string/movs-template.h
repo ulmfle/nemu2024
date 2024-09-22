@@ -3,7 +3,7 @@
 #define instr movs
 
 make_helper(concat(movs_, SUFFIX)) {
-	MEM_W(cpu.es, cpu.edi, MEM_R(cpu.ds, cpu.esi));
+	MEM_W(SR_ES, cpu.edi, MEM_R(SR_DS, cpu.esi));
 	cpu.esi += (cpu.eflags.DF ? -DATA_BYTE : DATA_BYTE);
 	cpu.edi += (cpu.eflags.DF ? -DATA_BYTE : DATA_BYTE);
 
