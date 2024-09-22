@@ -64,5 +64,3 @@ void load_desc(uint8_t sreg, uint16_t _sel) {
 	cpu.sr[sreg].sel.val = _sel;
 	memcpy((void *)&(cpu.sr[sreg].hid_desc), hwa_to_va(page_translate(cpu.gdtr.LBA + sizeof(uint64_t)*cpu.sr[sreg].sel.index)), sizeof(uint64_t));
 }
-
-// Log("hid:0x%08x%08x %08x %08x %08x",cpu.sr[sreg].hid_desc.hi_32, cpu.sr[sreg].hid_desc.lo_32,(uint32_t)cpu.sr[sreg].hid_desc.seg_base, ((uint32_t)cpu.sr[sreg].hid_desc.base_lo), (uint32_t)cpu.sr[sreg].hid_desc.base_hi);
