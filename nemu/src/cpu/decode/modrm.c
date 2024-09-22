@@ -41,12 +41,12 @@ int load_addr(swaddr_t eip, ModR_M *m, Operand *rm) {
 	}
 
 	if(base_reg != -1) {
-		addr += reg_l(base_reg) + (base_reg == R_EBP ? sr_base(SR_SS) : sr_base(SR_DS)); 
+		addr += reg_l(base_reg) + ((base_reg == R_EBP || base_reg == R_ESP) ? sr_base(SR_SS) : sr_base(SR_DS)); 
  		// addr += reg_l(base_reg);
 	}
 
 	if(index_reg != -1) {
-		addr += reg_l(index_reg) << scale;
+		addr += (reg_l(index_reg) + sr_base(SR_DS)) << scale;
 	}
 
 #ifdef DEBUG
