@@ -19,6 +19,7 @@ make_helper(ljmp_wl) {
     cpu.cs.sel.val = l;
     cpu.cs.hid_desc = *load_desc(SR_CS);
     
+    Log("sr_base: %#x", sr_base(SR_CS));
     cpu.eip = sr_base(SR_CS) + r - (len + 1);
 
     print_asm("ljmp $%#x,$%#x", l, r);
