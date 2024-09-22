@@ -12,7 +12,6 @@ void load_desc(uint8_t, uint16_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	Log("addr %08x", addr);
 	uint32_t val;
 	bool hit;
 	val = cache_read(addr, len, &hit);
@@ -21,7 +20,6 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr, len);
 	}
-	Log("val %08x", val);
 	return val;
 }
 
