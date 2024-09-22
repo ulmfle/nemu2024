@@ -36,12 +36,14 @@ make_helper(mov_rm2sr) {
 	_sr->sel.val = op_src->val;
 	_sr->hid_desc.seg_present = 1;
 	_sr->hid_desc.lo_32 = lnaddr_read(cpu.gdtr.LBA + _sr->sel.index * sizeof(descriptor), 4);
+	print_asm("mov" str(SUFFIX) " %%%s,%%%s", op_src->str, regsr[op_dest->reg]);
 	return len + 1;
 }
 
 make_helper(mov_sr2rm) {
 	int len = decode_r2rm_w(eip + 1);
 	OPERAND_W(op_dest, cpu.sr[op_src->reg].sel.val);
+	print_asm("mov" str(SUFFIX) " %%%s,%%%s", regsr[op_src->reg], op_dest->str);
 	return len + 1;
 }
 
