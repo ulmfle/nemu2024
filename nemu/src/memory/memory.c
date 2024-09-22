@@ -29,6 +29,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
+	Log("addr %08x len : %u", addr, (unsigned)len);
 	return hwaddr_read(addr, len);
 }
 
