@@ -14,7 +14,7 @@ make_helper(ljmp_wl) {
     len += decode_i_w(eip + len + 1);
     uint16_t l = op_src->val;
 
-    cpu.cs.hid_desc.seg_base = l;
+    set_sr_base(SR_CS, l);
     cpu.eip = r - (len + 1);
 
     print_asm("ljmp $%#x,$%#x", l, r);
