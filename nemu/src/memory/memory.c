@@ -53,7 +53,7 @@ void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
 }
 
 lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg) {
-	
+	Log("%08x %08x %08x",(uint32_t)cpu.sr[sreg].hid_desc.seg_base, ((uint32_t)cpu.sr[sreg].hid_desc.base_lo), (uint32_t)cpu.sr[sreg].hid_desc.base_hi);
 	return sr_base(sreg) + addr;
 }
 
