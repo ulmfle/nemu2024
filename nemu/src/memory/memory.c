@@ -51,12 +51,9 @@ void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
 }
 
 lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg) {
-	uint8_t temp[8];
-	uint64_t l,r;
-	l = lnaddr_read(cpu.gdtr.LBA + sizeof(descriptor)*sreg, 4);
-	r = lnaddr_read(cpu.gdtr.LBA + sizeof(descriptor)*sreg + 4, 4);
+	uint8_t temp[4];
+	uint64_t l = lnaddr_read(cpu.gdtr.LBA + sizeof(descriptor)*sreg, 4);
 	memcpy((void *)temp, &l, 4);
-	memcpy((void *)temp + 4, &r, 4);
 
 	descriptor *desc = (void *)temp;
 	

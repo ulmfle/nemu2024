@@ -7,7 +7,7 @@
 enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
 enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
 enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
-
+enum { ES, CS, SS, DS, FS, GS };
 /* TODO: Re-organize the `CPU_state' structure to match the register
  * encoding scheme in i386 instruction format. For example, if we
  * access cpu.gpr[3]._16, we will get the `bx' register; if we access
@@ -50,28 +50,40 @@ typedef union CR3 {
 
 typedef union {
 	struct {
-		uint16_t seg_limit;
-		uint16_t seg_base;
-		uint8_t base_lo;
-		
 		union {
 			struct {
-				uint8_t accessed : 1;
-				uint8_t type_app : 3;
+				uint16_t seg_limit;
+				uint16_t seg_base;
 			};
 
-			uint8_t type_sys : 4;
-		} type;
+			uint32_t lo_32;
+		};
 
-		uint8_t s : 1;
-		uint8_t dpl : 2;
-		uint8_t seg_present : 1;
-		uint8_t limit : 4;
-		uint8_t avl : 1;
-		uint8_t o : 1;
-		uint8_t x : 1;
-		uint8_t granularity : 1;
-		uint8_t base_hi;
+		union {
+			struct {
+				uint8_t base_lo;
+				union {
+					struct {
+						uint8_t accessed : 1;
+						uint8_t type_app : 3;
+					};
+
+					uint8_t type_sys : 4;
+				} type;
+
+				uint8_t s : 1;
+				uint8_t dpl : 2;
+				uint8_t seg_present : 1;
+				uint8_t limit : 4;
+				uint8_t avl : 1;
+				uint8_t o : 1;
+				uint8_t x : 1;
+				uint8_t granularity : 1;
+				uint8_t base_hi;
+			};
+
+			uint32_t hi_32;
+		};
 	};
 
 	uint64_t val;
@@ -86,6 +98,11 @@ typedef union {
 
 	uint16_t val;
 } selector;
+
+typedef struct {
+	selector sel;
+	descriptor hid_desc;
+} sreg;
 
 typedef struct {
 
@@ -135,10 +152,10 @@ typedef struct {
 		uint32_t val;
 	} eflags;
 
-	struct {
-		selector sel;
-		descriptor hid_desc;
-	} cs, ss, ds, es;
+	union {
+		sreg sr[6];
+		sreg es, cs, ss, ds, fs, gs;
+	};
 
 } CPU_state;
 
@@ -156,5 +173,6 @@ static inline int check_reg_index(int index) {
 extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
+extern const char* regsr[];
 
 #endif

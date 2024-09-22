@@ -28,6 +28,25 @@ make_helper(concat(mov_moffs2a_, SUFFIX)) {
 	return 5;
 }
 
+#if DATA_BYTE == 2
+
+make_helper(mov_rm2sr) {
+	int len = decode_rm2r_w(eip + 1);
+	sreg *_sr = &cpu.sr[op_dest->reg];
+	_sr->sel.val = op_src->val;
+	_sr->hid_desc.seg_present = 1;
+	_sr->hid_desc.lo_32 = lnaddr_read(cpu.gdtr.LBA + _sr->sel.index * sizeof(descriptor), 4);
+	return len + 1;
+}
+
+make_helper(mov_sr2rm) {
+	int len = decode_r2rm_w(eip + 1);
+	OPERAND_W(op_dest, cpu.sr[op_src->reg].sel.val);
+	return len + 1;
+}
+
+#endif
+
 #if DATA_BYTE == 4
 
 make_helper(mov_cr02r) {

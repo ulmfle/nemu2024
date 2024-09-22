@@ -7,3 +7,16 @@
 #define DATA_BYTE 4
 #include "jmp-template.h"
 #undef DATA_BYTE
+
+make_helper(ljmp_wl) {
+    int len = decode_i_l(eip + 1);
+    uint16_t r = op_src->val;
+    len += decode_i_w(eip + len + 1);
+    uint32_t l = op_src->val;
+
+    cpu.cs.hid_desc.seg_base = l;
+    cpu.eip = r - (len + 1);
+
+    print_asm("ljmp $%#x,$%#x", l, r);
+    return len + 1;
+}
