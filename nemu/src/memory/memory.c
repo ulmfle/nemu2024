@@ -6,7 +6,7 @@ void cache_replace(hwaddr_t, size_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
-lnaddr_t seg_translate(swaddr_t, size_t, uint8_t);
+lnaddr_t seg_translate(swaddr_t, size_t, uint16_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
@@ -50,7 +50,7 @@ void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
 	lnaddr_write(lnaddr, len, data);
 }
 
-lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg) {
+lnaddr_t seg_translate(swaddr_t addr, size_t len, uint16_t sreg) {
 	uint8_t temp[4];
 	uint64_t l = lnaddr_read(cpu.gdtr.LBA + sizeof(descriptor)*sreg, 4);
 	memcpy((void *)temp, &l, 4);
