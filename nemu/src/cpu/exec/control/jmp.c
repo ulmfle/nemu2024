@@ -17,8 +17,9 @@ make_helper(ljmp_wl) {
     uint16_t l = op_src->val;
 
     cpu.cs.sel.val = l;
+    assert(cpu.cs.sel.val != 0);
     load_desc(SR_CS);
-    
+
     cpu.eip = sr_base(SR_CS) + r - (len + 1);
 
     print_asm("ljmp $%#x,$%#x", l, r);
