@@ -29,17 +29,14 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	Log("addr : %08x", addr);
 	return hwaddr_read(addr, len);
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	Log("addr : %08x data: %08x", addr, data);
 	hwaddr_write(addr, len, data);
 }
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
-	Log("addr : %08x", addr);
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
@@ -48,7 +45,6 @@ uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 }
 
 void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
-	Log("addr : %08x data: %08x", addr, data);
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
@@ -58,8 +54,8 @@ void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
 
 lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg) {
 	if (!cpu.sr[sreg].hid_desc.seg_present) {
-		cpu.sr[sreg].hid_desc.seg_present = 1;
 		load_desc(sreg);
+		cpu.sr[sreg].hid_desc.seg_present = 1;
 	}
 	return sr_base(sreg) + addr;
 }
