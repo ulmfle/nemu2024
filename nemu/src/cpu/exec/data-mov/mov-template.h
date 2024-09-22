@@ -34,10 +34,9 @@ make_helper(mov_rm2sr) {
 	int len = decode_rm2r_w(eip + 1);
 	sreg *_sr = &cpu.sr[op_dest->sreg];
 	_sr->sel.val = op_src->val;
-
 	load_desc(op_dest->sreg);
-
 	_sr->hid_desc.seg_present = 1;
+
 	print_asm("mov" str(SUFFIX) " %s,%%%s", op_src->str, regsr[op_dest->reg]);
 	return len + 1;
 }
