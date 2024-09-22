@@ -110,7 +110,7 @@ typedef union {
 	struct {
 		uint8_t rpl : 2;
 		uint8_t ti  : 1;
-		uint16_t index;
+		uint16_t index : 13;
 	};
 
 	uint16_t val;
