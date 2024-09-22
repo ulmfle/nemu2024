@@ -29,10 +29,12 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
+	Log("addr : %08x", addr);
 	return hwaddr_read(addr, len);
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
+	Log("addr : %08x", addr);
 	hwaddr_write(addr, len, data);
 }
 
