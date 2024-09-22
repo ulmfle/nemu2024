@@ -21,7 +21,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr, len);
 	}
-	Log("");
+	Log("val %08x", val);
 	return val;
 }
 
