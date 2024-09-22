@@ -10,9 +10,9 @@
 
 make_helper(ljmp_wl) {
     int len = decode_i_l(eip + 1);
-    uint16_t r = op_src->val;
+    uint32_t r = op_src->val;
     len += decode_i_w(eip + len + 1);
-    uint32_t l = op_src->val;
+    uint16_t l = op_src->val;
 
     cpu.cs.hid_desc.seg_base = l;
     cpu.eip = r - (len + 1);
