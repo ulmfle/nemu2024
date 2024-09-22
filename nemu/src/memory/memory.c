@@ -66,5 +66,5 @@ hwaddr_t page_translate(lnaddr_t addr) {
 }
 
 void load_desc(uint8_t sreg) {
-	memcpy((void *)&cpu.cs.hid_desc, hwa_to_va(page_translate(cpu.gdtr.LBA + sizeof(descriptor)*cpu.sr[sreg].sel.index)), sizeof(descriptor));
+	memcpy((void *)&cpu.sr[sreg].hid_desc, hwa_to_va(page_translate(cpu.gdtr.LBA + sizeof(descriptor)*cpu.sr[sreg].sel.index)), sizeof(descriptor));
 }
