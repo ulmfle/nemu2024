@@ -8,7 +8,7 @@ void cache_write(hwaddr_t, uint32_t, size_t);
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
 lnaddr_t seg_translate(swaddr_t, size_t, uint8_t);
-void load_desc(uint8_t sreg);
+void load_desc(uint8_t, uint16_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
@@ -53,6 +53,7 @@ void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
 }
 
 lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg) {
+	
 	return sr_base(sreg) + addr;
 }
 
@@ -60,7 +61,8 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	return addr;
 }
 
-void load_desc(uint8_t sreg) {
+void load_desc(uint8_t sreg, uint16_t _sel) {
+	cpu.sr[sreg].sel.val = _sel;
 	memcpy((void *)&cpu.sr[sreg].hid_desc, hwa_to_va(page_translate(cpu.gdtr.LBA + sizeof(descriptor)*cpu.sr[sreg].sel.index)), sizeof(descriptor));
 	cpu.sr[sreg].hid_desc.seg_present = 1;
 }

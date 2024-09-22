@@ -1,6 +1,6 @@
 #include "cpu/exec/helper.h"
 
-void load_desc(uint8_t sreg);
+void load_desc(uint8_t, uint16_t);
 
 #define DATA_BYTE 1
 #include "jmp-template.h"
@@ -16,9 +16,7 @@ make_helper(ljmp_wl) {
     len += decode_i_w(eip + len + 1);
     uint16_t l = op_src->val;
 
-    cpu.cs.sel.val = l;
-    assert(cpu.cs.sel.val == l);
-    load_desc(SR_CS);
+    load_desc(SR_CS, l);
 
     cpu.eip = sr_base(SR_CS) + r - (len + 1);
 
