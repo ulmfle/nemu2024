@@ -1,6 +1,7 @@
 #include "cpu/exec/helper.h"
 
 void load_desc(uint8_t, uint16_t);
+lnaddr_t seg_translate(swaddr_t, uint8_t);
 
 #define DATA_BYTE 1
 #include "jmp-template.h"
@@ -17,8 +18,8 @@ make_helper(ljmp_wl) {
     uint16_t l = op_src->val;
 
     load_desc(SR_CS, l);
-
-    cpu.eip = sr_base(SR_CS) + r - (len + 1);
+    
+    cpu.eip = seg_translate(r, SR_CS) - (len + 1);
 
     print_asm("ljmp $%#x,$%#x", l, r);
     return len + 1;

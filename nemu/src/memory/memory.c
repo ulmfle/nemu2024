@@ -7,7 +7,7 @@ void cache_replace(hwaddr_t, size_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
-lnaddr_t seg_translate(swaddr_t, size_t, uint8_t);
+lnaddr_t seg_translate(swaddr_t, uint8_t);
 void load_desc(uint8_t, uint16_t);
 /* Memory accessing interfaces */
 
@@ -42,7 +42,7 @@ uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	lnaddr_t lnaddr = cpu.cr0.protect_enable ? seg_translate(addr, len, sreg) : addr;
+	lnaddr_t lnaddr = cpu.cr0.protect_enable ? seg_translate(addr, sreg) : addr;
 	return lnaddr_read(lnaddr, len);
 }
 
@@ -50,12 +50,11 @@ void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	lnaddr_t lnaddr = cpu.cr0.protect_enable ? seg_translate(addr, len, sreg) : addr;
+	lnaddr_t lnaddr = cpu.cr0.protect_enable ? seg_translate(addr, sreg) : addr;
 	lnaddr_write(lnaddr, len, data);
 }
 
-lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg) {
-	//assert(cpu.sr[sreg].hid_desc.seg_present);
+lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 	return sr_base(sreg) + addr;
 }
 
