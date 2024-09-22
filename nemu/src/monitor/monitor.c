@@ -93,6 +93,9 @@ void restart() {
 	set_sr_base(SR_CS, 0);
 	set_sr_lim(SR_CS, 0xffffffff);
 
+	cpu.cs.hid_desc.seg_present = 1;
+	cpu.ds.hid_desc.seg_present = 1;
+
 	/* Initialize cache */
 	init_cache();
 
