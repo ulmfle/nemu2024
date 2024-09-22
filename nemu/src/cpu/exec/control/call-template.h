@@ -21,7 +21,7 @@ make_helper(concat(call_rm_,SUFFIX)) {
     if (op_src->type == OP_TYPE_REG) {
         cpu.eip = (REG(op_src->reg) & (~0u >> (DATA_BYTE == 2 ? 16 : 0))) - (len + 1);
     } else {
-        cpu.eip = (MEM_R(op_src->addr) & (~0u >> (DATA_BYTE == 2 ? 16 : 0))) - (len + 1);
+        cpu.eip = (MEM_R(SR_DS ,op_src->addr) & (~0u >> (DATA_BYTE == 2 ? 16 : 0))) - (len + 1);
     }
 
     print_asm_template1();

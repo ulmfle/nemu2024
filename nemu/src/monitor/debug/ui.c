@@ -145,9 +145,12 @@ static int cmd_info(char *args) {
                 printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
 			printf("%s\t\t0x%08x\t\t%d\n", "eflags", cpu.eflags.val, cpu.eflags.val);
-#ifdef DEBUG
+#if 0 && defined(DEBUG)
+			int srlen = sizeof(cpu.sr) / sizeof(cpu.sr[0]);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LIM", cpu.gdtr.limit, cpu.gdtr.limit);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LBA", cpu.gdtr.LBA, cpu.gdtr.LBA);
+			for (idx = 0; idx < srlen; ++idx)
+                printf("%s\t\t0x%04x\t\thid:0x%08x%08x\n", regsr[idx], cpu.sr[idx].sel.val, cpu.sr[idx].hid_desc.hi_32, cpu.sr[idx].hid_desc.lo_32);
 #endif
             break;
         }
@@ -185,7 +188,7 @@ static int cmd_x(char *args) {
         printf("0x%08x: ",_expr);
         int t;
         for (t = 0; t < 4 && n > 0 && _expr < HW_MEM_SIZE; ++t, --n, _expr+=len) {
-            printf("0x%08x ", swaddr_read(_expr, len));
+            printf("0x%08x ", swaddr_read(_expr, len, SR_DS));
         }
         putchar('\n');
     }
@@ -215,17 +218,17 @@ static int cmd_bt(char *args) {
 	now_ebp = prev_ebp = reg_l(R_EBP);
 	while (prev_ebp) {
 		now_ebp = prev_ebp;
-		prev_ebp = swaddr_read(now_ebp, 4);
+		prev_ebp = swaddr_read(now_ebp, 4, SR_SS);
 		now_ebp += 4;
-		ret_addr = swaddr_read(now_ebp, 4);
+		ret_addr = swaddr_read(now_ebp, 4, SR_SS);
 		now_ebp += 4;
-		f_args[0] = swaddr_read(now_ebp, 4);
+		f_args[0] = swaddr_read(now_ebp, 4, SR_SS);
 		now_ebp += 4;
-		f_args[1] = swaddr_read(now_ebp, 4);
+		f_args[1] = swaddr_read(now_ebp, 4, SR_SS);
 		now_ebp += 4;
-		f_args[2] = swaddr_read(now_ebp, 4);
+		f_args[2] = swaddr_read(now_ebp, 4, SR_SS);
 		now_ebp += 4;
-		f_args[3] = swaddr_read(now_ebp, 4);
+		f_args[3] = swaddr_read(now_ebp, 4, SR_SS);
 
 		// func_addr = ret_addr + (int)swaddr_read(ret_addr - 4, 4);
 		// why sometime no "main" ?

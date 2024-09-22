@@ -27,14 +27,14 @@
 #define REG(index) concat(reg_, SUFFIX) (index)
 #define REG_NAME(index) concat(regs, SUFFIX) [index]
 
-#define MEM_R(addr) swaddr_read(addr, DATA_BYTE)
-#define MEM_W(addr, data) swaddr_write(addr, DATA_BYTE, data)
+#define MEM_R(_sr, addr) swaddr_read(addr, DATA_BYTE, _sr)
+#define MEM_W(_sr, addr, data) swaddr_write(addr, DATA_BYTE, _sr, data)
 
 #define OPERAND_W(op, src) concat(write_operand_, SUFFIX) (op, src)
 
 #define MSB(n) ((DATA_TYPE)(n) >> ((DATA_BYTE << 3) - 1))
 
 // add for convenience
-#define PUSH(data) do { cpu.esp -= DATA_BYTE; MEM_W(cpu.esp, data); } while (0)
+#define PUSH(data) do { cpu.esp -= DATA_BYTE; MEM_W(SR_SS, cpu.esp, data); } while (0)
 
-#define POP(dest) do { dest = MEM_R(cpu.esp); cpu.esp += DATA_BYTE; } while (0)
+#define POP(dest) do { dest = MEM_R(SR_SS, cpu.esp); cpu.esp += DATA_BYTE; } while (0)

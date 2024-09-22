@@ -1,5 +1,7 @@
 #include "cpu/exec/helper.h"
 
+void load_desc(uint8_t, uint16_t);
+
 #define DATA_BYTE 1
 #include "mov-template.h"
 #undef DATA_BYTE

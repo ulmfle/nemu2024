@@ -245,7 +245,7 @@ uint32_t eval(int st, int ed, uint8_t *bad) {
 			case REV: value = !rvalue; break;
 			case POS: value = 0+rvalue; break;
 			case NEG: value = 0-rvalue; break;
-			case DEREF: value = swaddr_read(rvalue, 4); break;
+			case DEREF: value = swaddr_read(rvalue, 4, SR_DS); break;
 			default: break;
 		}
 

@@ -2,12 +2,12 @@
 #define __REG_H__
 
 #include "common.h"
-//#include "lib-common/x86-inc/cpu.h"
+// #include "/lib-common/x86-inc/cpu.h"
 
 enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
 enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
 enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
-
+enum { SR_ES, SR_CS, SR_SS, SR_DS, SR_FS, SR_GS };
 /* TODO: Re-organize the `CPU_state' structure to match the register
  * encoding scheme in i386 instruction format. For example, if we
  * access cpu.gpr[3]._16, we will get the `bx' register; if we access
@@ -50,28 +50,40 @@ typedef union CR3 {
 
 typedef union {
 	struct {
-		uint16_t seg_limit;
-		uint16_t seg_base;
-		uint8_t base_lo;
-		
 		union {
 			struct {
-				uint8_t accessed : 1;
-				uint8_t type : 3;
+				uint16_t seg_limit;
+				uint16_t seg_base;
 			};
 
-			uint8_t type_sys : 4;
+			uint32_t lo_32;
 		};
 
-		uint8_t s : 1;
-		uint8_t dpl : 2;
-		uint8_t seg_present : 1;
-		uint8_t limit : 4;
-		uint8_t avl : 1;
-		uint8_t o : 1;
-		uint8_t x : 1;
-		uint8_t granularity : 1;
-		uint8_t base_hi;
+		union {
+			struct {
+				uint8_t base_lo;
+				union {
+					struct {
+						uint8_t accessed : 1;
+						uint8_t type_app : 3;
+					};
+
+					uint8_t type_sys : 4;
+				} type;
+
+				uint8_t s : 1;
+				uint8_t dpl : 2;
+				uint8_t seg_present : 1;
+				uint8_t limit : 4;
+				uint8_t avl : 1;
+				uint8_t o : 1;
+				uint8_t x : 1;
+				uint8_t granularity : 1;
+				uint8_t base_hi;
+			};
+
+			uint32_t hi_32;
+		};
 	};
 
 	uint64_t val;
@@ -79,13 +91,35 @@ typedef union {
 
 typedef union {
 	struct {
+		uint16_t seg_base;
+		uint8_t base_lo;
+		uint8_t base_hi;
+	};
+	uint32_t val;
+} srbase;
+
+typedef union {
+	struct {
+		uint16_t seg_limit;
+		uint8_t limit : 4;
+	};
+	uint32_t val;
+} srlim;
+
+typedef union {
+	struct {
 		uint8_t rpl : 2;
 		uint8_t ti  : 1;
-		uint16_t index;
+		uint16_t index : 13;
 	};
 
 	uint16_t val;
 } selector;
+
+typedef struct {
+	selector sel;
+	descriptor hid_desc;
+} sreg;
 
 typedef struct {
 
@@ -135,10 +169,10 @@ typedef struct {
 		uint32_t val;
 	} eflags;
 
-	struct {
-		selector sel;
-		descriptor hid_desc;
-	} cs, ss, ds, es;
+	union {
+		sreg sr[6];
+		sreg es, cs, ss, ds, fs, gs;
+	};
 
 } CPU_state;
 
@@ -153,8 +187,14 @@ static inline int check_reg_index(int index) {
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
 
+#define sr_base(index) (uint32_t)cpu.sr[index].hid_desc.seg_base + ((uint32_t)cpu.sr[index].hid_desc.base_lo << 16) + ((uint32_t)cpu.sr[index].hid_desc.base_hi << 24)
+#define sr_lim(index) (uint32_t)cpu.sr[index].hid_desc.seg_limit + ((uint32_t)cpu.sr[index].hid_desc.limit << 16)
+#define set_sr_base(_sr, _val) {srbase _srb; _srb.val = (uint32_t)_val;cpu.sr[_sr].hid_desc.seg_base = _srb.seg_base; cpu.sr[_sr].hid_desc.base_lo = _srb.base_lo; cpu.sr[_sr].hid_desc.base_hi = _srb.base_hi; } 
+#define set_sr_lim(_sr, _val) {srlim _slm; _slm.val = (uint32_t)_val;cpu.sr[_sr].hid_desc.seg_limit = _slm.seg_limit; cpu.sr[_sr].hid_desc.limit = _slm.limit;} 
+
 extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
+extern const char* regsr[];
 
 #endif

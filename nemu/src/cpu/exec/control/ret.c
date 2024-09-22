@@ -3,7 +3,7 @@
 #define instr ret
 
 make_helper(ret) {
-    uint32_t addr = swaddr_read(cpu.esp, 4);
+    uint32_t addr = swaddr_read(cpu.esp, 4, SR_SS);
     cpu.esp += 4;
     cpu.eip = addr - 1;
     print_asm("ret");
@@ -12,7 +12,7 @@ make_helper(ret) {
 
 make_helper(ret_l) {
     decode_i_l(eip + 1);
-    uint32_t addr = swaddr_read(cpu.esp, 4);
+    uint32_t addr = swaddr_read(cpu.esp, 4, SR_SS);
     cpu.esp += 4;
     cpu.eip = addr - 3;
     cpu.esp += op_src->val;

@@ -11,7 +11,7 @@ make_helper(concat(pop_rm_, SUFFIX)) {
     int len = concat(decode_rm_, SUFFIX)(eip + 1);
     DATA_TYPE r;
     POP(r);
-    MEM_W(op_src->addr, r);
+    MEM_W(SR_DS, op_src->addr, r);
     print_asm_template1();
     return len + 1;
 }

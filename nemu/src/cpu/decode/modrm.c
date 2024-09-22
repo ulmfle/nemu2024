@@ -1,6 +1,8 @@
 #include "cpu/decode/modrm.h"
 #include "cpu/helper.h"
 
+int is_base_sp_bp = 0;
+
 int load_addr(swaddr_t eip, ModR_M *m, Operand *rm) {
 	assert(m->mod != 3);
 
@@ -41,7 +43,9 @@ int load_addr(swaddr_t eip, ModR_M *m, Operand *rm) {
 	}
 
 	if(base_reg != -1) {
-		addr += reg_l(base_reg);
+		is_base_sp_bp = base_reg == R_EBP || base_reg == R_ESP;
+		addr += reg_l(base_reg); 
+ 		// addr += reg_l(base_reg);
 	}
 
 	if(index_reg != -1) {
@@ -87,7 +91,7 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 	ModR_M m;
 	m.val = instr_fetch(eip, 1);
 	reg->type = OP_TYPE_REG;
-	reg->reg = m.reg;
+	reg->sreg = reg->reg = m.reg;
 
 	if(m.mod == 3) {
 		rm->type = OP_TYPE_REG;
@@ -109,7 +113,7 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 	}
 	else {
 		int instr_len = load_addr(eip, &m, rm);
-		rm->val = swaddr_read(rm->addr, rm->size);
+		rm->val = swaddr_read(rm->addr, rm->size, is_base_sp_bp ? SR_SS : SR_DS);
 		return instr_len;
 	}
 }
