@@ -150,7 +150,7 @@ static int cmd_info(char *args) {
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LIM", cpu.gdtr.limit, cpu.gdtr.limit);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LBA", cpu.gdtr.LBA, cpu.gdtr.LBA);
 			for (idx = 0; idx < srlen; ++idx)
-                printf("%s\t\t0x%08x\t\t%d\n", regsr[idx], cpu.sr[idx].sel.val, cpu.sr[idx].sel.val);
+                printf("%s\t\t0x%04x\t\t%d\n", regsr[idx], cpu.sr[idx].sel.val, cpu.sr[idx].sel.val);
 #endif
             break;
         }
