@@ -33,6 +33,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
+	Log("addr %08x len : %u data : %08x", addr, (unsigned)len, data);
 	hwaddr_write(addr, len, data);
 }
 
