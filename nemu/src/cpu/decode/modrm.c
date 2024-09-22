@@ -116,6 +116,7 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 		Log("");
 		int instr_len = load_addr(eip, &m, rm);
 		rm->val = swaddr_read(rm->addr, rm->size, is_base_sp_bp ? SR_SS : SR_DS);
+		Log("");
 		return instr_len;
 	}
 }
