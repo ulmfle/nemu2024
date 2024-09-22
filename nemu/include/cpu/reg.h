@@ -189,7 +189,7 @@ static inline int check_reg_index(int index) {
 
 #define sr_base(index) (uint32_t)cpu.sr[index].hid_desc.seg_base + ((uint32_t)cpu.sr[index].hid_desc.base_lo << 16) + ((uint32_t)cpu.sr[index].hid_desc.base_hi << 24)
 #define sr_lim(index) (uint32_t)cpu.sr[index].hid_desc.seg_limit + ((uint32_t)cpu.sr[index].hid_desc.limit << 16)
-#define set_sr_base(_sr, _val) {srbase _srb; _srb.val = (uint32_t)_val;cpu.sr[_sr].hid_desc.seg_base = _srb.seg_base; cpu.sr[_sr].hid_desc.base_lo = _srb.base_lo; cpu.sr[_sr].hid_desc.base_hi = _srb.base_hi; } 
+#define set_sr_base(_sr, _val) {srbase _srb; _srb.val = (uint32_t)_val;cpu.sr[_sr].hid_desc.seg_base = _srb.seg_base; cpu.sr[_sr].hid_desc.base_lo = _srb.base_lo;/* cpu.sr[_sr].hid_desc.base_hi = _srb.base_hi; */} 
 #define set_sr_lim(_sr, _val) {srlim _slm; _slm.val = (uint32_t)_val;cpu.sr[_sr].hid_desc.seg_limit = _slm.seg_limit; cpu.sr[_sr].hid_desc.limit = _slm.limit;} 
 
 extern const char* regsl[];
