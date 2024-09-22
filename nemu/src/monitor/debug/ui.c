@@ -140,13 +140,13 @@ static int cmd_info(char *args) {
     switch (subcmd) {
         case 'r': {
             int reglen = sizeof(cpu.gpr) / sizeof(cpu.gpr[0]);
-			int srlen = sizeof(cpu.sr) / sizeof(cpu.sr[0]);
             int idx;
             for (idx = 0; idx < reglen; ++idx)
                 printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
 			printf("%s\t\t0x%08x\t\t%d\n", "eflags", cpu.eflags.val, cpu.eflags.val);
 #ifdef DEBUG
+			int srlen = sizeof(cpu.sr) / sizeof(cpu.sr[0]);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LIM", cpu.gdtr.limit, cpu.gdtr.limit);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LBA", cpu.gdtr.LBA, cpu.gdtr.LBA);
 			for (idx = 0; idx < srlen; ++idx)
