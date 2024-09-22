@@ -17,11 +17,9 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	val = cache_read(addr, len, &hit);
 
 	if (hit == false) {
-		Log("");
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr, len);
 	}
-	Log("");
 	return val;
 }
 
@@ -31,12 +29,10 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	Log("addr : %08x", addr);
 	return hwaddr_read(addr, len);
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	Log("addr : %08x", addr);
 	hwaddr_write(addr, len, data);
 }
 
