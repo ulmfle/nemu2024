@@ -49,7 +49,8 @@
 		movw    $GDT_ENTRY(2), %ax
 		movw    %ax, %ds          # %DS = %AX
 		movw    %ax, %es          # %ES = %AX
-		movw    %ax, %ss          # %SS = %AX
+		# movw    %ax, %ss          # %SS = %AX
+		movw    %ax, $GDT_ENTRY(3)          # %SS = entry3
 
 	# Set up a stack for C code.
 		movl $0, %ebp
@@ -62,7 +63,7 @@
 		MAKE_NULL_SEG_DESC                   # empty segment
 		MAKE_SEG_DESC(0xA, 0x0, 0xffffffff)  # code
 		MAKE_SEG_DESC(0x2, 0x0, 0xffffffff)  # data
-		MAKE_SEG_DESC(, 0x4000000, 0xffffffff)
+		MAKE_SEG_DESC(0x6, 0x4000000, 0xffffffff) # stack
 
 	gdtdesc:                      # descriptor
 		.word   (gdtdesc - gdt - 1)    # limit = sizeof(gdt) - 1

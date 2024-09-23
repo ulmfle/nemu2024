@@ -62,7 +62,7 @@ typedef union {
 		union {
 			struct {
 				uint8_t base_lo;
-				uint8_t type;
+				uint8_t type : 4;
 				uint8_t s : 1;
 				uint8_t dpl : 2;
 				uint8_t seg_present : 1;
@@ -70,7 +70,7 @@ typedef union {
 				uint8_t avl : 1;
 				uint8_t o : 1;
 				uint8_t x : 1;
-				uint8_t granularity : 1;
+				uint8_t g : 1;
 				uint8_t base_hi;
 			};
 
