@@ -162,8 +162,8 @@ typedef struct {
 	} eflags;
 
 	union {
-		sreg sr[6];
-		sreg es, cs, ss, ds, fs, gs;
+		sreg sr[4];
+		sreg es, cs, ss, ds/*, fs, gs*/;
 	};
 
 } CPU_state;
