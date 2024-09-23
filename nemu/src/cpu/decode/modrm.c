@@ -43,9 +43,8 @@ int load_addr(swaddr_t eip, ModR_M *m, Operand *rm) {
 	}
 
 	if(base_reg != -1) {
-		is_base_sp_bp = base_reg == R_EBP || base_reg == R_ESP;
+		is_base_sp_bp = (base_reg == R_EBP) || (base_reg == R_ESP);
 		addr += reg_l(base_reg); 
- 		// addr += reg_l(base_reg);
 	}
 
 	if(index_reg != -1) {
@@ -113,6 +112,7 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 	}
 	else {
 		int instr_len = load_addr(eip, &m, rm);
+		Log("ss : %d", is_base_sp_bp);
 		rm->val = swaddr_read(rm->addr, rm->size, is_base_sp_bp ? SR_SS : SR_DS);
 		return instr_len;
 	}
