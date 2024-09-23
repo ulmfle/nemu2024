@@ -45,6 +45,8 @@ int load_addr(swaddr_t eip, ModR_M *m, Operand *rm) {
 	if(base_reg != -1) {
 		is_base_sp = base_reg == R_ESP;
 		addr += reg_l(base_reg); 
+	} else {
+		is_base_sp = 0;
 	}
 
 	if(index_reg != -1) {
