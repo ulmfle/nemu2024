@@ -52,7 +52,9 @@ static int cmd_d(char *args);
 
 static int cmd_bt(char *args);
 
+#ifdef DEBUG
 static int cmd_debug(char *args);
+#endif
 
 static int cmd_help(char *args);
 
@@ -251,6 +253,7 @@ static int cmd_debug(char *args) {
 		cmd_info("r");
 		cpu_exec(1);
 		cmd_info("r");
+		putchar('\n');
 	}
 	return 0;
 }
