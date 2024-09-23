@@ -50,7 +50,8 @@
 		movw    %ax, %ds          # %DS = %AX
 		movw    %ax, %es          # %ES = %AX
 		# movw    %ax, %ss          # %SS = %AX
-		movw    %ax, $GDT_ENTRY(3)          # %SS = entry3
+		movw    $GDT_ENTRY(3), %ax
+		movw    %ax, %ss          # %SS = entry3
 
 	# Set up a stack for C code.
 		movl $0, %ebp
