@@ -2,6 +2,8 @@
 
 #include "cpu/decode/modrm.h"
 
+extern int is_base_sp_bp;
+
 #define decode_r_internal concat3(decode_r_, SUFFIX, _internal)
 #define decode_rm_internal concat3(decode_rm_, SUFFIX, _internal)
 #define decode_i concat(decode_i_, SUFFIX)
@@ -181,7 +183,7 @@ make_helper(concat(decode_rm_imm_, SUFFIX)) {
 
 void concat(write_operand_, SUFFIX) (Operand *op, DATA_TYPE src) {
 	if(op->type == OP_TYPE_REG) { REG(op->reg) = src; }
-	else if(op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, SR_DS, src); }
+	else if(op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, is_base_sp_bp ? SR_SS : SR_DS, src); }
 	else { assert(0); }
 }
 
