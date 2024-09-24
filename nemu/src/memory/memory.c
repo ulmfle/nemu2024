@@ -35,7 +35,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	if ((addr + len) % 0x1000 < addr % 0x1000) assert(0);
+	if ((addr + len - 1) % 0x1000 < addr % 0x1000) assert(0);
 	hwaddr_write(page_translate(addr), len, data);
 }
 
