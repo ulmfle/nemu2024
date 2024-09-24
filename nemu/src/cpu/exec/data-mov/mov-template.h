@@ -49,19 +49,41 @@ make_helper(mov_sr2rm) {
 
 #if DATA_BYTE == 4
 
-make_helper(mov_cr02r) {
-    int len = decode_rm_l(eip + 1);
-    OPERAND_W(op_src, cpu.cr0.val);
+make_helper(mov_cr2r) {
+    int len = decode_rm2r_l(eip + 1);
+	switch (op_src->reg) {
+	case R_EAX:
+		OPERAND_W(op_dest, cpu.cr0.val);
+		break;
+	
+	case R_EBX:
+		OPERAND_W(op_dest, cpu.cr3.val);
+		break;
 
-    print_asm("mov" str(SUFFIX) " %%%s,%%%s", "CR0", REG_NAME(op_src->reg));
+	default:
+		assert(0);
+	}
+
+    print_asm("mov" str(SUFFIX) " cr%d,%%%s", op_src->reg, REG_NAME(op_dest->reg));
     return len + 1;
 }
 
-make_helper(mov_r2cr0) {
-    int len = decode_rm_l(eip + 1);
-	cpu.cr0.val = op_src->val;
+make_helper(mov_r2cr) {
+    int len = decode_rm2r_l(eip + 1);
+	switch (op_dest->reg) {
+	case R_EAX:
+		cpu.cr0.val = op_src->val;
+		break;
+	
+	case R_EBX:
+		cpu.cr3.val = op_src->val;
+		break;
 
-    print_asm("mov" str(SUFFIX) " %%%s,%%%s", REG_NAME(R_EAX), "CR0");
+	default:
+		assert(0);
+	}
+
+    print_asm("mov" str(SUFFIX) " %%%s,cr%d", REG_NAME(op_src->reg), op_dest->reg);
     return len + 1;
 }
 
