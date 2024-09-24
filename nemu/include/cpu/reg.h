@@ -114,6 +114,18 @@ typedef struct {
 } sreg;
 
 typedef struct {
+	uint8_t p     : 1;
+	uint8_t rw    : 1;
+	uint8_t us    : 1;
+	uint8_t       : 2;
+	uint8_t a     : 1;
+	uint8_t d     : 1;
+	uint8_t       : 2;
+	uint8_t avail : 3;
+	uint32_t page_frame_addr : 20
+} page_entry;
+
+typedef struct {
 
 	CR0 cr0;
 	CR3 cr3;

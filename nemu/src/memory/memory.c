@@ -29,36 +29,33 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	return hwaddr_read(addr, len);
+	return hwaddr_read(page_translate(addr), len);
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	hwaddr_write(addr, len, data);
+	hwaddr_write(page_translate(addr), len, data);
 }
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	lnaddr_t lnaddr = cpu.cr0.protect_enable ? seg_translate(addr, sreg) : addr;
-	return lnaddr_read(lnaddr, len);
+	return lnaddr_read(seg_translate(addr, sreg), len);
 }
 
 void swaddr_write(swaddr_t addr, size_t len, uint8_t sreg, uint32_t data) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	lnaddr_t lnaddr = cpu.cr0.protect_enable ? seg_translate(addr, sreg) : addr;
-	lnaddr_write(lnaddr, len, data);
+	lnaddr_write(seg_translate(addr, sreg), len, data);
 }
 
 lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
-	Log("lnaddr : %08x",sr_base(sreg) + addr);
-	return sr_base(sreg) + addr;
+	return cpu.cr0.protect_enable ? sr_base(sreg) + addr : addr;
 }
 
 hwaddr_t page_translate(lnaddr_t addr) {
-	return addr;
+	return cpu.cr0.protect_enable & cpu.cr0.paging ? addr : addr;
 }
 
 void load_desc(uint8_t sreg, uint16_t _sel) {
