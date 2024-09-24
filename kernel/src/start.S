@@ -26,10 +26,10 @@
 		(0xC0 | (((lim) >> 28) & 0xf)), (((base) >> 24) & 0xff)
 
 	#ifdef IA32_PAGE
-	#	define KOFFSET 0xc0000000
-	#	define va_to_pa(x) (x - KOFFSET)
+		#define KOFFSET 0xc0000000
+		#define va_to_pa(x) (x - KOFFSET)
 	#else
-	#	define va_to_pa(x) (x)
+		#define va_to_pa(x) (x)
 	#endif
 
 	.globl start
