@@ -6,5 +6,6 @@ make_helper(int3);
 make_helper(lea);
 
 make_helper(int_b);
+make_helper(std);
 
 #endif

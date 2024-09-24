@@ -32,3 +32,8 @@ make_helper(int_b) {
 
 	return 2;
 }
+
+make_helper(std) {
+	cpu.eflags.DF = 1;
+	return 1;
+}
