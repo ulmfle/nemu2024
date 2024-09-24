@@ -30,7 +30,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	if ((addr + len) % 0x1000 < addr % 0x1000) assert(0);
+	if ((addr + len - 1) % 0x1000 < addr % 0x1000) assert(0);
 	return hwaddr_read(page_translate(addr), len);
 }
 
@@ -61,7 +61,9 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable & cpu.cr0.paging)) return addr;
 	page_entry dir_e, page_e;
 	memcpy((void *)&(dir_e), hwa_to_va(cpu.cr3.page_directory_base + sizeof(uint32_t)*((addr & (~(~0u >> 10))) >> 22)), sizeof(uint32_t));
+	assert(dir_e.p);
 	memcpy((void *)&(page_e), hwa_to_va(dir_e.page_frame_addr + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10))), sizeof(uint32_t));
+	assert(page_e.p);
 	return page_e.page_frame_addr + (addr & (0xfff));
 }
 
