@@ -65,7 +65,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	assert(pde.present);
 	memcpy((void *)&pte, hwa_to_va(((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)))), sizeof(uint32_t));
 	assert(pte.present);
-	return (pte.page_frame << 12) + (addr & PAGE_MASK);
+	return (cpu.cr3.page_directory_base << 12) + (pte.page_frame << 12) + (addr & PAGE_MASK);
 }
 
 void load_desc(uint8_t sreg, uint16_t _sel) {
