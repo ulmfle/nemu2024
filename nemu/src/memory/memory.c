@@ -30,12 +30,12 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	if ((addr + len - 1) % 0x1000 < addr % 0x1000) assert(0);
+	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) assert(0);
 	return hwaddr_read(page_translate(addr), len);
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	if ((addr + len - 1) % 0x1000 < addr % 0x1000) assert(0);
+	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) assert(0);
 	hwaddr_write(page_translate(addr), len, data);
 }
 
@@ -59,12 +59,12 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 
 hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable & cpu.cr0.paging)) return addr;
-	page_entry dir_e, page_e;
-	memcpy((void *)&(dir_e), hwa_to_va(cpu.cr3.page_directory_base + sizeof(uint32_t)*((addr & (~(~0u >> 10))) >> 22)), sizeof(uint32_t));
-	assert(dir_e.p);
-	memcpy((void *)&(page_e), hwa_to_va(dir_e.page_frame_addr + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10))), sizeof(uint32_t));
-	assert(page_e.p);
-	return page_e.page_frame_addr + (addr & (0xfff));
+	PDE pde; PTE pte;
+	memcpy((void *)&pde, hwa_to_va(cpu.cr3.page_directory_base + sizeof(uint32_t)*((addr & (~(~0u >> 10))) >> 22)), sizeof(uint32_t));
+	assert(pde.present);
+	memcpy((void *)&pte, hwa_to_va(pde.page_frame + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10))), sizeof(uint32_t));
+	assert(pte.present);
+	return pte.page_frame + (addr & PAGE_MASK);
 }
 
 void load_desc(uint8_t sreg, uint16_t _sel) {
