@@ -74,5 +74,8 @@ hwaddr_t page_translate(lnaddr_t addr) {
 
 void load_desc(uint8_t sreg, uint16_t _sel) {
 	cpu.sr[sreg].sel.val = _sel;
-	memcpy((void *)&(cpu.sr[sreg].hid_desc), hwa_to_va(page_translate(cpu.gdtr.LBA + sizeof(uint64_t)*cpu.sr[sreg].sel.index)), sizeof(uint64_t));
+	uint32_t lv = lnaddr_read(page_translate(cpu.gdtr.LBA + sizeof(uint64_t)*cpu.sr[sreg].sel.index), 4);
+	uint32_t rv = lnaddr_read(page_translate(cpu.gdtr.LBA + sizeof(uint64_t)*cpu.sr[sreg].sel.index + 4), 4);
+	memcpy((void *)&(cpu.sr[sreg].hid_desc), (void *)&lv, sizeof(uint64_t));
+	memcpy(((void *)&(cpu.sr[sreg].hid_desc)) + 4, (void *)&rv, sizeof(uint64_t));
 }
