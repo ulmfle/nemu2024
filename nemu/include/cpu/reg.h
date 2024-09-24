@@ -122,7 +122,7 @@ typedef struct {
 	uint8_t d     : 1;
 	uint8_t       : 2;
 	uint8_t avail : 3;
-	uint32_t page_frame_addr : 20
+	uint32_t page_frame_addr : 20;
 } page_entry;
 
 typedef struct {
