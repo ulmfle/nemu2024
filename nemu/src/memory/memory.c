@@ -60,7 +60,7 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
 	PDE pde; PTE pte;
-	Log("base: %08x", cpu.cr3.page_directory_base << 12);
+	Log("base: %08x addr %08x", cpu.cr3.page_directory_base << 12, addr);
 	memcpy((void *)&pde, hwa_to_va((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*((addr & (~(~0u >> 10))) >> 22)), sizeof(uint32_t));
 	Log("pde: %08x", *(uint32_t *)&pde);
 	assert(pde.present);

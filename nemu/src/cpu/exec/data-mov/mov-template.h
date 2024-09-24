@@ -71,16 +71,16 @@ make_helper(mov_cr2r) {
 make_helper(mov_r2cr) {
     int len = decode_rm2r_l(eip + 1);
 	switch (op_dest->reg) {
-	case R_EAX:
-		cpu.cr0.val = op_src->val;
-		break;
-	
-	case R_EBX:
-		cpu.cr3.val = op_src->val;
-		break;
+		case R_EAX:
+			cpu.cr0.val = op_src->val;
+			break;
+		
+		case R_EBX:
+			cpu.cr3.val = op_src->val;
+			break;
 
-	default:
-		assert(0);
+		default:
+			assert(0);
 	}
 
     print_asm("mov" str(SUFFIX) " %%%s,cr%d", REG_NAME(op_src->reg), op_dest->reg);
