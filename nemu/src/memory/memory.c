@@ -59,15 +59,15 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 
 hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
-	PDE pde; 
-	PTE pte;
-	Log("fetch : %8x", ((cpu.cr3.page_directory_base << 12) + (unsigned)sizeof(uint32_t)*(addr >> 22)));
-	memcpy((void *)&pde, hwa_to_va(((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22))), sizeof(uint32_t));
-	Log("fetched : %8x", pde.val);
-	assert(pde.present);
-	memcpy((void *)&pte, hwa_to_va(((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)))), sizeof(uint32_t));
-	assert(pte.present);
-	return (pte.page_frame << 12) + (addr & PAGE_MASK);
+	PDE *pde = hwa_to_va(((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22))); 
+	assert(pde->present);
+	PTE *pte = hwa_to_va(((pde->page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10))));
+	assert(pte->present);
+	return (pte->page_frame << 12) + (addr & PAGE_MASK);
+	//Log("fetch : %08x", ((cpu.cr3.page_directory_base << 12) + (unsigned)sizeof(uint32_t)*(addr >> 22)));
+	//memcpy((void *)&pde, hwa_to_va(((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22))), sizeof(uint32_t));
+	//Log("fetched : %08x", pde.val);
+	//memcpy((void *)&pte, hwa_to_va(((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)))), sizeof(uint32_t));
 }
 
 void load_desc(uint8_t sreg, uint16_t _sel) {
