@@ -62,6 +62,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	PDE pde; PTE pte;
 	Log("base: %08x", cpu.cr3.page_directory_base << 12);
 	memcpy((void *)&pde, hwa_to_va(cpu.cr3.page_directory_base + sizeof(uint32_t)*((addr & (~(~0u >> 10))) >> 22)), sizeof(uint32_t));
+	Log("pde: %08x", *(uint32_t *)&pde);
 	assert(pde.present);
 	memcpy((void *)&pte, hwa_to_va(pde.page_frame + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10))), sizeof(uint32_t));
 	assert(pte.present);
