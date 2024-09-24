@@ -64,7 +64,7 @@ make_helper(mov_cr2r) {
 		assert(0);
 	}
 
-    print_asm("mov" str(SUFFIX) " cr%d,%%%s", op_src->reg, REG_NAME(op_dest->reg));
+    print_asm("mov" str(SUFFIX) " %%cr%d,%%%s", op_src->reg, REG_NAME(op_dest->reg));
     return len + 1;
 }
 
@@ -83,7 +83,7 @@ make_helper(mov_r2cr) {
 			assert(0);
 	}
 
-    print_asm("mov" str(SUFFIX) " %%%s,cr%d", REG_NAME(op_src->reg), op_dest->reg);
+    print_asm("mov" str(SUFFIX) " %%%s,%%cr%d", REG_NAME(op_src->reg), op_dest->reg);
     return len + 1;
 }
 
