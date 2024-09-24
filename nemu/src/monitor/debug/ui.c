@@ -154,7 +154,7 @@ static int cmd_info(char *args) {
 			for (idx = 0; idx < srlen; ++idx) {
 				uint64_t sr_hdv;
 				memcpy((void *)&sr_hdv, (void *)&cpu.sr[idx].hid_desc, sizeof(uint64_t));
-                printf("%s\t\t0x%04x\t\thid:0x%16llx\n", regsr[idx], cpu.sr[idx].sel.val, (long long unsigned)sr_hdv);
+                printf("%s\t\t0x%04x\t\thid:0x%016llx\n", regsr[idx], cpu.sr[idx].sel.val, (long long unsigned)sr_hdv);
 			}
 #endif
             break;
