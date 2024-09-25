@@ -259,7 +259,7 @@ static int cmd_page(char *args) {
 	if (succ == false) {
 		return 0;
 	}
-	printf("0x%08x", page_translate(ret));
+	printf("0x%08x\n", page_translate(ret));
 	return 0;
 }
 
