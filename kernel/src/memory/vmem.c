@@ -16,7 +16,7 @@ void create_video_mapping() {
 	 * some page tables to create this mapping.
 	 */
 	int pdir_idx;
-	PTE *ptable = va_to_pa(get_kptable()) + VMEM_ADDR / PT_SIZE * NR_PTE;
+	PTE *ptable = (PTE *)va_to_pa(get_kptable()) + VMEM_ADDR / PT_SIZE * NR_PTE;
 	for (pdir_idx = VMEM_ADDR / PT_SIZE; pdir_idx < (VMEM_ADDR + SCR_SIZE) / PT_SIZE; ++pdir_idx, ptable += NR_PTE) {
 		get_updir()[pdir_idx].val = make_pde(ptable);
 	}
