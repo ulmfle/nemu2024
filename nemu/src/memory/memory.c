@@ -63,13 +63,9 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	PTE pte;
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
 	assert(pde.present);
-	pte.val = hwaddr_read((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)), sizeof(uint32_t));
+	pte.val = hwaddr_read((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)), sizeof(uint32_t)); //attention
 	assert(pte.present);
 	return (pte.page_frame << 12) + (addr & PAGE_MASK);
-	//Log("fetch : %08x", ((cpu.cr3.page_directory_base << 12) + (unsigned)sizeof(uint32_t)*(addr >> 22)));
-	//memcpy((void *)&pde, hwa_to_va(((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22))), sizeof(uint32_t));
-	//Log("fetched : %08x", pde.val);
-	//memcpy((void *)&pte, hwa_to_va(((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)))), sizeof(uint32_t));
 }
 
 void load_desc(uint8_t sreg, uint16_t _sel) {

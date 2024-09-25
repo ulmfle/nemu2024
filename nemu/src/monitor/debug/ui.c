@@ -148,11 +148,11 @@ static int cmd_info(char *args) {
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
 			printf("%s\t\t0x%08x\t\t%d\n", "eflags", cpu.eflags.val, cpu.eflags.val);
 #if 1 && defined(DEBUG)
+			uint64_t sr_hdv;
 			int srlen = sizeof(cpu.sr) / sizeof(cpu.sr[0]);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LIM", cpu.gdtr.limit, cpu.gdtr.limit);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LBA", cpu.gdtr.LBA, cpu.gdtr.LBA);
 			for (idx = 0; idx < srlen; ++idx) {
-				uint64_t sr_hdv;
 				memcpy((void *)&sr_hdv, (void *)&cpu.sr[idx].hid_desc, sizeof(uint64_t));
                 printf("%s\t\t0x%04x\t\thid:0x%016llx\n", regsr[idx], cpu.sr[idx].sel.val, (long long unsigned)sr_hdv);
 			}
