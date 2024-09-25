@@ -7,6 +7,7 @@ static PDE kpdir[NR_PDE] align_to_page;						// kernel page directory
 static PTE kptable[PHY_MEM / PAGE_SIZE] align_to_page;		// kernel page tables
 
 PDE* get_kpdir() { return kpdir; }
+PTE* get_kptable() { return kptable; }
 
 /* set up page tables for kernel */
 void init_page(void) {
@@ -32,7 +33,7 @@ void init_page(void) {
 	/* We use inline assembly here to fill PTEs for efficiency.
 	 * If you do not understand it, refer to the C code below.
 	 */
-	
+
 	asm volatile ("std;\
 	 1: stosl;\
 		subl %0, %%eax;\
