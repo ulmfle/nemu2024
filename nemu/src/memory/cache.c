@@ -51,7 +51,7 @@ typedef struct Cache {
 
 static CB l1_block[NR_CL1_BLOCK];
 static CB l2_block[NR_CL2_BLOCK];
-Cache l1,l2;
+Cache l1, l2;
 
 //stand-alone
 static CB *normal_check_hit(CB *cb_lst, size_t len, uint32_t _tag) {
