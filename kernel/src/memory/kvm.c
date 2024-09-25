@@ -7,6 +7,7 @@ static PDE kpdir[NR_PDE] align_to_page;						// kernel page directory
 static PTE kptable[PHY_MEM / PAGE_SIZE] align_to_page;		// kernel page tables
 
 PDE* get_kpdir() { return kpdir; }
+PTE* get_kptable() { return kptable; }
 
 /* set up page tables for kernel */
 void init_page(void) {
@@ -40,7 +41,6 @@ void init_page(void) {
 		cld" : :
 		"i"(PAGE_SIZE), "a"((PHY_MEM - PAGE_SIZE) | 0x7), "D"(ptable - 1));
 
-
 	/*
 		===== referenced code for the inline assembly above =====
 
@@ -48,8 +48,8 @@ void init_page(void) {
 		ptable --;
 
 		// fill PTEs reversely
-		for (; pframe_addr >= 0; pframe_addr -= PAGE_SIZE) {
-			ptable->val = make_pte(pframe_addr);
+		for (; pframe_addr >= 0; pframe_addr -= PAGE_SIZE) {                       
+			ptable->val = make_pte(pframe_addr);      
 			ptable --;
 		}
 	*/

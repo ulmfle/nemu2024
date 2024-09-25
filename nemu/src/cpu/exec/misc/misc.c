@@ -32,3 +32,51 @@ make_helper(int_b) {
 
 	return 2;
 }
+
+make_helper(stc) {
+	cpu.eflags.CF = 1;
+	print_asm("stc");
+	return 1;
+}
+
+make_helper(sti) {
+	cpu.eflags.IF = 1;
+	print_asm("sti");
+	return 1;
+}
+
+make_helper(std) {
+	cpu.eflags.DF = 1;
+	print_asm("std");
+	return 1;
+}
+
+make_helper(cld) {
+	cpu.eflags.DF = 0;
+	print_asm("cld");
+	return 1;
+}
+
+make_helper(clc) {
+	cpu.eflags.CF = 0;
+	print_asm("clc");
+	return 1;
+}
+
+make_helper(cli) {
+	cpu.eflags.IF = 0;
+	print_asm("cli");
+	return 1;
+}
+
+make_helper(clts) {
+	cpu.cr0.task_switched = 0;
+	print_asm("clts");
+	return 1;
+}
+
+make_helper(cmc) {
+	cpu.eflags.CF = !cpu.eflags.CF;
+	print_asm("cmc");
+	return 1;
+}

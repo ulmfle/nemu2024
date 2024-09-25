@@ -10,6 +10,7 @@
 void cpu_exec(uint32_t);
 char *get_symbol_name(swaddr_t);
 swaddr_t getsymaddr_addr(swaddr_t, uint8_t);
+hwaddr_t page_translate(lnaddr_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -52,7 +53,11 @@ static int cmd_d(char *args);
 
 static int cmd_bt(char *args);
 
+static int cmd_page(char *args);
+
+#ifdef DEBUG
 static int cmd_debug(char *args);
+#endif
 
 static int cmd_help(char *args);
 
@@ -71,6 +76,7 @@ static struct {
 	{ "w", "Create watchpoints", cmd_w},
 	{ "d", "Remove watchpoints", cmd_d},
 	{ "bt", "Print stack frame chain", cmd_bt},
+	{ "page", "Show page translate result", cmd_page},
 #ifdef DEBUG
 	{ "debug", "debug", cmd_debug}
 #endif
@@ -145,12 +151,15 @@ static int cmd_info(char *args) {
                 printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
 			printf("%s\t\t0x%08x\t\t%d\n", "eflags", cpu.eflags.val, cpu.eflags.val);
-#if 0 && defined(DEBUG)
+#if 1 && defined(DEBUG)
+			uint64_t sr_hdv;
 			int srlen = sizeof(cpu.sr) / sizeof(cpu.sr[0]);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LIM", cpu.gdtr.limit, cpu.gdtr.limit);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LBA", cpu.gdtr.LBA, cpu.gdtr.LBA);
-			for (idx = 0; idx < srlen; ++idx)
-                printf("%s\t\t0x%04x\t\thid:0x%08x%08x\n", regsr[idx], cpu.sr[idx].sel.val, cpu.sr[idx].hid_desc.hi_32, cpu.sr[idx].hid_desc.lo_32);
+			for (idx = 0; idx < srlen; ++idx) {
+				memcpy((void *)&sr_hdv, (void *)&cpu.sr[idx].hid_desc, sizeof(uint64_t));
+                printf("%s\t\t0x%04x\t\thid:0x%016llx\n", regsr[idx], cpu.sr[idx].sel.val, (long long unsigned)sr_hdv);
+			}
 #endif
             break;
         }
@@ -243,6 +252,17 @@ static int cmd_bt(char *args) {
 	return 0;
 }
 
+static int cmd_page(char *args) {
+	bool succ = false;
+	int ret;
+	ret = expr(args, &succ);
+	if (succ == false) {
+		return 0;
+	}
+	printf("0x%08x\n", page_translate(ret));
+	return 0;
+}
+
 #ifdef DEBUG
 static int cmd_debug(char *args) {
 	int n=1;
@@ -251,6 +271,7 @@ static int cmd_debug(char *args) {
 		cmd_info("r");
 		cpu_exec(1);
 		cmd_info("r");
+		putchar('\n');
 	}
 	return 0;
 }
