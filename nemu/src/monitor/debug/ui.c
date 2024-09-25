@@ -10,6 +10,7 @@
 void cpu_exec(uint32_t);
 char *get_symbol_name(swaddr_t);
 swaddr_t getsymaddr_addr(swaddr_t, uint8_t);
+hwaddr_t page_translate(lnaddr_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -52,6 +53,8 @@ static int cmd_d(char *args);
 
 static int cmd_bt(char *args);
 
+static int cmd_page(char *args);
+
 #ifdef DEBUG
 static int cmd_debug(char *args);
 #endif
@@ -73,6 +76,7 @@ static struct {
 	{ "w", "Create watchpoints", cmd_w},
 	{ "d", "Remove watchpoints", cmd_d},
 	{ "bt", "Print stack frame chain", cmd_bt},
+	{ "page", "Show page translate result", cmd_page},
 #ifdef DEBUG
 	{ "debug", "debug", cmd_debug}
 #endif
@@ -245,6 +249,13 @@ static int cmd_bt(char *args) {
 													  , f_args[2]\
 													  , f_args[3]);
 	}
+	return 0;
+}
+
+static int cmd_page(char *args) {
+	uint32_t addr;
+	sscanf(args, "%u", &addr);
+	printf("%08x\n", page_translate(addr));
 	return 0;
 }
 
