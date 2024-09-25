@@ -253,9 +253,13 @@ static int cmd_bt(char *args) {
 }
 
 static int cmd_page(char *args) {
-	uint32_t addr;
-	sscanf(args, "%u", &addr);
-	printf("%08x\n", page_translate(addr));
+	bool succ = false;
+	int ret;
+	ret = expr(args, &succ);
+	if (succ == false) {
+		return 0;
+	}
+	printf("0x%08x", page_translate(ret));
 	return 0;
 }
 
