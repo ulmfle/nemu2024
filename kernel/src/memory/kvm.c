@@ -34,8 +34,8 @@ void init_page(void) {
 	 * If you do not understand it, refer to the C code below.
 	 */
 
-		uint32_t pframe_addr = PHY_MEM - PAGE_SIZE;
-		ptable = kptable + PHY_MEM / PAGE_SIZE - 1;
+	uint32_t pframe_addr = PHY_MEM - 2*PAGE_SIZE;
+		ptable = (PTE *)va_to_pa(kptable) + PHY_MEM / PAGE_SIZE - 1;
 
 		// fill PTEs reversely
 		for (; pframe_addr >= 0; pframe_addr -= PAGE_SIZE) {
