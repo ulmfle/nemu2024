@@ -62,7 +62,7 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 
 hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
-	bool hit;
+	bool hit = 0;
 	PDE pde;
 	PTE pte;
 	pte.val = tlb_read(addr, &hit);
