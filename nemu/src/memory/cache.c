@@ -302,7 +302,7 @@ void cache_replace(hwaddr_t addr, size_t len) {
 }
 
 //main
-hwaddr_t tlb_read(lnaddr_t addr, bool *hit) {
+uint32_t tlb_read(lnaddr_t addr, bool *hit) {
     CB *dst_cb = tlb_check_read_hit(addr);
     if (dst_cb == NULL) {
         *hit = false;
