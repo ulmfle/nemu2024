@@ -7,7 +7,7 @@ void cache_replace(hwaddr_t, size_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
 uint32_t tlb_read(lnaddr_t, bool *);
 void tlb_replace(lnaddr_t, uint32_t);
-int tlb_flush(CR3 *);
+int tlb_flush();
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
 lnaddr_t seg_translate(swaddr_t, uint8_t);
@@ -67,7 +67,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	PTE pte;
 	pte.val = tlb_read(addr, &hit);
 	Log("res: %8x", (pte.page_frame << 12) + (addr & PAGE_MASK));
-	if (hit == true && tlb_flush(&cpu.cr3) == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
+	if (hit == true && tlb_flush() == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
 
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
 	assert(pde.present);
