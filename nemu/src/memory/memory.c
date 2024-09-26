@@ -62,12 +62,12 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 
 hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
-	bool hit;
-	hwaddr_t res = tlb_read(addr, &hit);
-	int f_ret = tlb_flush(&cpu.cr3);
-	Log("2 cr3:%08x", cpu.cr3.val);
-	if (hit == true && f_ret == false) return res; 
-	Log("4 cr3:%08x", cpu.cr3.val);
+	// bool hit;
+	hwaddr_t res/* = tlb_read(addr, &hit)*/;
+	// int f_ret = tlb_flush(&cpu.cr3);
+	// Log("2 cr3:%08x", cpu.cr3.val);
+	// if (hit == true && f_ret == false) return res; 
+	// Log("4 cr3:%08x", cpu.cr3.val);
 	PDE pde;
 	PTE pte;
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
@@ -75,7 +75,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	pte.val = hwaddr_read((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)), sizeof(uint32_t)); //attention
 	assert(pte.present);
 	res = (pte.page_frame << 12) + (addr & PAGE_MASK);
-	tlb_replace(addr, res);
+	//tlb_replace(addr, res);
 	return res;
 }
 
