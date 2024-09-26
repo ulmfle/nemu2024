@@ -66,9 +66,8 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	PDE pde;
 	PTE pte;
 	pte.val = tlb_read(addr, &hit);
-	int f_ret = tlb_flush(&cpu.cr3);
 	Log("res: %8x", (pte.page_frame << 12) + (addr & PAGE_MASK));
-	if (hit == true && f_ret == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
+	if (hit == true && tlb_flush(&cpu.cr3) == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
 
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
 	assert(pde.present);

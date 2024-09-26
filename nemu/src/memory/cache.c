@@ -313,13 +313,14 @@ uint32_t tlb_read(lnaddr_t addr, bool *hit) {
 }
 
 //main
-void tlb_replace(lnaddr_t addr, hwaddr_t res) {
+void tlb_replace(lnaddr_t addr, uint32_t res) {
     tlb_read_replace(addr, res);
 }
 
 //main
 int tlb_flush(CR3 *_cr3) {
     if (_cr3->val != prev_cr3.val) {
+        Log("flushed");
         memset(tlb_buf, 0, sizeof(uint32_t)*NR_TLBE);
         prev_cr3.val = _cr3->val;
         return true;
