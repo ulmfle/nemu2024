@@ -7,6 +7,7 @@ void cache_replace(hwaddr_t, size_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
 uint32_t tlb_read(lnaddr_t, bool *);
 void tlb_replace(lnaddr_t, hwaddr_t);
+int tlb_flush(CR3 *_cr3);
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
 lnaddr_t seg_translate(swaddr_t, uint8_t);
@@ -62,10 +63,9 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
 	bool hit;
+	int f_ret = tlb_flush(&cpu.cr3);
 	hwaddr_t res = tlb_read(addr, &hit);
-	Log("2");
-	if (hit == true) return res; 
-	Log("4");
+	if (hit == true && f_ret == false) return res; 
 	PDE pde;
 	PTE pte;
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 

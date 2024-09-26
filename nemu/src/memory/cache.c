@@ -1,5 +1,6 @@
 #include "common.h"
 #include "cpu/mmu.h"
+#include "cpu/cpu.h"
 #include "memory/memory.h"
 #include <stdlib.h>
 #include <time.h>       //for random
@@ -55,9 +56,10 @@ typedef struct Cache {
     void (*write)(struct Cache *, hwaddr_t, uint32_t, size_t, bool *);
 } Cache;
 
+CR3 prev_cr3;
 static uint8_t l1_buf[NR_CL1_BLOCK][CB_SIZE];
 static uint8_t l2_buf[NR_CL2_BLOCK][CB_SIZE];
-static uint8_t tlb_buf[NR_TLBE][4];
+static uint8_t tlb_buf[NR_TLBE][sizeof(uint32_t)];
 static CB l1_block[NR_CL1_BLOCK];
 static CB l2_block[NR_CL2_BLOCK];
 static CB tlb_entry[NR_TLBE];
@@ -314,4 +316,13 @@ uint32_t tlb_read(lnaddr_t addr, bool *hit) {
 //main
 void tlb_replace(lnaddr_t addr, hwaddr_t res) {
     tlb_read_replace(addr, res);
+}
+
+int tlb_flush(CR3 *_cr3) {
+    if (strcmp((const char *)_cr3, (const char *)&prev_cr3) != 0) {
+        memset(tlb_buf, 0, sizeof(uint32_t)*NR_TLBE);
+        memcpy((void *)&prev_cr3, (void *)_cr3, sizeof(CR3));
+        return true;
+    }
+    return false;
 }
