@@ -5,7 +5,7 @@
 uint32_t cache_read(hwaddr_t, size_t, bool *);
 void cache_replace(hwaddr_t, size_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
-hwaddr_t tlb_read(lnaddr_t, bool *);
+uint32_t tlb_read(lnaddr_t, bool *);
 void tlb_replace(lnaddr_t, uint32_t);
 int tlb_flush(CR3 *);
 uint32_t dram_read(hwaddr_t, size_t);
@@ -67,6 +67,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	PTE pte;
 	pte.val = tlb_read(addr, &hit);
 	int f_ret = tlb_flush(&cpu.cr3);
+	Log("res: %8x", (pte.page_frame << 12) + (addr & PAGE_MASK));
 	if (hit == true && f_ret == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
 
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
@@ -74,6 +75,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	pte.val = hwaddr_read((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)), sizeof(uint32_t)); //attention
 	assert(pte.present);
 	tlb_replace(addr, pte.val);
+	Log("res: %8x", (pte.page_frame << 12) + (addr & PAGE_MASK));
 	return (pte.page_frame << 12) + (addr & PAGE_MASK);
 }
 
