@@ -5,9 +5,9 @@
 uint32_t cache_read(hwaddr_t, size_t, bool *);
 void cache_replace(hwaddr_t, size_t);
 void cache_write(hwaddr_t, uint32_t, size_t);
-uint32_t tlb_read(lnaddr_t, bool *);
+hwaddr_t tlb_read(lnaddr_t, bool *);
 void tlb_replace(lnaddr_t, hwaddr_t);
-int tlb_flush(CR3 *_cr3);
+int tlb_flush(CR3 *);
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
 lnaddr_t seg_translate(swaddr_t, uint8_t);
@@ -76,6 +76,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	assert(pte.present);
 	res = (pte.page_frame << 12) + (addr & PAGE_MASK);
 	//tlb_replace(addr, res);
+	Log("res : %8x", res);
 	return res;
 }
 
