@@ -1,4 +1,5 @@
 #include "common.h"
+#include "cpu/mmu.h"
 #include "memory/memory.h"
 #include <stdlib.h>
 #include <time.h>       //for random
@@ -6,6 +7,7 @@
 #define CB_SIZE_WIDTH 6
 #define NR_CL1_BLOCK_WIDTH 10
 #define NR_CL2_BLOCK_WIDTH 12
+#define NR_TLBE_WIDTH 6
 #define ASSOC_CL1_WIDTH 3
 #define ASSOC_CL2_WIDTH 4
 #define TAG_CL1_WIDTH (32 - CB_SIZE_WIDTH - NR_CL1_BLOCK_WIDTH + ASSOC_CL1_WIDTH)
@@ -16,21 +18,25 @@
 #define CB_SIZE (1 << CB_SIZE_WIDTH)
 #define NR_CL1_BLOCK (1 << NR_CL1_BLOCK_WIDTH)
 #define NR_CL2_BLOCK (1 << NR_CL2_BLOCK_WIDTH)
+#define NR_TLBE (1 << NR_TLBE_WIDTH)
 #define ASSOC_CL1 (1 << ASSOC_CL1_WIDTH)
 #define ASSOC_CL2 (1 << ASSOC_CL2_WIDTH)
 
 #define CT_MASK(level) (~0u << (32 - TAG_WIDTH(level)))
 #define CO_MASK (CB_SIZE - 1)
 #define CI_MASK(level) (((~0u) ^ (CT_MASK(level))) ^ (CO_MASK))
+#define TLB_TAG_MASK (~0u << 12)
 
 #define GET_CT(addr, level) (((addr) & CT_MASK(level)) >> (32 - TAG_WIDTH(level)))
 #define GET_CI(addr, level) (((addr) & CI_MASK(level)) >> CB_SIZE_WIDTH)
 #define GET_CO(addr) ((addr) & CO_MASK)
+#define GET_TLB_TAG(addr) (((addr) & TLB_TAG_MASK) >> 12)
 
 #define ASSOC(level) ((CB (*)[concat(ASSOC_CL, level)])(this->cb_pool))
 
 typedef struct CB {
-    uint8_t buf[CB_SIZE];
+    void *buf;
+
     uint32_t tag;
     bool valid;
     bool dirty;
@@ -49,8 +55,12 @@ typedef struct Cache {
     void (*write)(struct Cache *, hwaddr_t, uint32_t, size_t, bool *);
 } Cache;
 
+static uint8_t l1_buf[NR_CL1_BLOCK][CB_SIZE];
+static uint8_t l2_buf[NR_CL2_BLOCK][CB_SIZE];
+static uint8_t tlb_buf[NR_TLBE][4];
 static CB l1_block[NR_CL1_BLOCK];
 static CB l2_block[NR_CL2_BLOCK];
+static CB tlb_entry[NR_TLBE];
 Cache l1, l2;
 
 //stand-alone
@@ -172,6 +182,17 @@ static void l2_write_replace(Cache *this, hwaddr_t addr) {
     dst_cb->tag = GET_CT(addr, 2);
 }
 
+static CB *tlb_check_read_hit(lnaddr_t addr) {
+    return normal_check_hit(tlb_entry, NR_TLBE, GET_TLB_TAG(addr));
+}
+
+static void tlb_read_replace(lnaddr_t addr, hwaddr_t res) {
+    CB *dst_cb = normal_find_replace(tlb_entry, NR_TLBE);
+    dst_cb->tag = GET_TLB_TAG(addr);
+    dst_cb->valid = 1;
+    dst_cb->write(dst_cb, 0, (uint8_t *)&res, 4);
+}
+
 //main
 static void init_cache_internal() {
     l1.cb_pool = (void *)l1_block;
@@ -189,16 +210,27 @@ static void init_cache_internal() {
 
     int l1_idx;
     for (l1_idx = 0; l1_idx < NR_CL1_BLOCK; ++l1_idx) {
+        l1_block[l1_idx].buf = l1_buf[l1_idx];
         l1_block[l1_idx].read = cbread;
         l1_block[l1_idx].write = cbwrite;
         l1_block[l1_idx].valid = 0;
     }
+
     int l2_idx;
     for (l2_idx = 0; l2_idx < NR_CL2_BLOCK; ++l2_idx) {
+        l2_block[l2_idx].buf = l2_buf[l2_idx];
         l2_block[l2_idx].read = cbread;
         l2_block[l2_idx].write = cbwrite;
         l2_block[l2_idx].valid = 0;
         l2_block[l2_idx].dirty = 0;
+    }
+
+    int tlb_idx;
+    for (tlb_idx = 0; tlb_idx < NR_TLBE; ++tlb_idx) {
+        tlb_entry[tlb_idx].buf = tlb_buf[tlb_idx];
+        tlb_entry[tlb_idx].read = cbread;
+        tlb_entry[tlb_idx].write = cbwrite;
+        tlb_entry[tlb_idx].valid = 0;
     }
 }
 
@@ -266,4 +298,19 @@ void cache_replace(hwaddr_t addr, size_t len) {
     }
 
     l2.read_replace(&l2, addr);
+}
+
+//main
+uint32_t tlb_read(lnaddr_t addr, bool *hit) {
+    CB *dst_cb = tlb_check_read_hit(addr);
+    if (dst_cb == NULL) {
+        *hit = false;
+        return 0;
+    }
+    return dst_cb->read(dst_cb, 0, 4);
+}
+
+//main
+void tlb_replace(lnaddr_t addr, hwaddr_t res) {
+    tlb_read_replace(addr, res);
 }
