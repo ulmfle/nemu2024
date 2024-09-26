@@ -307,6 +307,7 @@ uint32_t tlb_read(lnaddr_t addr, bool *hit) {
         *hit = false;
         return 0;
     }
+    *hit = true;
     return dst_cb->read(dst_cb, 0, 4);
 }
 
