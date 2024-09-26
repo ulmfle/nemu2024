@@ -63,7 +63,9 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
 	bool hit;
 	hwaddr_t res = tlb_read(addr, &hit);
+	Log("2");
 	if (hit == true) return res; 
+	Log("4");
 	PDE pde;
 	PTE pte;
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
