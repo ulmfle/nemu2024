@@ -321,7 +321,7 @@ void tlb_replace(lnaddr_t addr, hwaddr_t res) {
 int tlb_flush(CR3 *_cr3) {
     if (_cr3->val != prev_cr3.val) {
         memset(tlb_buf, 0, sizeof(uint32_t)*NR_TLBE);
-        memcpy((void *)&prev_cr3, (void *)_cr3, sizeof(CR3));
+        prev_cr3.val = _cr3->val;
         return true;
     }
     return false;
