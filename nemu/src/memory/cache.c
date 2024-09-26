@@ -319,10 +319,11 @@ void tlb_replace(lnaddr_t addr, uint32_t res) {
 
 //main
 int tlb_flush() {
+    int tlb_idx;
+
     if (cpu.cr3.val != prev_cr3.val) {
         memset(tlb_buf, 0, sizeof(uint32_t)*NR_TLBE);
         prev_cr3.val = cpu.cr3.val;
-        int tlb_idx;
         for (tlb_idx = 0; tlb_idx < NR_TLBE; ++tlb_idx) {
             tlb_entry[tlb_idx].valid = 0;
         }

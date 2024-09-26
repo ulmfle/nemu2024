@@ -67,7 +67,6 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	PTE pte;
 	pte.val = tlb_read(addr, &hit);
 	int f_ret = tlb_flush();
-	Log("res: %8x, hit: %d", (pte.page_frame << 12) + (addr & PAGE_MASK), hit);
 	if (hit == true && f_ret == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
 
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
@@ -75,7 +74,6 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	pte.val = hwaddr_read((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)), sizeof(uint32_t)); //attention
 	assert(pte.present);
 	tlb_replace(addr, pte.val);
-	Log("res: %8x", (pte.page_frame << 12) + (addr & PAGE_MASK));
 	return (pte.page_frame << 12) + (addr & PAGE_MASK);
 }
 
