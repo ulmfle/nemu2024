@@ -66,6 +66,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	hwaddr_t res = tlb_read(addr, &hit);
 	int f_ret = tlb_flush(&cpu.cr3);
 	Log("2 cr3:%08x", cpu.cr3.val);
+	Log("res : %8x", res);
 	if (hit == true && f_ret == false) return res; 
 	Log("4 cr3:%08x", cpu.cr3.val);
 	PDE pde;
