@@ -320,7 +320,6 @@ void tlb_replace(lnaddr_t addr, uint32_t res) {
 //main
 int tlb_flush(CR3 *_cr3) {
     if (_cr3->val != prev_cr3.val) {
-        Log("flushed");
         memset(tlb_buf, 0, sizeof(uint32_t)*NR_TLBE);
         prev_cr3.val = _cr3->val;
         return true;
