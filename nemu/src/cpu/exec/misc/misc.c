@@ -1,8 +1,6 @@
 #include "cpu/exec/helper.h"
 #include "cpu/decode/modrm.h"
 
-void raise_intr(uint8_t);
-
 make_helper(nop) {
 	print_asm("nop");
 	return 1;
@@ -24,14 +22,6 @@ make_helper(lea) {
 
 	print_asm("leal %s,%%%s", op_src->str, regsl[m.reg]);
 	return 1 + len;
-}
-
-make_helper(int_b) {
-	decode_i_b(eip + 1);
-	raise_intr(op_src->val);
-
-	print_asm("int %s", op_src->str);
-	return 2;
 }
 
 make_helper(stc) {

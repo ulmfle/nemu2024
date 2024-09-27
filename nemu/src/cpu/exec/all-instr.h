@@ -5,7 +5,9 @@
 #include "data-mov/movext.h"
 #include "data-mov/cltd.h"
 #include "data-mov/push.h"
+#include "data-mov/pusha.h"
 #include "data-mov/pop.h"
+#include "data-mov/popa.h"
 #include "data-mov/enter.h"
 #include "data-mov/leave.h"
 
@@ -46,6 +48,8 @@
 #include "string/lods.h"
 
 #include "sreg/ldt.h"
+
+#include "intr/int.h"
 
 #include "misc/misc.h"
 
