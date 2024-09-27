@@ -13,6 +13,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 lnaddr_t seg_translate(swaddr_t, uint8_t);
 hwaddr_t page_translate(lnaddr_t);
 void load_desc(uint8_t, uint16_t);
+void lnread64(lnaddr_t, void *);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
@@ -79,8 +80,12 @@ hwaddr_t page_translate(lnaddr_t addr) {
 
 void load_desc(uint8_t sreg, uint16_t _sel) {
 	cpu.sr[sreg].sel.val = _sel;
-	uint32_t lv = lnaddr_read(cpu.gdtr.LBA + sizeof(uint64_t)*cpu.sr[sreg].sel.index, 4);
-	uint32_t rv = lnaddr_read(cpu.gdtr.LBA + sizeof(uint64_t)*cpu.sr[sreg].sel.index + 4, 4);
-	memcpy((void *)&(cpu.sr[sreg].hid_desc), (void *)&lv, sizeof(uint64_t));
-	memcpy(((void *)&(cpu.sr[sreg].hid_desc)) + 4, (void *)&rv, sizeof(uint64_t));
+	lnread64(cpu.gdtr.LBA + sizeof(SegDesc)*cpu.sr[sreg].sel.index, &cpu.sr[sreg].hid_desc);
+}
+
+void lnread64(lnaddr_t addr, void *dst) {
+    uint32_t lv = lnaddr_read(addr, 4);
+	uint32_t rv = lnaddr_read(addr + 4, 4);
+    memcpy(dst, (void *)&lv, sizeof(uint32_t));
+	memcpy(dst + 4, (void *)&rv, sizeof(uint32_t));
 }

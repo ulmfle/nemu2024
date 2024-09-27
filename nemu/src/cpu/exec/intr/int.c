@@ -1,11 +1,19 @@
+#include "intr.h"
 #include "cpu/exec/helper.h"
 
-void raise_intr(uint8_t);
-
 make_helper(int_b) {
-	decode_i_b(eip + 1);
-	raise_intr(op_src->val);
+	int len = decode_i_b(eip + 1);
+    int no = op_src->val;
+	uint64_t lptr;
+	GateDesc gd;
+
+	push32((uint32_t *)&cpu.eflags);
+	push64(&lptr);
+	
+    lnread64(cpu.idtr.LBA + sizeof(GateDesc)*no, &gd);
+
+	raise_intr(no);
 
 	print_asm("int %s", op_src->str);
-	return 2;
+	return len + 1;
 }
