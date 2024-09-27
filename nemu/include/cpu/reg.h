@@ -26,23 +26,6 @@ typedef union {
 	uint16_t val;
 } SegSel;
 
-typedef union {
-	struct {
-		uint16_t seg_base;
-		uint8_t base_lo;
-		uint8_t base_hi;
-	};
-	uint32_t val;
-} srbase;
-
-typedef union {
-	struct {
-		uint16_t seg_limit;
-		uint8_t limit : 4;
-	};
-	uint32_t val;
-} srlim;
-
 typedef struct {
 	SegSel sel;
 	SegDesc hid_desc;
@@ -56,7 +39,7 @@ typedef struct {
 	struct {
 		uint16_t limit;
 		uint32_t LBA;
-	} gdtr;
+	} gdtr, idtr;
 
     union {
         union {
@@ -116,8 +99,34 @@ static inline int check_reg_index(int index) {
 
 #define sr_base(index) (uint32_t)cpu.sr[index].hid_desc.base_15_0 + ((uint32_t)cpu.sr[index].hid_desc.base_23_16 << 16) + ((uint32_t)cpu.sr[index].hid_desc.base_31_24 << 24)
 #define sr_lim(index) (uint32_t)cpu.sr[index].hid_desc.limit_15_0 + ((uint32_t)cpu.sr[index].hid_desc.limit_19_16 << 16)
-#define set_sr_base(_sr, _val) {srbase _srb; _srb.val = (uint32_t)_val;cpu.sr[_sr].hid_desc.base_15_0 = _srb.seg_base; cpu.sr[_sr].hid_desc.base_23_16 = _srb.base_lo; cpu.sr[_sr].hid_desc.base_31_24 = _srb.base_hi; } 
-#define set_sr_lim(_sr, _val) {srlim _slm; _slm.val = (uint32_t)_val;cpu.sr[_sr].hid_desc.limit_15_0 = _slm.seg_limit; cpu.sr[_sr].hid_desc.limit_19_16 = _slm.limit;} 
+
+#define set_sr_base(_sr, _val) {\
+	union {\
+		struct {\
+			uint16_t seg_base;\
+			uint8_t base_lo;\
+			uint8_t base_hi;\
+		};\
+		uint32_t val;\
+	} _srb;\
+	_srb.val = (uint32_t)_val;\
+	cpu.sr[_sr].hid_desc.base_15_0 = _srb.seg_base;\
+	cpu.sr[_sr].hid_desc.base_23_16 = _srb.base_lo;\
+	cpu.sr[_sr].hid_desc.base_31_24 = _srb.base_hi;\
+}
+
+#define set_sr_lim(_sr, _val) {\
+	union {\
+		struct {\
+			uint16_t seg_limit;\
+			uint8_t limit : 4;\
+		};\
+		uint32_t val;\
+	} _slm;\
+	_slm.val = (uint32_t)_val;\
+	cpu.sr[_sr].hid_desc.limit_15_0 = _slm.seg_limit;\
+	cpu.sr[_sr].hid_desc.limit_19_16 = _slm.limit;\
+}
 
 extern const char* regsl[];
 extern const char* regsw[];

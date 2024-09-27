@@ -108,4 +108,3 @@ void init_cond() {
 
 	panic("should not reach here");
 }
-

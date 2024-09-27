@@ -9,3 +9,4 @@
 #undef DATA_BYTE
 
 make_helper_v(lgdt);
+make_helper_v(lidt);
