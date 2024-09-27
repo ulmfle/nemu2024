@@ -50,6 +50,7 @@
 #include "sreg/ldt.h"
 
 #include "intr/int.h"
+#include "intr/iret.h"
 
 #include "misc/misc.h"
 

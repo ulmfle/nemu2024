@@ -5,6 +5,11 @@
 #include <setjmp.h>
 extern jmp_buf jbuf;
 
+typedef struct {
+    uint32_t ptr;
+	uint16_t sel;
+} _lptr;
+
 void raise_intr(uint8_t);
 void load_desc(uint8_t, uint16_t);
 void lnread64(lnaddr_t, void *);

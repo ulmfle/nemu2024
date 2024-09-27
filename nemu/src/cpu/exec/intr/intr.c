@@ -21,10 +21,19 @@ void pop64(uint64_t *dst) {
 }
 
 void raise_intr(uint8_t NO) {
-    uint64_t buf;
     GateDesc gd;
-    buf = lnread64(cpu.idtr.LBA + sizeof(GateDesc)*NO);
-    memcpy((void *)&gd, (void *)&buf, sizeof(GateDesc));
+	_lptr lptr;
+	lptr.ptr = cpu.eip + 2;
+	lptr.sel = cpu.cs.sel.val;
+
+    lnread64(cpu.idtr.LBA + sizeof(GateDesc)*NO, &gd);
+	push32(&cpu.eflags.val);
+	push64((uint64_t *)&lptr);
+    load_desc(SR_CS, gd.segment);
+    cpu.eip = gd.offset_15_0 + (gd.offset_31_16 << 16);
+    if (!(gd.type & 1)) cpu.eflags.IF = 0;
+    cpu.eflags.TF = 0;
+    cpu.eflags.NT = 0;
 
     longjmp(jbuf,1);
 }
