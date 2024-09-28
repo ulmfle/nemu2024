@@ -10,6 +10,8 @@
 #include "data-mov/popa.h"
 #include "data-mov/enter.h"
 #include "data-mov/leave.h"
+#include "data-mov/in.h"
+#include "data-mov/out.h"
 
 #include "arith/adc.h"
 #include "arith/add.h"
@@ -51,6 +53,7 @@
 
 #include "intr/int.h"
 #include "intr/iret.h"
+#include "intr/hlt.h"
 
 #include "misc/misc.h"
 

@@ -21,6 +21,7 @@ void pop64(uint64_t *dst) {
 }
 
 void raise_intr(uint8_t NO) {
+    if (!cpu.eflags.IF) return;
     GateDesc gd;
 	_lptr lptr;
 	lptr.ptr = cpu.eip + 2;

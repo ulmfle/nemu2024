@@ -151,11 +151,11 @@ helper_fun opcode_table [256] = {
 /* 0xd8 */	inv, inv, inv, inv,
 /* 0xdc */	inv, inv, inv, inv,
 /* 0xe0 */	inv, inv, inv, jcxz_i_b,
-/* 0xe4 */	inv, inv, inv, inv,
+/* 0xe4 */	in_i2a_b, in_i2a_v, out_a2i_b, out_a2i_v,
 /* 0xe8 */	call_rel_v, jmp_si_l, ljmp_wl, jmp_si_b,
-/* 0xec */	inv, inv, inv, inv,
+/* 0xec */	in_d2a_b, in_d2a_v, out_a2d_b, out_a2d_v,
 /* 0xf0 */	inv, inv, repnz, rep,
-/* 0xf4 */	inv, inv, group3_b, group3_v,
+/* 0xf4 */	hlt, inv, group3_b, group3_v,
 /* 0xf8 */	clc, stc, cli, sti,
 /* 0xfc */	cld, std, group4, group5
 };

@@ -1,6 +1,7 @@
 #include "common.h"
 #include "cpu/reg.h"
 #include "memory/memory.h"
+#include "device/mmio.h"
 
 uint32_t cache_read(hwaddr_t, size_t, bool *);
 void cache_replace(hwaddr_t, size_t);
@@ -17,11 +18,16 @@ void lnread64(lnaddr_t, void *);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	uint32_t val;
-	bool hit;
-	val = cache_read(addr, len, &hit);
+	int map;
+	if ((map = is_mmio(addr)) != -1) {
+		return mmio_read(addr, len, map) & (~0u >> ((4 - len) << 3));
+	}
 
-	if (hit == false) {
+	uint32_t val;
+	bool cache_hit;
+	val = cache_read(addr, len, &cache_hit);
+
+	if (cache_hit == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr, len);
 	}
@@ -29,6 +35,10 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+	int map;
+	if ((map = is_mmio(addr)) != -1) {
+		mmio_write(addr, len, data, map);
+	}
 	// dram_write(addr, len, data);
 	cache_write(addr, data, len);
 }

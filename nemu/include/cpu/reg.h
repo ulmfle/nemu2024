@@ -84,6 +84,8 @@ typedef struct {
 		sreg es, cs, ss, ds/*, fs, gs*/;
 	};
 
+	bool INTR;
+
 } CPU_state;
 
 extern CPU_state cpu;

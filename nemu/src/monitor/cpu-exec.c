@@ -2,6 +2,7 @@
 #include "monitor/watchpoint.h"
 #include "monitor/expr.h"
 #include "cpu/helper.h"
+#include "device/i8259.h"
 #include <setjmp.h>
 
 /* The assembly code of instructions executed is only output to the screen
@@ -14,6 +15,7 @@
 int nemu_state = STOP;
 
 int exec(swaddr_t);
+void raise_intr(uint8_t);
 
 char assembly[80];
 char asm_buf[128];
@@ -58,7 +60,6 @@ void cpu_exec(volatile uint32_t n) {
 			fputc('.', stderr);
 		}
 #endif
-
 		/* Execute one instruction, including instruction fetch,
 		 * instruction decode, and the actual execution. */
 		int instr_len = exec(cpu.eip);
@@ -73,19 +74,23 @@ void cpu_exec(volatile uint32_t n) {
 			printf("%s\n", asm_buf);
 		}
 #endif
+		WP *wpi;
+		uint32_t expr_ret;
+		for (wpi = get_wp_head(); wpi != NULL; wpi = wpi->next) {
+			expr_ret = expr(wpi->expr, NULL);
+			if (expr_ret == wpi->v_prev) continue;
+			printf("Hint watchpoint #%d at address 0x%08x, expr = %s\n",wpi->NO, cpu.eip, wpi->expr);
+			printf("Old value: 0x%08x\n", wpi->v_prev);
+			printf("New value: 0x%08x\n", expr_ret);
+			wpi->v_prev = expr_ret;
+			nemu_state = STOP;
+		}
 
-	WP *wpi;
-	uint32_t expr_ret;
-	for (wpi = get_wp_head(); wpi != NULL; wpi = wpi->next) {
-		expr_ret = expr(wpi->expr, NULL);
-		if (expr_ret == wpi->v_prev) continue;
-		printf("Hint watchpoint #%d at address 0x%08x, expr = %s\n",wpi->NO, cpu.eip, wpi->expr);
-		printf("Old value: 0x%08x\n", wpi->v_prev);
-		printf("New value: 0x%08x\n", expr_ret);
-		wpi->v_prev = expr_ret;
-		nemu_state = STOP;
-	}
-
+		if (cpu.INTR & cpu.eflags.IF) {
+			uint32_t intr_NO = i8259_query_intr();
+			i8259_ack_intr();
+			raise_intr(intr_NO);
+		}
 
 #ifdef HAS_DEVICE
 		extern void device_update();

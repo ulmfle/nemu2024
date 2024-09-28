@@ -6,6 +6,8 @@ extern uint8_t entry [];
 extern uint32_t entry_len;
 extern char *exec_file;
 
+void init_device();
+void init_sdl();
 void load_elf_tables(int, char *[]);
 void init_regex();
 void init_wp_pool();
@@ -26,6 +28,12 @@ static void welcome() {
 
 void init_monitor(int argc, char *argv[]) {
 	/* Perform some global initialization */
+
+	/* device */
+	init_device();
+
+	/* SDL */
+	init_sdl();
 
 	/* Open the log file. */
 	init_log();
