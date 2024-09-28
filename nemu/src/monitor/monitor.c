@@ -29,11 +29,13 @@ static void welcome() {
 void init_monitor(int argc, char *argv[]) {
 	/* Perform some global initialization */
 
+#ifdef HAS_DEVICE
 	/* device */
 	init_device();
 
 	/* SDL */
 	init_sdl();
+#endif
 
 	/* Open the log file. */
 	init_log();
