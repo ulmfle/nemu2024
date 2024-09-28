@@ -3,7 +3,7 @@
 make_helper(push_i_b) {
     int len = decode_i_b(eip + 1);
     cpu.esp -= 4;
-    swaddr_write(cpu.esp, 4, (int32_t)(op_src->val), SR_SS);
+    swaddr_write(cpu.esp, 4, SR_SS, (int32_t)(op_src->val));
     return len + 1;
 }
 
