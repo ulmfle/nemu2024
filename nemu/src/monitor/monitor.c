@@ -48,7 +48,6 @@ void init_monitor(int argc, char *argv[]) {
 	/* SDL */
 	init_sdl();
 #endif
-
 	/* Display welcome message. */
 	welcome();
 }
