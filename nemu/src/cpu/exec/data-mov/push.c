@@ -1,13 +1,8 @@
 #include "cpu/exec/helper.h"
 
-make_helper(push_i_b) {
-    int len = decode_i_b(eip + 1);
-    cpu.esp -= 4;
-    swaddr_write(cpu.esp, 4, SR_SS, (int32_t)(op_src->val));
-
-    print_asm_template1();
-    return len + 1;
-}
+#define DATA_BYTE 1
+#include "push-template.h"
+#undef DATA_BYTE
 
 #define DATA_BYTE 2
 #include "push-template.h"
