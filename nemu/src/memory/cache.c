@@ -155,7 +155,7 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
 static void l2_read_replace(Cache *this, hwaddr_t addr) {
     CB *dst_cb = NULL;
     CB *p_cb = ASSOC(2)[GET_CI(addr, 2)];
-    
+
     int idx;
     for (idx = 0; idx < ASSOC_CL2; ++idx) {
         if (p_cb[idx].dirty) {
