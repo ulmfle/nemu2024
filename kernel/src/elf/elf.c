@@ -42,29 +42,30 @@ uint32_t loader() {
 	int ph_idx;
 	for (ph_idx = 0; ph_idx < nr_ph; ++ph_idx) {
 		/* Scan the program header table, load each segment into memory */
-		if(ph[ph_idx].p_type == PT_LOAD) {
-			/* TODO: read the content of the segment from the ELF file
-			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
-			 */
-			uint8_t *pmalloc = (uint8_t *)mm_malloc(ph[ph_idx].p_vaddr, ph[ph_idx].p_memsz);
+#ifndef HAS_DEVICE
+		if(ph[ph_idx].p_type != PT_LOAD) continue;
+#endif
+		/* TODO: read the content of the segment from the ELF file
+			* to the memory region [VirtAddr, VirtAddr + FileSiz)
+			*/
+		uint8_t *pmalloc = (uint8_t *)mm_malloc(ph[ph_idx].p_vaddr, ph[ph_idx].p_memsz);
 
 #ifdef HAS_DEVICE
-			ide_read(pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
+		ide_read(pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #else
-			ramdisk_read(pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
+		ramdisk_read(pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #endif
-			/* TODO: zero the memory region
-			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
-			 */
-			memset((void *)(pmalloc + ph[ph_idx].p_filesz), 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
+		/* TODO: zero the memory region
+		* [VirtAddr + FileSiz, VirtAddr + MemSiz)
+		*/
+		memset((void *)(pmalloc + ph[ph_idx].p_filesz), 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
 
 #ifdef IA32_PAGE
-			/* Record the program break for future use. */
-			extern uint32_t cur_brk, max_brk;
-			uint32_t new_brk = ph[ph_idx].p_vaddr + ph[ph_idx].p_memsz - 1;
-			if(cur_brk < new_brk) { max_brk = cur_brk = new_brk; }
+		/* Record the program break for future use. */
+		extern uint32_t cur_brk, max_brk;
+		uint32_t new_brk = ph[ph_idx].p_vaddr + ph[ph_idx].p_memsz - 1;
+		if(cur_brk < new_brk) { max_brk = cur_brk = new_brk; }
 #endif
-		}
 	}
 
 	volatile uint32_t entry = elf->e_entry;
