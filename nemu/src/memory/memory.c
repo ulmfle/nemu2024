@@ -50,10 +50,12 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) {
 		uint32_t val = 0, of = (addr + len - 1) % PAGE_SIZE;
-		val += hwaddr_read(page_translate(addr), len - of);
-		val += hwaddr_read(page_translate(addr + len - of), of) << ((len - of) << 3);
+		int idx;
+		for (idx = of - 1; idx >= 0; --idx, val <<= 8)
+			val += hwaddr_read(page_translate(addr + len - of + idx), 1);
+		for (idx = len - of - 1; idx >= 0; --idx, val <<= 8)
+			val += hwaddr_read(page_translate(addr + idx), 1);
 		return val;
-		// assert(0);
 	}
 	return hwaddr_read(page_translate(addr), len);
 }
@@ -61,9 +63,9 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) {
 		uint32_t of = (addr + len - 1) % PAGE_SIZE;
-		hwaddr_write(page_translate(addr), len - of, data);
-		hwaddr_write(page_translate(addr + len - of), of, data >> ((len - of) << 3));
-		// assert(0);
+		int idx;
+		for (idx = 0; idx < len - of; ++idx, data >>= 8) hwaddr_write(page_translate(addr + idx), 1, data);
+		for (idx = 0; idx < of; ++idx, data >>= 8) hwaddr_write(page_translate(addr + len - of + idx), 1, data);
 	}
 	hwaddr_write(page_translate(addr), len, data);
 }
