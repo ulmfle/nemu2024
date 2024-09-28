@@ -18,10 +18,12 @@ void lnread64(lnaddr_t, void *);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+#ifdef HAS_DEVICE
 	int map;
 	if ((map = is_mmio(addr)) != -1) {
 		return mmio_read(addr, len, map) & (~0u >> ((4 - len) << 3));
 	}
+#endif
 
 	uint32_t val;
 	bool cache_hit;
@@ -35,10 +37,12 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+#ifdef HAS_DEVICE
 	int map;
 	if ((map = is_mmio(addr)) != -1) {
 		mmio_write(addr, len, data, map);
 	}
+#endif
 	// dram_write(addr, len, data);
 	cache_write(addr, data, len);
 }
