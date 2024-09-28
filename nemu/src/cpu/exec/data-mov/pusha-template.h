@@ -13,7 +13,7 @@ make_helper(concat(pusha_, SUFFIX)) {
     PUSH(REG(R_ESI));
     PUSH(REG(R_EDI));
 
-    print_asm_template1();
+    print_asm("pusha" str(SUFFIX));
     return 1;
 }
 

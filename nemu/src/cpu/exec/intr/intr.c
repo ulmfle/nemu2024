@@ -24,7 +24,7 @@ void raise_intr(uint8_t NO) {
     if (!cpu.eflags.IF) return;
     GateDesc gd;
 	_lptr lptr;
-	lptr.ptr = cpu.eip + 2;
+	lptr.ptr = cpu.eip;
 	lptr.sel = cpu.cs.sel.val;
 
     lnread64(cpu.idtr.LBA + sizeof(GateDesc)*NO, &gd);

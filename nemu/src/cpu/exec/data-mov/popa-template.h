@@ -12,8 +12,8 @@ make_helper(concat(popa_, SUFFIX)) {
     POP(REG(R_EDX));
     POP(REG(R_ECX));
     POP(REG(R_EAX));
-    
-    print_asm_template1();
+
+    print_asm("popa" str(SUFFIX));
     return 1;
 }
 
