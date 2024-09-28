@@ -86,13 +86,13 @@ void cpu_exec(volatile uint32_t n) {
 			nemu_state = STOP;
 		}
 
+#ifdef HAS_DEVICE
 		if (cpu.INTR & cpu.eflags.IF) {
 			uint32_t intr_NO = i8259_query_intr();
 			i8259_ack_intr();
 			raise_intr(intr_NO);
 		}
 
-#ifdef HAS_DEVICE
 		extern void device_update();
 		device_update();
 #endif
