@@ -7,5 +7,5 @@ make_helper(int_b) {
 	cpu.eip += len + 1;
 	raise_intr(op_src->val);
 
-	return len + 1;
+	return 0;
 }
