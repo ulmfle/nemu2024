@@ -16,8 +16,7 @@ void create_video_mapping() {
 	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
 	 * some page tables to create this mapping.
 	 */
-	PDE *ud = get_updir();
-	//PDE *kd = get_kpdir();
+	PDE *ud = (PDE *)va_to_pa(get_updir());
 	int pdir_idx;
 	PTE *ptable = (PTE *)va_to_pa(get_kptable());
 	for (pdir_idx = VMEM_ADDR / PT_SIZE; pdir_idx < (VMEM_ADDR + SCR_SIZE) / PT_SIZE; ++pdir_idx) {
