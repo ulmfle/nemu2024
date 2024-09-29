@@ -7,7 +7,6 @@
 
 /* Use the function to get the start address of user page directory. */
 PDE* get_updir();
-PDE* get_kpdir();
 PTE* get_kptable();
 
 void create_video_mapping() {
@@ -16,11 +15,11 @@ void create_video_mapping() {
 	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
 	 * some page tables to create this mapping.
 	 */
-	PDE *ud = (PDE *)va_to_pa(get_updir());
-	int pdir_idx;
-	PTE *ptable = (PTE *)va_to_pa(get_kptable());
+	PDE *upd = get_updir();
+	PTE *kpt = get_kptable();
+	uint32_t pdir_idx;
 	for (pdir_idx = VMEM_ADDR / PT_SIZE; pdir_idx < (VMEM_ADDR + SCR_SIZE) / PT_SIZE; ++pdir_idx) {
-		ud[pdir_idx].val = make_pde(&ptable[NR_PTE*(pdir_idx)]);
+		upd[pdir_idx].val = make_pde(&kpt[NR_PTE * pdir_idx]);
 	}
 }
 
