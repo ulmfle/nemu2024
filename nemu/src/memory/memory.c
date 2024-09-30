@@ -54,7 +54,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		for (idx = len - 1; idx >= 0; --idx) {
 			val += hwaddr_read(page_translate(addr + idx), 1);
 			if (idx != 0) val <<= 8;
-			Log("%08x %08x", val, addr);
+			Log("%08x %08x", val, addr + idx);
 		}
 		return val;
 	}
@@ -64,7 +64,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) {
 		int idx;
-		for (idx = len - 1; idx >= 0; ++idx) {
+		for (idx = 0; idx <= len - 1; ++idx) {
 			hwaddr_write(page_translate(addr + idx), 1, data);
 			data >>= 8;
 		}
