@@ -17,11 +17,7 @@ void create_video_mapping() {
 	 */
 	PDE *upd = va_to_pa(get_updir());
 	PTE *kpt = va_to_pa(get_kptable()) + NR_PTE * VMEM_ADDR / PT_SIZE;
-	uint32_t pdir_idx;
-	for (pdir_idx = VMEM_ADDR / PT_SIZE; pdir_idx < (VMEM_ADDR + SCR_SIZE) / PT_SIZE; ++pdir_idx) {
-		upd[pdir_idx].val = make_pde(kpt);
-		kpt += NR_PTE;
-	}
+	upd[VMEM_ADDR / PT_SIZE].val = make_pde(kpt);
 }
 
 void video_mapping_write_test() {
