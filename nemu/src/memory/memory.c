@@ -49,14 +49,15 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) {
-		uint64_t val = 0, of = (addr + len - 1) % PAGE_SIZE;
+		uint32_t val = 0, of = (addr + len - 1) % PAGE_SIZE;
 		int idx;
 		for (idx = of - 1; idx >= 0; --idx, val <<= 8)
 			val += hwaddr_read(page_translate(addr + len - of + idx), 1);
 		for (idx = len - of - 1; idx >= 0; --idx, val <<= 8)
 			val += hwaddr_read(page_translate(addr + idx), 1);
 		val >>= 8;
-		return (uint32_t)val;
+		Log("val = %8x", val);
+		return val;
 	}
 	return hwaddr_read(page_translate(addr), len);
 }
