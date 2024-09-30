@@ -10,6 +10,7 @@
 void cpu_exec(uint32_t);
 char *get_symbol_name(swaddr_t);
 swaddr_t getsymaddr_addr(swaddr_t, uint8_t);
+lnaddr_t seg_translate(swaddr_t, uint8_t);
 hwaddr_t page_translate(lnaddr_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -193,7 +194,7 @@ static int cmd_x(char *args) {
 		return 0;
 	}
 
-    while (n>0 && _expr < HW_MEM_SIZE) {
+    while (n>0 && page_translate(seg_translate(_expr, SR_DS)) < HW_MEM_SIZE) {
         printf("0x%08x: ",_expr);
         int t;
         for (t = 0; t < 4 && n > 0 && _expr < HW_MEM_SIZE; ++t, --n, _expr+=len) {
