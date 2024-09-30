@@ -54,7 +54,6 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		for (idx = len - 1; idx >= 0; --idx) {
 			val += hwaddr_read(page_translate(addr + idx), 1);
 			if (idx != 0) val <<= 8;
-			Log("%08x %08x", val, addr + idx);
 		}
 		return val;
 	}
