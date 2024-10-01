@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "trap.h"
 
 #define N 100
