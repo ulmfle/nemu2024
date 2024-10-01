@@ -55,7 +55,7 @@ void init_monitor(int argc, char *argv[]) {
 #ifdef USE_RAMDISK
 static void init_ramdisk() {
 	int ret;
-	const int ramdisk_max_size = 0xa00000;
+	const int ramdisk_max_size = 0xa0000;
 	FILE *fp = fopen(exec_file, "rb");
 	Assert(fp, "Can not open '%s'", exec_file);
 
