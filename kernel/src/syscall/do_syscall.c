@@ -18,11 +18,14 @@ static void sys_ioctl(TrapFrame *tf) {
 static void sys_write(TrapFrame *tf) {
 	char *buf = (void *)tf->ecx;
 	size_t len = tf->edx;
-	// asm volatile (".byte 0xd6" : : "a"(2), "c"(buf), "d"(len));
+#ifdef HAS_DEVICE
 	int c_idx;
 	for (c_idx = 0; c_idx < len; ++c_idx) {
 		serial_printc(buf[c_idx]);
 	}
+#else
+	asm volatile (".byte 0xd6" : : "a"(2), "c"(buf), "d"(len));
+#endif
 	asm volatile ("mov %%eax,%0" : "=r"(tf->eax));
 }
 
