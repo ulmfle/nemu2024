@@ -315,6 +315,7 @@ int main() {
 	for(i = 0; i < N; i ++) {
 		for(j = 0; j < N; j ++) {
 			c[i][j] = 0;
+			asm volatile ("int $0x3");
 			for(k = 0; k < N; k ++) {
 				//asm volatile ("int $0x3");
 				c[i][j] += a[i][k] * b[k][j];
