@@ -53,6 +53,7 @@ uint32_t loader() {
 #else
 			ramdisk_read((uint8_t *)pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #endif
+			set_bp();
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
