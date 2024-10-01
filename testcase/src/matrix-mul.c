@@ -314,7 +314,6 @@ int main() {
 		for(j = 0; j < N; j ++) {
 			c[i][j] = 0;
 			for(k = 0; k < N; k ++) {
-				if (a[i][k] == 0 || b[k][j] == 0) set_bp();
 				c[i][j] += a[i][k] * b[k][j];
 				loop ++;
 			}
