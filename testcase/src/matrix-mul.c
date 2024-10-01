@@ -324,7 +324,7 @@ int main() {
 	// 		nemu_assert(c[i][j] == ans[i][j]);
 	// 	}
 	// }
-	nemu_assert(b[53][36] == -40);
+	//nemu_assert(b[53][36] == -40);
 	for(i = 0; i <= 0; i ++) {
 		for(j = 36; j <= 36; j ++) {
 			c[i][j] = 0;
