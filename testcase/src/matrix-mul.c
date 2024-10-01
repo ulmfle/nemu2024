@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "trap.h"
 
 #define N 100
@@ -315,9 +314,7 @@ int main() {
 		for(j = 0; j < N; j ++) {
 			c[i][j] = 0;
 			for(k = 0; k < N; k ++) {
-				printf("\n%d %d %d\n", c[i][j], a[i][k], b[k][j]);
 				c[i][j] += a[i][k] * b[k][j];
-				printf("\n%d %d %d\n", c[i][j], a[i][k], b[k][j]);
 				loop ++;
 			}
 			nemu_assert(c[i][j] == ans[i][j]);
