@@ -21,6 +21,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr, len);
 	}
+	if (addr >= 0x101b4c0 && addr <= 0x101ef00) Log("addr : %08x value : %08x", addr, val);
 	return val;
 }
 
