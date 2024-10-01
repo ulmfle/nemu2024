@@ -330,7 +330,7 @@ int main() {
 			c[i][j] = 0;
 			//asm volatile ("int $0x3");
 			for(k = 0; k < N; k ++) {
-				if (k == 53) asm volatile ("int $0x3");
+				if (/*k == 53*/a[i][k] == 0 || b[k][j] == 0) asm volatile ("int $0x3");
 				c[i][j] += a[i][k] * b[k][j];
 				loop ++;
 			}
