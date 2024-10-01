@@ -51,12 +51,12 @@ uint32_t loader() {
 #ifdef HAS_DEVICE
 			ide_read(pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #else
-			ramdisk_read((uint8_t *)pa_to_va(pmalloc), ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
+			ramdisk_read((uint8_t *)pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #endif
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			memset(pa_to_va(pmalloc + ph[ph_idx].p_filesz), 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
+			memset((void *)(pmalloc + ph[ph_idx].p_filesz), 0, ph[ph_idx].p_memsz - ph[ph_idx].p_filesz);
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */

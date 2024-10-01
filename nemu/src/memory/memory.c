@@ -25,6 +25,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+	if (addr >= 0x101b4c0 && addr <= 0x101ef00) Log("addr : %08x data : %08x", addr, data);
 	// dram_write(addr, len, data);
 	cache_write(addr, data, len);
 }
