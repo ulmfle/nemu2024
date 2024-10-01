@@ -38,7 +38,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	if (addr == 0x1010fa0) {Log("dest write, data: %08x", data);}
+	if (addr == 0x1010fa0) {void do_int3();Log("dest write, data: %08x", data);do_int3();}
 #ifdef HAS_DEVICE
 	int map;
 	if ((map = is_mmio(addr)) != -1) {
