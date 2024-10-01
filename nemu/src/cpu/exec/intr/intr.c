@@ -36,6 +36,5 @@ void raise_intr(uint8_t NO) {
     cpu.eflags.TF = 0;
     cpu.eflags.NT = 0;
 
-    Log("intr");
     longjmp(jbuf,1);
 }
