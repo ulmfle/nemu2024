@@ -56,7 +56,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		for (idx = len - 1; idx >= 0; --idx) {
 			val += hwaddr_read(page_translate(addr + idx), 1);
 			if (idx != 0) val <<= 8;
-			Log("TRIGGERED val %08x", val);
+			Log("TRIGGERED val %08x addr %08x", val, addr);
 		}
 		return val;
 	}
@@ -69,7 +69,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 		for (idx = 0; idx <= len - 1; ++idx) {
 			hwaddr_write(page_translate(addr + idx), 1, data);
 			data >>= 8;
-			Log("TRIGGERED val %08x", data);
+			Log("TRIGGERED val %08x addr %08x", data, addr);
 		}
 	}
 	hwaddr_write(page_translate(addr), len, data);
