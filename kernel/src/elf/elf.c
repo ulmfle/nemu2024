@@ -46,10 +46,11 @@ uint32_t loader() {
 			/* TODO: read the content of the segment from the ELF file
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
+			set_bp();
 			uint8_t *pmalloc = (uint8_t *)mm_malloc(ph[ph_idx].p_vaddr, ph[ph_idx].p_memsz);
 
 #ifdef HAS_DEVICE
-			ide_read((uint8_t *)(ph[ph_idx].p_vaddr), ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
+			ide_read(pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #else
 			ramdisk_read(pmalloc, ELF_OFFSET_IN_DISK + ph[ph_idx].p_offset, ph[ph_idx].p_filesz);
 #endif
