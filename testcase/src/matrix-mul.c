@@ -310,27 +310,14 @@ int loop = 0;
 int i, j, k;
 
 int main() {
-	//int i, j, k;
-	//int loop = 0;
-	// for(i = 0; i < N; i ++) {
-	// 	for(j = 0; j < N; j ++) {
-	// 		c[i][j] = 0;
-	// 		//asm volatile ("int $0x3");
-	// 		for(k = 0; k < N; k ++) {
-	// 			//asm volatile ("int $0x3");
-	// 			c[i][j] += a[i][k] * b[k][j];
-	// 			loop ++;
-	// 		}
-	// 		nemu_assert(c[i][j] == ans[i][j]);
-	// 	}
-	// }
-	//nemu_assert(b[53][36] == -40);
-	for(i = 0; i <= 0; i ++) {
-		for(j = 36; j <= 36; j ++) {
+	// int i, j, k;
+	// int loop = 0;
+	for(i = 0; i < N; i ++) {
+		for(j = 0; j < N; j ++) {
 			c[i][j] = 0;
 			//asm volatile ("int $0x3");
 			for(k = 0; k < N; k ++) {
-				if (/*k == 53*/a[i][k] == 0 || b[k][j] == 0) asm volatile ("int $0x3");
+				//asm volatile ("int $0x3");
 				c[i][j] += a[i][k] * b[k][j];
 				loop ++;
 			}
@@ -338,7 +325,7 @@ int main() {
 		}
 	}
 
-	//nemu_assert(loop == N * N * N);
+	nemu_assert(loop == N * N * N);
 
 	return 0;
 }
