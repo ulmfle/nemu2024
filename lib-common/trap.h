@@ -6,11 +6,16 @@
 
 #ifndef __ASSEMBLER__
 
+void do_int3();
+
 #define HIT_GOOD_TRAP \
 	asm volatile(".byte 0xd6" : : "a" (0))
 
 #define HIT_BAD_TRAP \
-	asm volatile(".byte 0xd6" : : "a" (1))
+	{\
+	do_int3();\
+	asm volatile(".byte 0xd6" : : "a" (1));\
+	}
 
 #define nemu_assert(cond) \
 	do { \
