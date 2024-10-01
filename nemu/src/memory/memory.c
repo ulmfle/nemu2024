@@ -49,6 +49,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) {
+		Log("TRIGGERED");
 		uint32_t val = 0;
 		int idx;
 		for (idx = len - 1; idx >= 0; --idx) {
@@ -62,6 +63,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) {
+		Log("TRIGGERED");
 		int idx;
 		for (idx = 0; idx <= len - 1; ++idx) {
 			hwaddr_write(page_translate(addr + idx), 1, data);
