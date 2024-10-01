@@ -306,10 +306,12 @@ int ans[N][N] = {{27825, 6208, 14855, -76487, -23589, 13948, 60449, 9292, 5604, 
 };
 
 int c[N][N];
+int loop = 0;
+int i, j, k;
 
 int main() {
-	int i, j, k;
-	int loop = 0;
+	//int i, j, k;
+	//int loop = 0;
 	for(i = 0; i < N; i ++) {
 		for(j = 0; j < N; j ++) {
 			c[i][j] = 0;
