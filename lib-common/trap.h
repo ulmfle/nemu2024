@@ -13,7 +13,6 @@ void do_int3();
 
 #define HIT_BAD_TRAP \
 	{\
-	asm volatile("int $0x3");\
 	asm volatile(".byte 0xd6" : : "a" (1));\
 	}
 
