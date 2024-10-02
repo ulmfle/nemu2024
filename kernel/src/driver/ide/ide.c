@@ -20,12 +20,11 @@ void ide_read(uint8_t *buf, uint32_t offset, uint32_t len) {
 	for (i = 0; i < len; i ++) {
 		buf[i] = read_byte(offset + i);
 
-		if (buf[i]) {
-			printk("(%08x,%02x)", offset + i, buf[i]);
-			++cnt;
-		}
+		printk("(%08x,%02x)", offset + i, buf[i]);
+		++cnt;
 		if (!(cnt % 7)) printk("\n");
 	}
+	printk("\n");
 }
 
 void ide_write(uint8_t *buf, uint32_t offset, uint32_t len) {
