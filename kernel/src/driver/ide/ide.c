@@ -18,6 +18,7 @@ void ide_read(uint8_t *buf, uint32_t offset, uint32_t len) {
 	uint32_t i;
 	for (i = 0; i < len; i ++) {
 		buf[i] = read_byte(offset + i);
+		Log("ofst: %08x bytedata: %02x", offset + i, buf[i]);
 	}
 }
 
