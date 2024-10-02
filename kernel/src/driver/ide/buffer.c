@@ -55,6 +55,7 @@ uint8_t
 read_byte(uint32_t offset) {
 	uint32_t sector = offset >> 9;
 	struct SectorBuf *ptr = buf_fetch(sector);
+	printk("!%08x,%02x!", offset, ptr->content[offset & 511]);
 	return ptr->content[offset & 511];
 }
 
