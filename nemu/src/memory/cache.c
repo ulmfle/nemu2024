@@ -90,7 +90,7 @@ static CB *normal_find_replace(CB *cb_lst, size_t len) {
 }
 
 //stand-alone
-static CB *replace_and_writeback(CB *cb_lst, uint32_t addr, size_t len, size_t tag_width) {
+static CB *find_and_writeback(CB *cb_lst, uint32_t addr, size_t len, size_t tag_width) {
     CB *dst_cb = NULL;
 
     int idx;
@@ -166,7 +166,7 @@ static void l1_replace(Cache *this, hwaddr_t addr) {
 }
 
 static void l2_replace(Cache *this, hwaddr_t addr) {
-    CB *dst_cb = replace_and_writeback(ASSOC(2)[GET_CI(addr, 2)], addr, ASSOC_CL2, TAG_WIDTH(2));
+    CB *dst_cb = find_and_writeback(ASSOC(2)[GET_CI(addr, 2)], addr, ASSOC_CL2, TAG_WIDTH(2));
     dst_cb->valid = 1;
     dst_cb->write(dst_cb, 0, hwa_to_va((addr - GET_CO(addr))), CB_SIZE);
     dst_cb->dirty = 0;
