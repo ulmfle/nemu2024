@@ -10,7 +10,7 @@ make_helper(concat(in_i2a_, SUFFIX)) {
 
 make_helper(concat(in_d2a_, SUFFIX)) {
     REG(R_EAX) = pio_read((ioaddr_t)cpu.edx, DATA_BYTE);
-    printf("{%08x}", cpu.eax);
+    //printf("{%08x}", cpu.eax);
     print_asm("in" str(SUFFIX) " %%dx,%%%s", REG_NAME(R_EAX));
     return 1;
 }
