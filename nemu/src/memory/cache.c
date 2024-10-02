@@ -46,7 +46,7 @@ typedef struct CB {
 
 typedef struct Cache {
     void *cb_pool;
-    
+
     CB *(*check_read_hit)(struct Cache *, hwaddr_t);
     CB *(*check_write_hit)(struct Cache *, hwaddr_t);
     void (*read_replace)(struct Cache *, hwaddr_t);
@@ -109,7 +109,6 @@ static CB *find_and_writeback(CB *cb_lst, uint32_t addr, size_t len, size_t tag_
 
     return dst_cb;
 }
-
 
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
