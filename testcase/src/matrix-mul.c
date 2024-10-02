@@ -310,6 +310,7 @@ int i, j, k;
 int loop = 0;
 
 int main() {
+	set_bp();
 	for(i = 0; i < N; i ++) {
 		for(j = 0; j < N; j ++) {
 			c[i][j] = 0;
@@ -320,7 +321,6 @@ int main() {
 			nemu_assert(c[i][j] == ans[i][j]);
 		}
 	}
-
 	nemu_assert(loop == N * N * N);
 
 	return 0;
