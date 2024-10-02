@@ -12,6 +12,7 @@ typedef struct {
 
 void raise_intr(uint8_t);
 void load_desc(uint8_t, uint16_t);
+lnaddr_t seg_translate(swaddr_t, uint8_t);
 void lnread64(lnaddr_t, void *);
 void pop32(uint32_t *dst);
 void push32(uint32_t *src);
