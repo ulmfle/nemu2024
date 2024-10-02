@@ -53,7 +53,7 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/fib
+USERPROG := obj/testcase/quick-sort
 #USERPROG := $(game_BIN)
 ENTRY := $(kernel_BIN)
 
