@@ -99,9 +99,7 @@ hwaddr_t page_translate(lnaddr_t addr) {
 	if (hit == true && f_ret == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
 
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
-	Assert(pde.present, "addr : %08x", addr);
 	pte.val = hwaddr_read((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)), sizeof(uint32_t)); //attention
-	Assert(pte.present, "addr : %08x", addr);
 	tlb_replace(addr, pte.val);
 	return (pte.page_frame << 12) + (addr & PAGE_MASK);
 }
