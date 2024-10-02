@@ -132,21 +132,8 @@ static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *
     cb->write(cb, GET_CO(addr), (uint8_t *)&data, len);
 }
 
-
-static CB *l1_check_read_hit(Cache *this, hwaddr_t addr) {
+static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
     return normal_check_hit(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1, GET_CT(addr, 1));
-}
-
-static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
-    return normal_check_hit(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1, GET_CT(addr, 1));
-}
-
-static void l1_replace(Cache *this, hwaddr_t addr) {
-    CB *dst_cb = normal_find_replace(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1);
-    CB *src_cb = l2.check_read_hit(&l2, addr);
-    dst_cb->tag = GET_CT(addr, 1);
-    dst_cb->valid = 1;
-    dst_cb->write(dst_cb, 0, src_cb->buf, CB_SIZE);
 }
 
 static CB *l2_check_read_hit(Cache *this, hwaddr_t addr) {
@@ -159,11 +146,18 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
     return ret;
 }
 
+static void l1_replace(Cache *this, hwaddr_t addr) {
+    CB *dst_cb = normal_find_replace(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1);
+    CB *src_cb = l2.check_read_hit(&l2, addr);
+    dst_cb->tag = GET_CT(addr, 1);
+    dst_cb->valid = 1;
+    dst_cb->write(dst_cb, 0, src_cb->buf, CB_SIZE);
+}
+
 static void l2_replace(Cache *this, hwaddr_t addr) {
     CB *dst_cb = replace_and_writeback(ASSOC(2)[GET_CI(addr, 2)], addr, ASSOC_CL2, TAG_WIDTH(2));
-
     dst_cb->valid = 1;
-    dst_cb->write(dst_cb, 0, hwa_to_va((addr - GET_CO(addr))), CB_SIZE);    //write allocate
+    dst_cb->write(dst_cb, 0, hwa_to_va((addr - GET_CO(addr))), CB_SIZE);
     dst_cb->dirty = 0;
     dst_cb->tag = GET_CT(addr, 2);
 }
@@ -174,9 +168,8 @@ static void init_cache_internal() {
     l2.cb_pool = (void *)l2_block;
     l1.read = l2.read = cread;
     l1.write = l2.write = cwrite;
-    l1.check_read_hit = l1_check_read_hit;
+    l1.check_read_hit = l1.check_write_hit =  l1_check_hit;
     l2.check_read_hit = l2_check_read_hit;
-    l1.check_write_hit = l1_check_write_hit;
     l2.check_write_hit = l2_check_write_hit;
     l1.read_replace = l1.write_replace = l1_replace;
     l2.read_replace = l2.write_replace = l2_replace;
