@@ -89,6 +89,28 @@ static CB *normal_find_replace(CB *cb_lst, size_t len) {
     return dst_cb;
 }
 
+//stand-alone
+static CB *replace_and_writeback(CB *cb_lst, uint32_t addr, size_t len, size_t tag_width) {
+    CB *dst_cb = NULL;
+
+    int idx;
+    for (idx = 0; idx < len; ++idx) {
+        if (cb_lst[idx].dirty) {
+            dst_cb = cb_lst + idx;
+            break;
+        }
+    }
+    if (dst_cb == NULL) dst_cb = normal_find_replace(cb_lst, len);
+
+    if (dst_cb->dirty) {
+        //write back
+        memcpy(hwa_to_va((((addr & (~(~0u << (32 - tag_width)))) ^ (dst_cb->tag << (32 - tag_width))) & (~CO_MASK))), dst_cb->buf, CB_SIZE);
+    }
+
+    return dst_cb;
+}
+
+
 //base
 static uint32_t cbread(CB *this, uint8_t off, size_t len) {
     return (*(uint32_t *)(this->buf + off)) & (~0u >> ((4 - len) << 3));
@@ -121,25 +143,8 @@ static void cwrite(Cache *this, hwaddr_t addr, uint32_t data, size_t len, bool *
     cb->write(cb, GET_CO(addr), (uint8_t *)&data, len);
 }
 
-
-static CB *l1_check_read_hit(Cache *this, hwaddr_t addr) {
+static CB *l1_check_hit(Cache *this, hwaddr_t addr) {
     return normal_check_hit(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1, GET_CT(addr, 1));
-}
-
-static CB *l1_check_write_hit(Cache *this, hwaddr_t addr) {
-    return normal_check_hit(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1, GET_CT(addr, 1));
-}
-
-static void l1_read_replace(Cache *this, hwaddr_t addr) {
-    CB *dst_cb = normal_find_replace(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1);
-    CB *src_cb = l2.check_read_hit(&l2, addr);
-    dst_cb->tag = GET_CT(addr, 1);
-    dst_cb->valid = 1;
-    dst_cb->write(dst_cb, 0, src_cb->buf, CB_SIZE);
-}
-
-static void l1_write_replace(Cache *this, hwaddr_t addr) {
-    return;                                                     //not write allocate
 }
 
 static CB *l2_check_read_hit(Cache *this, hwaddr_t addr) {
@@ -152,34 +157,19 @@ static CB *l2_check_write_hit(Cache *this, hwaddr_t addr) {
     return ret;
 }
 
-static void l2_read_replace(Cache *this, hwaddr_t addr) {
-    CB *dst_cb = NULL;
-    CB *p_cb = ASSOC(2)[GET_CI(addr, 2)];
+static void l1_replace(Cache *this, hwaddr_t addr) {
+    CB *dst_cb = normal_find_replace(ASSOC(1)[GET_CI(addr, 1)], ASSOC_CL1);
+    CB *src_cb = l2.check_read_hit(&l2, addr);
+    dst_cb->tag = GET_CT(addr, 1);
+    dst_cb->valid = 1;
+    dst_cb->write(dst_cb, 0, src_cb->buf, CB_SIZE);
+}
 
-    int idx;
-    for (idx = 0; idx < ASSOC_CL2; ++idx) {
-        if (p_cb[idx].dirty) {
-            dst_cb = p_cb + idx;
-            break;
-        }
-    }
-    if (dst_cb == NULL) dst_cb = normal_find_replace(ASSOC(2)[GET_CI(addr, 2)], ASSOC_CL2);
-
-    if (dst_cb->dirty) {
-        //write back
-        memcpy(hwa_to_va((((addr & (~CT_MASK(2))) ^ (dst_cb->tag << (32 - TAG_WIDTH(2)))) & (~CO_MASK))), dst_cb->buf, CB_SIZE);
-    }
-
+static void l2_replace(Cache *this, hwaddr_t addr) {
+    CB *dst_cb = replace_and_writeback(ASSOC(2)[GET_CI(addr, 2)], addr, ASSOC_CL2, TAG_WIDTH(2));
     dst_cb->valid = 1;
     dst_cb->write(dst_cb, 0, hwa_to_va((addr - GET_CO(addr))), CB_SIZE);
     dst_cb->dirty = 0;
-    dst_cb->tag = GET_CT(addr, 2);
-}
-
-static void l2_write_replace(Cache *this, hwaddr_t addr) {
-    CB *dst_cb = normal_find_replace(ASSOC(2)[GET_CI(addr, 2)], ASSOC_CL2);
-    dst_cb->valid = 1;
-    dst_cb->write(dst_cb, 0, hwa_to_va((addr - GET_CO(addr))), CB_SIZE);    //write allocate
     dst_cb->tag = GET_CT(addr, 2);
 }
 
@@ -200,14 +190,11 @@ static void init_cache_internal() {
     l2.cb_pool = (void *)l2_block;
     l1.read = l2.read = cread;
     l1.write = l2.write = cwrite;
-    l1.check_read_hit = l1_check_read_hit;
+    l1.check_read_hit = l1.check_write_hit =  l1_check_hit;
     l2.check_read_hit = l2_check_read_hit;
-    l1.check_write_hit = l1_check_write_hit;
     l2.check_write_hit = l2_check_write_hit;
-    l1.read_replace = l1_read_replace;
-    l2.read_replace = l2_read_replace;
-    l1.write_replace = l1_write_replace;
-    l2.write_replace = l2_write_replace;
+    l1.read_replace = l1.write_replace = l1_replace;
+    l2.read_replace = l2.write_replace = l2_replace;
 
     int l1_idx;
     for (l1_idx = 0; l1_idx < NR_CL1_BLOCK; ++l1_idx) {
