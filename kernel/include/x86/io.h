@@ -14,6 +14,8 @@ static inline uint32_t
 in_long(uint16_t port) {
 	uint32_t data;
 	asm volatile("in %1, %0" : "=a"(data) : "d"(port));
+	void printk(const char *ctl, ...);
+	printk("$%08x$", data);
 	return data;
 }
 
