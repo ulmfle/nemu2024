@@ -56,8 +56,40 @@ static int cmd_bt(char *args);
 
 static int cmd_page(char *args);
 
-#ifdef DEBUG
+#if defined(DEBUG) && 1
 static int cmd_debug(char *args);
+
+#ifdef HAS_DEVICE
+static int cmd_show(char *args) {
+    extern uint8_t *get_pio();
+	int n,len = 4;
+    char *s_expr = NULL;
+    swaddr_t _expr = 0;
+	bool expr_succ;
+
+    sscanf(args, "%d", &n);
+
+    args = strtok(args, " ");
+    s_expr = args + strlen(args) + 1;
+	_expr = expr(s_expr, &expr_succ);
+	if (expr_succ == false) {
+		return 0;
+	}
+
+    while (n>0 && _expr < 65536) {
+        printf("0x%08x: ",_expr);
+        int t;
+        for (t = 0; t < 4 && n > 0 && _expr < 65536; ++t, --n, _expr+=len) {
+            printf("0x%08x ", *(uint32_t *)(get_pio() + _expr));
+        }
+        putchar('\n');
+    }
+
+    return 0;
+
+}
+#endif
+
 #endif
 
 static int cmd_help(char *args);
@@ -77,9 +109,10 @@ static struct {
 	{ "w", "Create watchpoints", cmd_w},
 	{ "d", "Remove watchpoints", cmd_d},
 	{ "bt", "Print stack frame chain", cmd_bt},
-	{ "page", "Show page translate result", cmd_page},
+	{ "page", "Show page translate result", cmd_page}
 #ifdef DEBUG
-	{ "debug", "debug", cmd_debug}
+	,{ "debug", "debug", cmd_debug},
+	{ "show", "debug", cmd_show}
 #endif
 	/* TODO: Add more commands */
 

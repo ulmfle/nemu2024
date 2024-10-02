@@ -54,3 +54,6 @@ void pio_write(ioaddr_t addr, size_t len, uint32_t data) {
 	pio_callback(addr, len, true);
 }
 
+uint8_t *get_pio() {
+	return pio_space;
+}
