@@ -14,13 +14,13 @@ void load_desc(uint8_t, uint16_t);
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	uint32_t val;
-	// bool hit;
-	// val = cache_read(addr, len, &hit);
+	bool hit;
+	val = cache_read(addr, len, &hit);
 
-	// if (hit == false) {
+	if (hit == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
-	// 	cache_replace(addr, len);
-	// }
+		cache_replace(addr, len);
+	}
 	// if (addr >= 0x1002000 && addr <= 0x1002000 + 120000) printf("[%08x,%08x]",addr, val);
 	return val;
 }
