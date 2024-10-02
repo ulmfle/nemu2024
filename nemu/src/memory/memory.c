@@ -13,7 +13,6 @@ void load_desc(uint8_t, uint16_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	if (addr >= 0x1002000 && addr <= 0x1002000 + 120000) Log("[%08x]",addr);
 	uint32_t val;
 	bool hit;
 	val = cache_read(addr, len, &hit);
@@ -26,7 +25,6 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	if (addr >= 0x1002000 && addr <= 0x1002000 + 120000) Log("(%08x,%08x)",addr,data);
 	// dram_write(addr, len, data);
 	cache_write(addr, data, len);
 }

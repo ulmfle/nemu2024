@@ -209,7 +209,6 @@ void init_cache() {
 
 //main
 uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
-    if (addr >= 0x1002000 && addr <= 0x1002000 + 120000) Log("[%08x]%d",addr,(unsigned)len);
     uint32_t val = 0;
     
     int of = GET_CO(addr) + len - CB_SIZE;
@@ -255,6 +254,7 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     if (hit_l2 == false) {
         l2.write_replace(&l2, addr);
         l2.write(&l2, addr, data, len, &hit_l2);   //write allocate (move to L2 and write again)
+        l1.write_replace(&l2, addr);
     }
 }
 
