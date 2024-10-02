@@ -253,7 +253,7 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
     if (hit_l2 == false) {
         l2.write_replace(&l2, addr);
         l2.write(&l2, addr, data, len, &hit_l2);   //write allocate (move to L2 and write again)
-        l1.write_replace(&l2, addr);
+        l1.write_replace(&l1, addr);
     }
 }
 
