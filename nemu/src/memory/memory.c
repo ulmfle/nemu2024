@@ -64,6 +64,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if ((addr + len - 1) % PAGE_SIZE < addr % PAGE_SIZE) {
 		int idx;
 		for (idx = 0; idx <= len - 1; ++idx) {
+			if (page_translate(addr) == 0x14fffe) Log("hwa: %08x, data: %08x", page_translate(addr + idx), data);
 			hwaddr_write(page_translate(addr + idx), 1, data);
 			data >>= 8;
 		}
