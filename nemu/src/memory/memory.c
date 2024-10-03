@@ -26,13 +26,13 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #endif
 
 	uint32_t val;
-	// bool cache_hit;
-	// val = cache_read(addr, len, &cache_hit);
+	bool cache_hit;
+	val = cache_read(addr, len, &cache_hit);
 
-	// if (cache_hit == false) {
+	if (cache_hit == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
-	// 	cache_replace(addr, len);
-	// }
+		cache_replace(addr, len);
+	}
 	return val;
 }
 
@@ -42,9 +42,10 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	if ((map = is_mmio(addr)) != -1) {
 		mmio_write(addr, len, data, map);
 	}
+	return;
 #endif
-	dram_write(addr, len, data);
-	// cache_write(addr, data, len);
+	// dram_write(addr, len, data);
+	cache_write(addr, data, len);
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
@@ -67,7 +68,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 			hwaddr_write(page_translate(addr + idx), 1, data);
 			data >>= 8;
 		}
-		return;		//holy sh*t!
+		return;
 	}
 	hwaddr_write(page_translate(addr), len, data);
 }
