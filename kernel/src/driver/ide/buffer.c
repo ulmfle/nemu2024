@@ -48,11 +48,14 @@ buf_fetch(uint32_t sector) {
 		ptr->sector = sector;
 		ptr->dirty = false;
 	}
-	if (ptr->used) {
+
+	static int prev_sec = 0;
+	if (prev_sec != sector) {
 		int idx;
 		printk("[%02x ", ptr->content[0]);
 		for (idx = 1; idx < 511; ++idx) printk("%02x ", ptr->content[idx]);
 		printk("%02x]\n", ptr->content[511]);
+		prev_sec = sector;
 	}
 	return ptr;
 }
