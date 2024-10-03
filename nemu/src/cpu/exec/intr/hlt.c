@@ -3,6 +3,7 @@
 #include "cpu/exec/helper.h"
 
 make_helper(hlt) {
+    print_asm("hlt");
     if (cpu.INTR & cpu.eflags.IF) {
         cpu.eip += 1;
         uint32_t intr_NO = i8259_query_intr();
