@@ -4,6 +4,7 @@
 
 make_helper(hlt) {
     if (cpu.INTR & cpu.eflags.IF) {
+        cpu.eip += 1;
         uint32_t intr_NO = i8259_query_intr();
         i8259_ack_intr();
         raise_intr(intr_NO);
