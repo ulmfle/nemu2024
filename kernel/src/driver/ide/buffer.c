@@ -68,9 +68,9 @@ read_byte(uint32_t offset) {
 	// static int prev_sec = 0;
 	// if (prev_sec != sector) {
 		int idx;
-		printk("[%02x ", ptr->content[0]);
-		for (idx = 1; idx < 511; ++idx) printk("%02x ", ptr->content[idx]);
-		printk("%02x]\n", ptr->content[511]);
+		printk("[%02x ", ptr->content[offset]);
+		for (idx = offset; idx < 20 + offset; ++idx) printk("%02x ", ptr->content[idx]);
+		printk("%02x]\n", ptr->content[20 + offset]);
 		// prev_sec = sector;
 	// }
 
