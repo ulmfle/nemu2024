@@ -73,7 +73,7 @@ read_byte(uint32_t offset) {
 		// printk("%02x]\n", ptr->content[511]);
 		// prev_sec = sector;
 	// }
-	printk("<[%02x,%02x,%02x,%02x]>", ptr->content[351], ptr->content[352], ptr->content[353], ptr->content[354]);
+	if (sector == 3) printk("<[%02x,%02x,%02x,%02x]>", ptr->content[352], ptr->content[353], ptr->content[354], ptr->content[355]);
 	return ptr->content[offset & 511];
 }
 
