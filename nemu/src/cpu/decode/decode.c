@@ -1,6 +1,6 @@
 #include "common.h"
 #include "cpu/decode/decode.h"
-
+hwaddr_t page_translate(lnaddr_t);
 /* shared by all helper function */
 Operands ops_decoded;
 
