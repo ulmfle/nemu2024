@@ -42,7 +42,6 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	if ((map = is_mmio(addr)) != -1) {
 		mmio_write(addr, len, data, map);
 	}
-	return;
 #endif
 	// dram_write(addr, len, data);
 	cache_write(addr, data, len);
