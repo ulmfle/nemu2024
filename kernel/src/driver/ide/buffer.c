@@ -34,15 +34,6 @@ static struct SectorBuf *
 buf_fetch(uint32_t sector) {
 	struct SectorBuf *ptr = &buf[sector % NR_SEC_BUF];
 
-	if (!ptr->used) {
-		int idx;
-		printk("[");
-		printk("%02x ", ptr->content[0]);
-		for (idx = 1; idx < 511; ++idx) printk("%02x ", ptr->content[idx]);
-		printk("%02x", ptr->content[511]);
-		printk("]\n");
-	}
-
 	if (ptr->used == true && ptr->sector == sector) {
 		/* buf hit, do nothing */
 	} else {
@@ -56,6 +47,12 @@ buf_fetch(uint32_t sector) {
 		ptr->used = true;
 		ptr->sector = sector;
 		ptr->dirty = false;
+	}
+	if (ptr->used) {
+		int idx;
+		printk("[%02x ", ptr->content[0]);
+		for (idx = 1; idx < 511; ++idx) printk("%02x ", ptr->content[idx]);
+		printk("%02x]\n", ptr->content[511]);
 	}
 	return ptr;
 }
