@@ -15,9 +15,9 @@ void add_irq_handle(int, void (*)(void));
  * a physical one, which is necessary for a microkernel.
  */
 void ide_read(uint8_t *buf, uint32_t offset, uint32_t len) {
-	if (offset >= 0x1000 && offset < 0x1000 + 512) set_bp();
 	uint32_t i;
 	for (i = 0; i < len; i ++) {
+		if (offset + i == 0x1f5f) set_bp();
 		buf[i] = read_byte(offset + i);
 		// printk("(%08x,%02x)", offset + i, buf[i]);
 		// ++cnt;
