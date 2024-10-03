@@ -14,6 +14,8 @@
 #include "data-mov/in.h"
 #include "data-mov/out.h"
 
+#include "bit/bt.h"
+
 #include "arith/adc.h"
 #include "arith/add.h"
 #include "arith/dec.h"
