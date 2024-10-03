@@ -67,7 +67,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 			hwaddr_write(page_translate(addr + idx), 1, data);
 			data >>= 8;
 		}
-		return;
+		return;		//holy sh*t!
 	}
 	hwaddr_write(page_translate(addr), len, data);
 }
