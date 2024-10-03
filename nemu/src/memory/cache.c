@@ -116,7 +116,7 @@ static uint32_t cbread(CB *this, uint8_t off, size_t len) {
 
 //base
 static void cbwrite(CB *this, uint8_t off, uint8_t *data, size_t len) {
-    memcpy(this->buf + off, data, (unsigned)len);
+    memcpy(this->buf + off, data, len);
 }
 
 //base
