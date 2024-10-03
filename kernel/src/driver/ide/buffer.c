@@ -66,14 +66,14 @@ read_byte(uint32_t offset) {
 	struct SectorBuf *ptr = buf_fetch(sector);
 	// printk("!%08x,%02x!", offset, ptr->content[offset & 511]);
 	// static int prev_sec = 0;
-	if (sector == 1024 >> 9) {
-		int idx;
-		printk("[%02x ", ptr->content[offset]);
-		for (idx = offset; idx < 20 + offset; ++idx) printk("%02x ", ptr->content[idx]);
-		printk("%02x]\n", ptr->content[20 + offset]);
+	// if (prev_sec != sector) {
+		// int idx;
+		// printk("[%02x ", ptr->content[0]);
+		// for (idx = 1; idx < 511; ++idx) printk("%02x ", ptr->content[idx]);
+		// printk("%02x]\n", ptr->content[511]);
 		// prev_sec = sector;
-	}
-
+	// }
+	printk("<[%02x,%02x,%02x,%02x]>", ptr->content[351], ptr->content[352], ptr->content[353], ptr->content[354]);
 	return ptr->content[offset & 511];
 }
 
