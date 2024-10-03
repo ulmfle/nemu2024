@@ -55,7 +55,6 @@ typedef struct Cache {
     void (*write)(struct Cache *, hwaddr_t, uint32_t, size_t, bool *);
 } Cache;
 
-static CR3 prev_cr3;
 static uint8_t l1_buf[NR_CL1_BLOCK][CB_SIZE];
 static uint8_t l2_buf[NR_CL2_BLOCK][CB_SIZE];
 static uint8_t tlb_buf[NR_TLBE][sizeof(uint32_t)];
@@ -305,6 +304,7 @@ void tlb_replace(lnaddr_t addr, uint32_t res) {
 
 //main
 int tlb_flush() {
+    static CR3 prev_cr3;
     int tlb_idx;
 
     if (cpu.cr3.val != prev_cr3.val) {

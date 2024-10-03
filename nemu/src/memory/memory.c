@@ -18,17 +18,17 @@ void lnread64(lnaddr_t, void *);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	uint32_t val;
-	bool cache_hit;
-	val = cache_read(addr, len, &cache_hit);
-
-	if (cache_hit == false) {
 #ifdef HAS_DEVICE
 		int map;
 		if ((map = is_mmio(addr)) != -1) {
 			return mmio_read(addr, len, map) & (~0u >> ((4 - len) << 3));
 		}
 #endif
+	uint32_t val;
+	bool cache_hit;
+	val = cache_read(addr, len, &cache_hit);
+
+	if (cache_hit == false) {
 		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 		cache_replace(addr, len);
 	}
