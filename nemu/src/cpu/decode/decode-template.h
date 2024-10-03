@@ -183,7 +183,7 @@ make_helper(concat(decode_rm_imm_, SUFFIX)) {
 
 void concat(write_operand_, SUFFIX) (Operand *op, DATA_TYPE src) {
 	if(op->type == OP_TYPE_REG) { REG(op->reg) = src; }
-	else if(op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, is_base_sp_bp ? SR_SS : SR_DS, src); if (page_translate(op->addr) == 0x14fffe) assert(hwaddr_read(0x14fffe, 4) == src);}
+	else if(op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, is_base_sp_bp ? SR_SS : SR_DS, src); if (page_translate(op->addr) == 0x14fffe) Log("comp: %08x, %08x",hwaddr_read(0x14fffe, 4), src);}
 	else { assert(0); }
 }
 
