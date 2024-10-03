@@ -67,6 +67,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 			hwaddr_write(page_translate(addr + idx), 1, data);
 			data >>= 8;
 		}
+		if (page_translate(addr) == 0x14fffe) Log("comp: %08x, %08x",hwaddr_read(0x14fffe, 4), data);
 	}
 	hwaddr_write(page_translate(addr), len, data);
 }
