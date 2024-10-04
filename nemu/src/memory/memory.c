@@ -29,7 +29,8 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	val = cache_read(addr, len, &cache_hit);
 
 	if (cache_hit == false) {
-		val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+		val = cache_read(addr, len, &cache_hit);
+		//val = dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 	}
 	return val;
 }
@@ -90,18 +91,18 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 
 hwaddr_t page_translate(lnaddr_t addr) {
 	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
-	bool hit = 0;
+	// bool hit = 0;
 	PDE pde;
 	PTE pte;
-	pte.val = tlb_read(addr, &hit);
-	int f_ret = tlb_flush();
-	if (hit == true && f_ret == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
+	// pte.val = tlb_read(addr, &hit);
+	// int f_ret = tlb_flush();
+	// if (hit == true && f_ret == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
 
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(uint32_t)*(addr >> 22), sizeof(uint32_t)); 
 	assert(pde.present);
 	pte.val = hwaddr_read((pde.page_frame << 12) + sizeof(uint32_t)*((addr >> 12) & ~(~0u << 10)), sizeof(uint32_t)); //attention
 	assert(pte.present);
-	tlb_replace(addr, pte.val);
+	// tlb_replace(addr, pte.val);
 	return (pte.page_frame << 12) + (addr & PAGE_MASK);
 }
 
