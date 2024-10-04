@@ -101,9 +101,11 @@ static CB *find_and_writeback(CB *cb_lst, uint32_t addr, size_t len, size_t tag_
     }
     if (dst_cb == NULL) dst_cb = normal_find_replace(cb_lst, len);
 
-    if (dst_cb->dirty) {
+    if (dst_cb != NULL && dst_cb->dirty) {
         //write back
-        memcpy(hwa_to_va((((addr & (~(~0u << (32 - tag_width)))) ^ (dst_cb->tag << (32 - tag_width))) & (~CO_MASK))), dst_cb->buf, CB_SIZE);
+        memcpy(hwa_to_va((((addr & (~(~0u << (32 - tag_width)))) | (dst_cb->tag << (32 - tag_width))) & (~CO_MASK))), dst_cb->buf, CB_SIZE);
+        memset(dst_cb->buf, 0, CB_SIZE);
+        dst_cb->dirty = 0;
     }
 
     return dst_cb;
@@ -165,10 +167,9 @@ static void l1_replace(Cache *this, hwaddr_t addr) {
 
 static void l2_replace(Cache *this, hwaddr_t addr) {
     CB *dst_cb = find_and_writeback(ASSOC(2)[GET_CI(addr, 2)], addr, ASSOC_CL2, TAG_WIDTH(2));
+    dst_cb->tag = GET_CT(addr, 2);
     dst_cb->valid = 1;
     dst_cb->write(dst_cb, 0, hwa_to_va((addr - GET_CO(addr))), CB_SIZE);
-    dst_cb->dirty = 0;
-    dst_cb->tag = GET_CT(addr, 2);
 }
 
 static CB *tlb_check_read_hit(lnaddr_t addr) {
