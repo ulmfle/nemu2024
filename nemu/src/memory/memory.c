@@ -44,7 +44,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 #endif
 	// dram_write(addr, len, data);
 	cache_write(addr, data, len);
-	Assert(hwaddr_read(addr, len) == data, "ASSERT FAIL: %08x %08x", hwaddr_read(addr, len), data);
+	Assert(hwaddr_read(addr, len) == data, "ASSERT FAIL: %08x %08x", hwaddr_read(addr, len), data & (~0u >> ((4 - len) << 3)));
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
