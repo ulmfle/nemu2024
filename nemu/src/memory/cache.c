@@ -12,7 +12,6 @@
 #define ASSOC_CL2_WIDTH 4
 #define TAG_CL1_WIDTH (32 - CB_SIZE_WIDTH - NR_CL1_BLOCK_WIDTH + ASSOC_CL1_WIDTH)
 #define TAG_CL2_WIDTH (32 - CB_SIZE_WIDTH - NR_CL2_BLOCK_WIDTH + ASSOC_CL2_WIDTH)
-//#define TAG_WIDTH(level) (32 - CB_SIZE_WIDTH - concat3(NR_CL, level, _BLOCK_WIDTH) + concat3(ASSOC_CL, level, _WIDTH))
 #define TAG_WIDTH(level) concat3(TAG_CL, level, _WIDTH)
 
 #define CB_SIZE (1 << CB_SIZE_WIDTH)
@@ -94,11 +93,12 @@ static CB *find_and_writeback(CB *cb_lst, uint32_t addr, size_t len, size_t tag_
 
     int idx;
     for (idx = 0; idx < len; ++idx) {
-        if (cb_lst[idx].dirty) {
+        if (cb_lst[idx].valid && cb_lst[idx].dirty) {
             dst_cb = cb_lst + idx;
             break;
         }
     }
+
     if (dst_cb == NULL) dst_cb = normal_find_replace(cb_lst, len);
 
     if (dst_cb != NULL && dst_cb->dirty) {
@@ -229,7 +229,7 @@ void init_cache() {
 //main
 uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
     uint32_t val = 0;
-    
+
     int of = GET_CO(addr) + len - CB_SIZE;
     if (of > 0) {
         bool hit_l, hit_r;
@@ -238,7 +238,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
         *hit = hit_l && hit_r;
         return val;
     }
-    
+
     bool hit_l1, hit_l2;
     val = l1.read(&l1, addr, len, &hit_l1);
     if (hit_l1 == 0) {
@@ -275,18 +275,6 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
         l2.write(&l2, addr, data, len, &hit_l2);   //write allocate (move to L2 and write again)
     }
 }
-
-//main
-// void cache_replace(hwaddr_t addr, size_t len) {
-//     int of = GET_CO(addr) + len - CB_SIZE;
-//     if (of > 0) {
-//         cache_replace(addr, 0);
-//         cache_replace(addr + len, 0);
-//         return;
-//     }
-
-//     l2.read_replace(&l2, addr);
-// }
 
 //main
 uint32_t tlb_read(lnaddr_t addr, bool *hit) {
