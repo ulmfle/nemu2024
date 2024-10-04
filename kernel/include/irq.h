@@ -13,8 +13,7 @@ typedef struct TrapFrame {
 	int32_t irq;
 	uint32_t error_code;
 	uint16_t cs;
-	uint32_t eip;
-	uint32_t eflags;
+	uint32_t eip, flags;
 } TrapFrame;
 
 #endif
