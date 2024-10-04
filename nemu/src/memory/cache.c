@@ -103,7 +103,7 @@ static CB *find_and_writeback(CB *cb_lst, uint32_t addr, size_t len, size_t tag_
 
     if (dst_cb != NULL && dst_cb->dirty) {
         //write back
-        memcpy(hwa_to_va((((addr & (~(~0u << (32 - tag_width)))) | (dst_cb->tag << (32 - tag_width))) & (~CO_MASK))), dst_cb->buf, CB_SIZE);
+        memcpy(hwa_to_va((((addr & (~(~0u << (32 - tag_width)))) ^ (dst_cb->tag << (32 - tag_width))) & (~CO_MASK))), dst_cb->buf, CB_SIZE);
         memset(dst_cb->buf, 0, CB_SIZE);
         dst_cb->dirty = 0;
     }
