@@ -252,6 +252,7 @@ uint32_t cache_read(hwaddr_t addr, size_t len, bool *hit) {
         *hit = true;
         return val;
     } else {
+        l2.read_replace(&l2, addr);
         *hit = false;
         return 0;
     }
@@ -276,16 +277,16 @@ void cache_write(hwaddr_t addr, uint32_t data, size_t len) {
 }
 
 //main
-void cache_replace(hwaddr_t addr, size_t len) {
-    int of = GET_CO(addr) + len - CB_SIZE;
-    if (of > 0) {
-        cache_replace(addr, 0);
-        cache_replace(addr + len, 0);
-        return;
-    }
+// void cache_replace(hwaddr_t addr, size_t len) {
+//     int of = GET_CO(addr) + len - CB_SIZE;
+//     if (of > 0) {
+//         cache_replace(addr, 0);
+//         cache_replace(addr + len, 0);
+//         return;
+//     }
 
-    l2.read_replace(&l2, addr);
-}
+//     l2.read_replace(&l2, addr);
+// }
 
 //main
 uint32_t tlb_read(lnaddr_t addr, bool *hit) {
