@@ -44,7 +44,6 @@ uint32_t pio_read(ioaddr_t addr, size_t len) {
 	assert(addr + len - 1 < PORT_IO_SPACE_MAX);
 	pio_callback(addr, len, false);		// prepare data to read
 	uint32_t data = *(uint32_t *)(pio_space + addr) & (~0u >> ((4 - len) << 3));
-	//printf("<%08x>", data);
 	return data;
 }
 

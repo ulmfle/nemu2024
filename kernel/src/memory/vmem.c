@@ -22,17 +22,17 @@ void create_video_mapping() {
 
 void video_mapping_write_test() {
 	int i;
-	uint8_t *buf = (void *)VMEM_ADDR;
+	uint32_t *buf = (void *)VMEM_ADDR;
 	for(i = 0; i < SCR_SIZE; i ++) {
-		buf[i] = i % 256;
+		buf[i] = i;
 	}
 }
 
 void video_mapping_read_test() {
 	int i;
-	uint8_t *buf = (void *)VMEM_ADDR;
+	uint32_t *buf = (void *)VMEM_ADDR;
 	for(i = 0; i < SCR_SIZE; i ++) {
-		assert(buf[i] == i % 256);
+		assert(buf[i] == i);
 	}
 }
 

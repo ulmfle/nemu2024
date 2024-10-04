@@ -13,3 +13,4 @@ nemu/tags
 .vscode
 nemu/.vscode
 kernel/.vscode
+game/.vscode
