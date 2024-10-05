@@ -21,37 +21,37 @@ static void sys_ioctl(TrapFrame *tf) {
 }
 
 static void sys_open(TrapFrame *tf) {
-	
+	tf->eax = fs_open((const char *)tf->ebx, tf->ecx);
 }
 
 static void sys_close(TrapFrame *tf) {
-	
+	tf->eax = fs_close(tf->ebx);
 }
 
 static void sys_read(TrapFrame *tf) {
-	
+	tf->eax = fs_read(tf->ebx, (void *)tf->ecx, tf->edx);
 }
 
 static void sys_write(TrapFrame *tf) {
 	char *buf = (void *)tf->ecx;
 	size_t len = tf->edx;
 #ifdef HAS_DEVICE
-	if (tf->eax == 1 || tf->eax == 2) {
+	if (tf->ebx == 1 || tf->ebx == 2) {
 		int c_idx;
 		for (c_idx = 0; c_idx < len; ++c_idx) {
 			serial_printc(buf[c_idx]);
 		}
 		tf->eax = len;
 	} else {
-		tf->eax = fs_write(tf->eax, buf, len);
+		tf->eax = fs_write(tf->ebx, buf, len);
 	}
 #else
-	asm volatile (".byte 0xd6" : : "a"(2), "c"(buf), "d"(len));
+	asm volatile (".byte 0xd6" : : "a"(tf->ebx), "c"(buf), "d"(len));
 #endif
 }
 
 static void sys_lseek(TrapFrame *tf) {
-	
+	tf->eax = fs_lseek(tf->ebx, tf->ecx, tf->edx);
 }
 
 void do_syscall(TrapFrame *tf) {
