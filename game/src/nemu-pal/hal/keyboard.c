@@ -14,17 +14,6 @@ static const int keycode_array[] = {
 
 static int key_state[NR_KEYS];
 
-void
-keyboard_event(int scan_code) {
-	/* TODO: Fetch the scancode and update the key states. */
-	int idx, rel = scan_code & 0x80;
-	for (idx = 0; idx < NR_KEYS && get_keycode(idx) != scan_code; ++idx);
-	if (key_state[idx] == KEY_STATE_EMPTY) key_state[idx] = KEY_STATE_PRESS;
-	else if (key_state[idx] == KEY_STATE_PRESS) key_state[idx] = KEY_STATE_WAIT_RELEASE;
-	else if (key_state[idx] == KEY_STATE_WAIT_RELEASE && rel) key_state[idx] = KEY_STATE_RELEASE;
-	//assert(0);
-}
-
 static inline int
 get_keycode(int index) {
 	assert(index >= 0 && index < NR_KEYS);
@@ -49,6 +38,17 @@ clear_key(int index) {
 	key_state[index] = KEY_STATE_EMPTY;
 }
 
+void
+keyboard_event(int scan_code) {
+	/* TODO: Fetch the scancode and update the key states. */
+	int idx, rel = scan_code & 0x80;
+	for (idx = 0; idx < NR_KEYS && get_keycode(idx) != scan_code; ++idx);
+	if (key_state[idx] == KEY_STATE_EMPTY) key_state[idx] = KEY_STATE_PRESS;
+	else if (key_state[idx] == KEY_STATE_PRESS) key_state[idx] = KEY_STATE_WAIT_RELEASE;
+	else if (key_state[idx] == KEY_STATE_WAIT_RELEASE && rel) key_state[idx] = KEY_STATE_RELEASE;
+	//assert(0);
+}
+
 bool 
 process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int)) {
 	cli();
@@ -59,7 +59,6 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 	 * If no such key is found, the function return false.
 	 * Remember to enable interrupts before returning from the function.
 	 */
-	bool flag = 0;
 	int idx;
 	for (idx = 0; idx < NR_KEYS; ++idx) {
 		if (query_key(idx) == KEY_STATE_PRESS)
