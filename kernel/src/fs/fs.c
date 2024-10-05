@@ -1,6 +1,8 @@
 #include "common.h"
 #include <sys/ioctl.h>
 
+#include <stdio.h>
+
 typedef struct {
 	char *name;
 	uint32_t size;
@@ -35,6 +37,69 @@ int fs_ioctl(int fd, uint32_t request, void *p) {
 
 void ide_read(uint8_t *, uint32_t, uint32_t);
 void ide_write(uint8_t *, uint32_t, uint32_t);
-
 /* TODO: implement a simplified file system here. */
 
+struct Fstate {
+	bool opened;
+	uint32_t offset;
+} fstate[NR_FILES + 3];
+
+int fs_open(const char *pathname, int flags) {
+	int idx;
+	for (idx = 0; idx < NR_FILES; ++idx) {
+		if (strcmp(file_table[idx].name, pathname) == 0) {
+			fstate[idx + 3].opened = true;
+			fstate[idx + 3].offset = 0;
+			break;
+		}
+	}
+
+	assert(idx != NR_FILES);
+	return idx + 3;
+}
+
+int fs_read(int fd, void *buf, int len) {
+	if (!fstate[fd].opened) return -1;
+	int of = fstate[fd].offset + len - file_table[fd - 3].size;
+	len -= (of > 0 ? of : 0);
+	ide_read(buf, fstate[fd].offset, len);
+	fstate[fd].offset += len;
+	return len;
+}
+
+int fs_write(int fd, void *buf, int len) {
+	if (!fstate[fd].opened) return -1;
+	int of = fstate[fd].offset + len - file_table[fd - 3].size;
+	len -= (of > 0 ? of : 0);
+	ide_write(buf, fstate[fd].offset, len);
+	fstate[fd].offset += len;
+	return len;
+}
+
+int fs_lseek(int fd, int offset, int whence) {
+	if (!fstate[fd].opened) return -1;
+	int res = fstate[fd].offset;
+	switch (whence) {
+		case SEEK_SET:
+			res = offset;
+			break;
+		case SEEK_CUR:
+			res += offset;
+			break;
+		case SEEK_END:
+			res = offset + file_table[fd - 3].size;
+			break;
+		default:
+			return -1;
+	}
+
+	fstate[fd].offset = res >= file_table[fd - 3].size ? file_table[fd - 3].size - 1 : res;
+	return fstate[fd].offset;
+}
+
+int fs_close(int fd) {
+	if (!fstate[fd].opened) return -1;
+	fstate[fd].opened = false;
+	fstate[fd].offset = 0;
+	return 0;
+}
