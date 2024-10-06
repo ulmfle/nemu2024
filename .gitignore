@@ -14,3 +14,4 @@ nemu/tags
 nemu/.vscode
 kernel/.vscode
 game/.vscode
+game/src/nemu-pal/data
