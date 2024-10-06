@@ -1,8 +1,6 @@
 #include "common.h"
 #include <sys/ioctl.h>
 
-#include <stdio.h>
-
 typedef struct {
 	char *name;
 	uint32_t size;
