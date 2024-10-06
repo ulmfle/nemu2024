@@ -4,8 +4,8 @@
 #include "common.h"
 #include <SDL/SDL.h>
 
-#define SCREEN_ROW 400*2
-#define SCREEN_COL 640*2
+#define SCREEN_ROW 400
+#define SCREEN_COL 640
 #define VGA_HZ 25
 
 extern SDL_Surface *real_screen;
