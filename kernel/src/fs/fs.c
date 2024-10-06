@@ -1,5 +1,6 @@
 #include "common.h"
 #include <sys/ioctl.h>
+#include <string.h>
 
 typedef struct {
 	char *name;
