@@ -3,6 +3,8 @@
 #include <stdlib.h>
 
 int main() {
-    printf("%d\n",malloc(100));
+    void *p = malloc(100);
+    printf("%p\n",p);
+    nemu_assert(p);
     return 0;
 }
