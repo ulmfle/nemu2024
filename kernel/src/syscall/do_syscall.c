@@ -13,6 +13,7 @@ int fs_close(int);
 void serial_printc(char);
 
 static void sys_brk(TrapFrame *tf) {
+	Log("mm_brk");
 	tf->eax = mm_brk(tf->ebx);
 }
 
