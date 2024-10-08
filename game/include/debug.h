@@ -20,6 +20,7 @@ do { \
 #define assert(cond) \
 do { \
 	if(!(cond)) { \
+		asm volatile("int3");\
 		panic("Assertion failed: %s", #cond); \
 	} \
 } while(0)
