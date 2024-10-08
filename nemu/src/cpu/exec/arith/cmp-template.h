@@ -3,7 +3,7 @@
 #define instr cmp
 
 static void do_execute() {
-    DATA_TYPE result = op_dest->val - (DATA_TYPE_S)op_src->val;
+    DATA_TYPE result = op_src->val - (DATA_TYPE_S)op_dest->val;
 
     update_eflags_pf_zf_sf((DATA_TYPE_S)result);
 	cpu.eflags.CF = ((op_dest->val >> (8*DATA_BYTE - 2)) & 1) ^ ((result >> (8*DATA_BYTE - 2)) & 1);
