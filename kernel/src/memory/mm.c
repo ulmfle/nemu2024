@@ -16,7 +16,6 @@ uint32_t max_brk = 0;
 
 /* The brk() system call handler. */
 uint32_t mm_brk(uint32_t new_brk) {
-	Log("new_brk %08x cur_brk %08x", new_brk, cur_brk);
 	if(new_brk != 0) {
 		if(new_brk > max_brk) {
 #ifdef IA32_PAGE
@@ -30,7 +29,6 @@ uint32_t mm_brk(uint32_t new_brk) {
 
 	// If new_brk == 0, the brk() syscall should fail and return
 	// the current break. See the NOTE of `man 2 brk' for details.
-	Log("new_brk %08x cur_brk %08x", new_brk, cur_brk);
 	return cur_brk;
 }
 
