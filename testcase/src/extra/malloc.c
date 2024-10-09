@@ -4,7 +4,7 @@
 int main() {
     void *p = malloc(100);
     nemu_assert(p);
-    p = malloc(100);
+    p = malloc(500);
     nemu_assert(p);
     return 0;
 }
