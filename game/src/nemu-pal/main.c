@@ -121,7 +121,7 @@ PAL_Init(
       TerminateOnError("Could not initialize global data: %d.\n", e);
    }
    Log("PAL_InitGolbals success");
-
+   asm volatile ("int3");
    e = PAL_InitFont();
    if (e != 0)
    {
