@@ -65,6 +65,7 @@ uint32_t loader() {
 		extern uint32_t cur_brk, max_brk;
 		uint32_t new_brk = ph[ph_idx].p_vaddr + ph[ph_idx].p_memsz - 1;
 		if(cur_brk < new_brk) { max_brk = cur_brk = new_brk; }
+		Log("new_brk %08x cur_brk %08x", new_brk, cur_brk);
 #endif
 	}
 
