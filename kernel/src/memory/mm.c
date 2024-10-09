@@ -16,7 +16,6 @@ uint32_t max_brk = 0;
 
 /* The brk() system call handler. */
 uint32_t mm_brk(uint32_t new_brk) {
-	Log("");
 	if(new_brk != 0) {
 		if(new_brk > max_brk) {
 #ifdef IA32_PAGE
