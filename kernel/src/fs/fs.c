@@ -73,7 +73,7 @@ int fs_open(const char *pathname, int flags) {
 		}
 	}
 
-	assert(idx != NR_FILES + 3);
+	assert(valid(idx));
 	return idx;
 }
 

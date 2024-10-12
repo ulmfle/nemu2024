@@ -358,7 +358,7 @@ PAL_InitFont(
     0 if succeed, -1 if cannot allocate memory, -2 if cannot load files.
 
 --*/
-{
+{  asm volatile ("int3");
    FILE *fp;
 
    if (gpFont != NULL)
