@@ -714,12 +714,12 @@ PAL_LoadObjectDesc(
    {
       return NULL;
    }
-
+asm volatile ("int3");
    //
    // Load the description data
    //
    while (fgets(buf, 512, fp) != NULL)
-   {
+   {asm volatile ("int3");
       p = strchr(buf, '=');
       if (p == NULL)
       {
