@@ -701,7 +701,7 @@ PAL_LoadObjectDesc(
     Pointer to loaded data, in linked list form. NULL if unable to load.
 
 --*/
-{asm volatile ("int3");
+{
    FILE                      *fp;
    PAL_LARGE char             buf[512];
    char                      *p;
@@ -709,7 +709,7 @@ PAL_LoadObjectDesc(
    unsigned int               i;
 
    fp = fopen(lpszFileName, "r");
-asm volatile ("int3");
+
    if (fp == NULL)
    {
       return NULL;
