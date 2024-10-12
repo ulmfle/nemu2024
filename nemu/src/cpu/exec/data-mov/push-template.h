@@ -5,7 +5,7 @@
 #if DATA_BYTE == 1
 make_helper(push_i_b) {
     int8_t val = instr_fetch(eip + 1, 1);
-    cpu.esp -= 4;if (cpu.eip == 0x806b164) Log("%08x", (int32_t)val);
+    cpu.esp -= 4;
     swaddr_write(cpu.esp, 4, SR_SS, (int32_t)val);
 
     print_asm("push" str(SUFFIX) " 0x%08x", (int32_t)val);
