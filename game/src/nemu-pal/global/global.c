@@ -81,10 +81,10 @@ PAL_InitGlobals(
    Log("loading rgm.mkf");
    gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf");
    Log("loading sss.mkf");
-   gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf");
+   gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf");asm volatile ("int3");
 #ifndef PAL_WIN95
    Log("loading desc.dat");
-   gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(va("%s%s", PAL_PREFIX, "desc.dat"));
+   gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(va("%s%s", PAL_PREFIX, "desc.dat"));asm volatile ("int3");
 #endif
    gpGlobals->bCurrentSaveSlot = 1;
 
