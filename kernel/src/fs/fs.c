@@ -45,16 +45,16 @@ struct Fstate {
 
 int fs_open(const char *pathname, int flags) {
 	int idx;
-	for (idx = 0; idx < NR_FILES; ++idx) {
-		if (strcmp(file_table[idx].name, pathname) == 0) {
-			fstate[idx + 3].opened = true;
-			fstate[idx + 3].offset = 0;
+	for (idx = 3; idx < NR_FILES + 3; ++idx) {
+		if (strcmp(file_table[idx - 3].name, pathname) == 0) {
+			fstate[idx].opened = true;
+			fstate[idx].offset = 0;
 			break;
 		}
 	}
 
-	assert(idx != NR_FILES);
-	return idx + 3;
+	assert(idx != NR_FILES + 3);
+	return idx;
 }
 
 int fs_read(int fd, void *buf, int len) {
