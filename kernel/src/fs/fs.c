@@ -49,7 +49,7 @@ static inline Fstate *state(int fd) {
 	return &fstate[fd];
 }
 
-static inline file_info *query(int fd) {
+static inline const file_info *query(int fd) {
 	return &file_table[fd - 3];
 }
 
