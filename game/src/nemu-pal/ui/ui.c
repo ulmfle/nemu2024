@@ -707,14 +707,14 @@ PAL_LoadObjectDesc(
    char                      *p;
    LPOBJECTDESC               lpDesc = NULL, pNew = NULL;
    unsigned int               i;
-asm volatile ("int3");
+
    fp = fopen(lpszFileName, "r");
-Log("filedesc: %d", fp->__filedes);
+
    if (fp == NULL)
    {
       return NULL;
    }
-asm volatile ("int3");
+
    //
    // Load the description data
    //
