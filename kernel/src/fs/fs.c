@@ -38,17 +38,37 @@ void ide_read(uint8_t *, uint32_t, uint32_t);
 void ide_write(uint8_t *, uint32_t, uint32_t);
 /* TODO: implement a simplified file system here. */
 
-struct Fstate {
+typedef struct {
 	bool opened;
 	uint32_t offset;
-} fstate[NR_FILES + 3];
+} Fstate;
+
+Fstate fstate[NR_FILES + 3];
+
+static inline Fstate *state(int fd) {
+	return &fstate[fd];
+}
+
+static inline file_info *query(int fd) {
+	return &file_table[fd - 3];
+}
+
+static inline int valid(int fd) {
+	assert(fd >= 3 && fd < NR_FILES + 3);
+	return state(fd)->opened;
+}
+
+static inline int overflow(int fd, int len) {
+	int of = state(fd)->offset + len - query(fd)->size;
+	return (of > 0 ? of : 0);
+}
 
 int fs_open(const char *pathname, int flags) {
 	int idx;
 	for (idx = 3; idx < NR_FILES + 3; ++idx) {
-		if (strcmp(file_table[idx - 3].name, pathname) == 0) {
-			fstate[idx].opened = true;
-			fstate[idx].offset = 0;
+		if (strcmp(query(idx)->name, pathname) == 0) {
+			state(idx)->opened = true;
+			state(idx)->offset = 0;
 			break;
 		}
 	}
@@ -58,26 +78,27 @@ int fs_open(const char *pathname, int flags) {
 }
 
 int fs_read(int fd, void *buf, int len) {
-	if (!fstate[fd].opened) return -1;
-	int of = fstate[fd].offset + len - file_table[fd - 3].size;
-	len -= (of > 0 ? of : 0);
-	ide_read(buf, fstate[fd].offset, len);
-	fstate[fd].offset += len;
+	if (!valid(fd)) return -1;
+	len -= overflow(fd, len);
+
+	ide_read(buf, state(fd)->offset, len);
+	state(fd)->offset += len;
 	return len;
 }
 
 int fs_write(int fd, void *buf, int len) {
-	if (!fstate[fd].opened) return -1;
-	int of = fstate[fd].offset + len - file_table[fd - 3].size;
-	len -= (of > 0 ? of : 0);
-	ide_write(buf, fstate[fd].offset, len);
-	fstate[fd].offset += len;
+	if (!valid(fd)) return -1;
+	len -= overflow(fd, len);
+
+	ide_write(buf, state(fd)->offset, len);
+	state(fd)->offset += len;
 	return len;
 }
 
 int fs_lseek(int fd, int offset, int whence) {
-	if (!fstate[fd].opened) return -1;
-	int res = fstate[fd].offset;
+	if (!valid(fd)) return -1;
+
+	int res = state(fd)->offset;
 	switch (whence) {
 		case SEEK_SET:
 			res = offset;
@@ -86,19 +107,19 @@ int fs_lseek(int fd, int offset, int whence) {
 			res += offset;
 			break;
 		case SEEK_END:
-			res = offset + file_table[fd - 3].size;
+			res = offset + query(fd)->size - 1;
 			break;
 		default:
 			return -1;
 	}
 
-	fstate[fd].offset = res >= file_table[fd - 3].size ? file_table[fd - 3].size - 1 : res;
-	return fstate[fd].offset;
+	return state(fd)->offset = res;
 }
 
 int fs_close(int fd) {
-	if (!fstate[fd].opened) return -1;
-	fstate[fd].opened = false;
-	fstate[fd].offset = 0;
+	if (!valid(fd)) return -1;
+
+	state(fd)->opened = false;
+	state(fd)->offset = 0;
 	return 0;
 }
