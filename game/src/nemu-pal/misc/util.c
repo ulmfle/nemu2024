@@ -405,7 +405,7 @@ UTIL_OpenRequiredFile(
    FILE         *fp;
 
    fp = fopen(va("%s%s", PAL_PREFIX, lpszFileName), "rb");
-Log("filedesc %d", fp->__filedes);
+
 #ifndef _WIN32
    if (fp == NULL)
    {
