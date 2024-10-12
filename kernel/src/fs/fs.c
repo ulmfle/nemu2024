@@ -68,7 +68,7 @@ int fs_open(const char *pathname, int flags) {
 	int lqn, lpn = strlen(pathname);Log("%08x %s", pathname, pathname);
 	for (idx = 3; idx < NR_FILES + 3; ++idx) {
 		lqn = strlen(query(idx)->name);
-		if (lpn >= lqn && strcmp(query(idx)->name, pathname + lpn - lqn) == 0) {
+		if (lpn >= lqn && strcmp(query(idx)->name, pathname + lpn - lqn) == 0) {Log("%s", query(idx)->name);
 			state(idx)->opened = true;
 			state(idx)->offset = 0;
 			break;
