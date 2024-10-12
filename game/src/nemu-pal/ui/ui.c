@@ -707,7 +707,7 @@ PAL_LoadObjectDesc(
    char                      *p;
    LPOBJECTDESC               lpDesc = NULL, pNew = NULL;
    unsigned int               i;
-
+asm volatile ("int3");
    fp = fopen(lpszFileName, "r");
 Log("filedesc: %d", fp->__filedes);
    if (fp == NULL)
@@ -719,7 +719,7 @@ asm volatile ("int3");
    // Load the description data
    //
    while (fgets(buf, 512, fp) != NULL)
-   {asm volatile ("int3");
+   {
       p = strchr(buf, '=');
       if (p == NULL)
       {
