@@ -54,11 +54,7 @@ static inline const file_info *query(int fd) {
 }
 
 static inline int valid(int fd) {
-	if (!(fd >= 3 && fd < NR_FILES + 3)) {
-		Log("error: fd %d", fd);
-		asm volatile ("int3");
-		assert(0);
-	}
+	assert(fd >= 3 && fd < NR_FILES + 3);
 	return state(fd)->opened;
 }
 
@@ -103,6 +99,7 @@ int fs_lseek(int fd, int offset, int whence) {
 	if (!valid(fd)) return -1;
 
 	int res = state(fd)->offset;
+	state(fd)->offset = 0;
 	switch (whence) {
 		case SEEK_SET:
 			res = offset;
@@ -117,6 +114,7 @@ int fs_lseek(int fd, int offset, int whence) {
 			return -1;
 	}
 
+	res -= overflow(fd, res);
 	return state(fd)->offset = res;
 }
 
