@@ -66,7 +66,7 @@ static inline int overflow(int fd, int len) {
 int fs_open(const char *pathname, int flags) {
 	int idx;
 	for (idx = 3; idx < NR_FILES + 3; ++idx) {
-		if (strcmp(query(idx)->name, pathname) == 0) {
+		if (strcmp(query(idx)->name - strlen(pathname) + 1, pathname) == 0) {
 			state(idx)->opened = true;
 			state(idx)->offset = 0;
 			break;

@@ -8,7 +8,7 @@ make_helper(push_i_b) {
     cpu.esp -= 4;
     swaddr_write(cpu.esp, 4, SR_SS, (int32_t)val);
 
-    print_asm("push" str(SUFFIX) " 0x%08x", (int32_t)val);
+    print_asm("push" str(SUFFIX) " $0x%08x", (int32_t)val);
     return 2;
 }
 #endif
