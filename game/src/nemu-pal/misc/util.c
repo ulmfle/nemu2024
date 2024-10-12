@@ -97,7 +97,7 @@ va(
     Pointer to the result string.
 
 --*/
-{
+{asm volatile ("int3");
    static char string[256];
    va_list     argptr;
 
