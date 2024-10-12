@@ -5,7 +5,7 @@
 #if DATA_BYTE == 1
 make_helper(push_i_b) {
     int len = decode_i_b(eip + 1);
-    cpu.esp -= 4;
+    cpu.esp -= 4;Log("%08x", (int32_t)(op_src->val));
     swaddr_write(cpu.esp, 4, SR_SS, (int32_t)(op_src->val));
 
     print_asm_template1();
