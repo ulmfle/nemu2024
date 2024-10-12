@@ -54,7 +54,7 @@ static inline const file_info *query(int fd) {
 }
 
 static inline int valid(int fd) {
-	if (fd >= 3 && fd < NR_FILES + 3) {
+	if (!(fd >= 3 && fd < NR_FILES + 3)) {
 		asm volatile ("int3");
 		assert(0);
 	}
