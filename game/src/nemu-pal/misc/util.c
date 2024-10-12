@@ -403,7 +403,7 @@ UTIL_OpenRequiredFile(
 --*/
 {
    FILE         *fp;
-asm volatile("int3");
+
    fp = fopen(va("%s%s", PAL_PREFIX, lpszFileName), "rb");
 
 #ifndef _WIN32
