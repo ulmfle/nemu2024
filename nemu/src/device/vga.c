@@ -59,11 +59,10 @@ void do_update_screen_graphic_mode() {
 		if(line_dirty[i]) {
 			for(j = 0; j < CTR_COL; j ++) {
 				uint8_t color_idx = vmem[i][j];
-				draw_pixel(j, i, color_idx);
-				// draw_pixel(2 * j, 2 * i, color_idx);
-				// draw_pixel(2 * j, 2 * i + 1, color_idx);
-				// draw_pixel(2 * j + 1, 2 * i, color_idx);
-				// draw_pixel(2 * j + 1, 2 * i + 1, color_idx);
+				draw_pixel(2 * j, 2 * i, color_idx);
+				draw_pixel(2 * j, 2 * i + 1, color_idx);
+				draw_pixel(2 * j + 1, 2 * i, color_idx);
+				draw_pixel(2 * j + 1, 2 * i + 1, color_idx);
 			}
 			rect.y = i * 2;
 			SDL_BlitSurface(screen, &rect, real_screen, &rect);
