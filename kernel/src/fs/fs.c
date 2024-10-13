@@ -49,16 +49,18 @@ static inline Fstate *state(int fd) {
 	return &fstate[fd];
 }
 
-static inline const file_info *query(int fd) {
-	return &file_table[fd - 3];
-}
-
 static inline int valid(int fd) {
 	assert(fd >= 3 && fd < NR_FILES + 3);
 	return state(fd)->opened;
 }
 
+static inline const file_info *query(int fd) {
+	valid(fd);
+	return &file_table[fd - 3];
+}
+
 static inline int overflow(int fd, int len) {
+	assert(valid(fd));
 	int of = state(fd)->offset + len - query(fd)->size;
 	return (of > 0 ? of : 0);
 }
