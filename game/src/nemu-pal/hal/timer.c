@@ -23,13 +23,15 @@ timer_event(void) {
 	}
 }
 
-uint32_t SDL_GetTicks() {
+inline uint32_t
+SDL_GetTicks() {
 	/* TODO: Return the time in millisecond. */
-	panic("no timer");
-	return 0;
+	return jiffy;
 }
 
-void SDL_Delay(uint32_t ms) {
+inline void
+SDL_Delay(uint32_t ms) {
 	/* TODO: Return from this function after waiting for `ms' milliseconds. */
-	panic("no timer");
+	uint32_t prev = jiffy;
+	while (jiffy < prev+ms);
 }
