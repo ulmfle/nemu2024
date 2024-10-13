@@ -67,7 +67,7 @@ static inline int overflow(int fd, int len) {
 
 int fs_open(const char *pathname, int flags) {
 	int idx;
-	int lqn, lpn = strlen(pathname);Log("%08x %s", pathname, pathname);
+	int lqn, lpn = strlen(pathname);
 	for (idx = 3; idx < NR_FILES + 3; ++idx) {
 		lqn = strlen(query(idx)->name);
 		if (lpn >= lqn && strcmp(query(idx)->name, pathname + lpn - lqn) == 0) {
