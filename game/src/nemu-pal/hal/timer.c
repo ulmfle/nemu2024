@@ -32,6 +32,6 @@ SDL_GetTicks() {
 inline void
 SDL_Delay(uint32_t ms) {
 	/* TODO: Return from this function after waiting for `ms' milliseconds. */
-	uint32_t prev = jiffy;
-	while (jiffy < prev+ms);
+	uint32_t prev = jiffy, after = prev + ms;
+	while (jiffy < after);
 }
