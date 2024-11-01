@@ -26,10 +26,6 @@ void video_mapping_write_test() {
 	for(i = 0; i < SCR_SIZE; i ++) {
 		buf[i] = 0x33;
 	}
-
-	// for(i = 0; i < SCR_SIZE; i += 4) {
-	// 	*(uint32_t *)buf = 0x33435363;
-	// }
 }
 
 void video_mapping_read_test() {
