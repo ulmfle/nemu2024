@@ -28,7 +28,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	for (x = 0; x <= dx; ++x) {
 		for (y = 0; y <= dy; ++y) {
 			//((uint8_t *)dst->pixels)[dy + y][dx + x] = ((uint8_t **)src->pixels)[sy + y][sx + x];
-			dst->pixels[(dy + y) * h + (dx + x)] = src->pixels[(sy + y) * h + (sx + x)]
+			dst->pixels[(dy + y) * h + (dx + x)] = src->pixels[(sy + y) * h + (sx + x)];
 		}
 	}
 	/* TODO: copy pixels from position (`sx', `sy') with size
