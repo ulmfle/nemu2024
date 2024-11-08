@@ -9,7 +9,7 @@
 #define CTR_ROW 200
 
 inline void setpix(int x, int y, uint8_t color) {
-    memcpy(vmem+CTR_ROW*y+x, &color, 1);
+    memcpy((void *)vmem+CTR_ROW*y+x, &color, 1);
 }
 
 int main() {
