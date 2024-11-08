@@ -66,7 +66,8 @@ Cache l1, l2;
 static CB *normal_check_hit(CB *cb_lst, size_t len, uint32_t _tag) {
     int idx;
     for (idx = 0; idx < len; ++idx) {
-        if (cb_lst[idx].valid && cb_lst[idx].tag == _tag) return (cb_lst + idx);
+        if (cb_lst[idx].valid && cb_lst[idx].tag == _tag)
+            return (cb_lst + idx);
     }
     return NULL;
 }
