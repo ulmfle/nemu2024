@@ -7,7 +7,6 @@ void ui_mainloop();
 #ifdef DEBUG
 #include <setjmp.h>
 jmp_buf restart_buf;
-int restart_mrk;
 #endif
 
 int main(int argc, char *argv[]) {

@@ -9,7 +9,6 @@
 
 #ifdef DEBUG
 #include <setjmp.h>
-extern int restart_mrk;
 extern jmp_buf restart_buf;
 #endif
 void cpu_exec(uint32_t);
@@ -289,13 +288,12 @@ static int cmd_shut(char *args) {
 	switch (ch) {
 		case 'r': {
 			nemu_state = STOP;
-			restart_mrk = true;
 			printf("Restarted.\n");
 			longjmp(restart_buf, 1);
 			break;
 		}
 		case 'q':
-			cmd_q(NULL);
+			return cmd_q(NULL);
 		default: assert(0);
 	}
 }
@@ -323,12 +321,6 @@ void ui_mainloop() {
 		sdl_clear_event_queue();
 #endif
 
-#ifdef DEBUG
-		if (restart_mrk) {
-			cmd_c(NULL);
-			restart_mrk = false;
-		}
-#endif
 		int i;
 		for(i = 0; i < NR_CMD; i ++) {
 			if(strcmp(cmd, cmd_table[i].name) == 0) {
