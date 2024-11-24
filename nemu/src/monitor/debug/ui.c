@@ -289,6 +289,7 @@ static int cmd_shut(char *args) {
 	switch (ch) {
 		case 'r': {
 			nemu_state = STOP;
+			restart_mrk = true;
 			printf("Restarted.\n");
 			longjmp(restart_buf, 1);
 			break;
@@ -301,10 +302,6 @@ static int cmd_shut(char *args) {
 #endif
 
 void ui_mainloop() {
-#ifdef DEBUG
-	if (restart_mrk) fprintf(stdin, "c\n");
-	restart_mrk = false;
-#endif
 	while(1) {
 		char *str = rl_gets();
 		char *str_end = str + strlen(str);
@@ -326,6 +323,12 @@ void ui_mainloop() {
 		sdl_clear_event_queue();
 #endif
 
+#ifdef DEBUG
+		if (restart_mrk) {
+			cmd_c(NULL);
+			restart_mrk = false;
+		}
+#endif
 		int i;
 		for(i = 0; i < NR_CMD; i ++) {
 			if(strcmp(cmd, cmd_table[i].name) == 0) {
