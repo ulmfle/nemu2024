@@ -91,6 +91,11 @@ void restart() {
 	init_ramdisk();
 #endif
 
+#ifdef DEBUG
+	extern int hw_mem_siz;
+	memset(hw_mem, 0, hw_mem_siz);
+#endif
+
 	/* Read the entry code into memory. */
 	load_entry();
 
