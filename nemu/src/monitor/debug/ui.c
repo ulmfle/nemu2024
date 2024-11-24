@@ -10,6 +10,7 @@
 #ifdef DEBUG
 #include <setjmp.h>
 extern jmp_buf restart_buf;
+extern int restart_mrk;
 #endif
 void cpu_exec(uint32_t);
 char *get_symbol_name(swaddr_t);
@@ -26,6 +27,9 @@ char* rl_gets() {
 		line_read = NULL;
 	}
 
+#ifdef DEBUG
+	if (restart_mrk) {line_read = "c\0"; restart_mrk = false;} else
+#endif
 	line_read = readline("(nemu) ");
 
 	if (line_read && *line_read) {
@@ -288,6 +292,7 @@ static int cmd_shut(char *args) {
 	switch (ch) {
 		case 'r': {
 			nemu_state = STOP;
+			restart_mrk = true;
 			printf("Restarted.\n");
 			longjmp(restart_buf, 1);
 			break;
