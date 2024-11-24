@@ -7,6 +7,10 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#ifdef DEBUG
+#include <setjmp.h>
+extern jmp_buf restart_buf;
+#endif
 void cpu_exec(uint32_t);
 char *get_symbol_name(swaddr_t);
 swaddr_t getsymaddr_addr(swaddr_t, uint8_t);
@@ -58,6 +62,8 @@ static int cmd_page(char *args);
 
 #if defined(DEBUG) && 1
 static int cmd_debug(char *args);
+
+static int cmd_shut(char *args);
 #endif
 
 static int cmd_help(char *args);
@@ -80,7 +86,7 @@ static struct {
 	{ "page", "Show page translate result", cmd_page}
 #ifdef DEBUG
 	,{ "debug", "debug", cmd_debug}
-	//,{ "show", "debug", cmd_show}
+	,{ "shut", "shutdown or restart", cmd_shut}
 #endif
 	/* TODO: Add more commands */
 
@@ -274,6 +280,20 @@ static int cmd_debug(char *args) {
 		putchar('\n');
 	}
 	return 0;
+}
+
+static int cmd_shut(char *args) {
+	char ch;
+	sscanf(args, "%c", &ch);
+	switch (ch) {
+		case 'r': {
+			longjmp(restart_buf, 1);
+			break;
+		}
+		case 'q':
+			cmd_q(NULL);
+		default: assert(0);
+	}
 }
 #endif
 
