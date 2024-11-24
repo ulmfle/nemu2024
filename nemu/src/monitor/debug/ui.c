@@ -28,7 +28,11 @@ char* rl_gets() {
 	}
 
 #ifdef DEBUG
-	if (restart_mrk) {line_read = "c\0"; restart_mrk = false;} else
+	if (restart_mrk) {
+		line_read = (char *)malloc(sizeof("c"));
+		sprintf(line_read, "c");
+		restart_mrk = false;
+	} else
 #endif
 	line_read = readline("(nemu) ");
 
