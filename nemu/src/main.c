@@ -1,14 +1,13 @@
-//
-#include "common.h"
-//
 void init_monitor(int, char *[]);
 void reg_test();
 void restart();
 void ui_mainloop();
 
+#include "common.h"
 #ifdef DEBUG
 #include <setjmp.h>
 jmp_buf restart_buf;
+int restart_mrk;
 #endif
 
 int main(int argc, char *argv[]) {

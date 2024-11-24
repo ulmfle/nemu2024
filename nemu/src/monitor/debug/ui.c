@@ -9,6 +9,7 @@
 
 #ifdef DEBUG
 #include <setjmp.h>
+extern int restart_mrk;
 extern jmp_buf restart_buf;
 #endif
 void cpu_exec(uint32_t);
@@ -300,6 +301,10 @@ static int cmd_shut(char *args) {
 #endif
 
 void ui_mainloop() {
+#ifdef DEBUG
+	if (restart_mrk) fprintf(stdin, "c\n");
+	restart_mrk = false;
+#endif
 	while(1) {
 		char *str = rl_gets();
 		char *str_end = str + strlen(str);
