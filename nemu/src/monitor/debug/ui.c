@@ -287,6 +287,8 @@ static int cmd_shut(char *args) {
 	if (args!=NULL) sscanf(args, "%c", &ch);
 	switch (ch) {
 		case 'r': {
+			nemu_state = STOP;
+			printf("Restarted.\n");
 			longjmp(restart_buf, 1);
 			break;
 		}

@@ -12,15 +12,15 @@ jmp_buf restart_buf;
 #endif
 
 int main(int argc, char *argv[]) {
-#ifdef DEBUG
-	setjmp(restart_buf);
-#endif
-
 	/* Initialize the monitor. */
 	init_monitor(argc, argv);
 
 	/* Test the implementation of the `CPU_state' structure. */
 	reg_test();
+
+#ifdef DEBUG
+	setjmp(restart_buf);
+#endif
 
 	/* Initialize the virtual computer system. */
 	restart();
