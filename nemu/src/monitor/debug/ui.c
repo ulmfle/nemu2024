@@ -284,7 +284,7 @@ static int cmd_debug(char *args) {
 
 static int cmd_shut(char *args) {
 	char ch;
-	sscanf(args, "%c", &ch);
+	sscanf(args++, "%c", &ch);
 	switch (ch) {
 		case 'r': {
 			longjmp(restart_buf, 1);
