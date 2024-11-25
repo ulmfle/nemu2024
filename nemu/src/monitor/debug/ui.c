@@ -9,8 +9,8 @@
 
 #ifdef DEBUG
 #include <setjmp.h>
-extern jmp_buf restart_buf;
-extern int restart_mrk;
+extern jmp_buf rbuf;
+extern int rmrk;
 #endif
 void cpu_exec(uint32_t);
 char *get_symbol_name(swaddr_t);
@@ -28,10 +28,10 @@ char* rl_gets() {
 	}
 
 #ifdef DEBUG
-	if (restart_mrk) {
+	if (rmrk) {
 		line_read = (char *)malloc(sizeof("c"));
 		sprintf(line_read, "c");
-		restart_mrk = false;
+		rmrk = false;
 	} else
 #endif
 	line_read = readline("(nemu) ");
@@ -296,9 +296,8 @@ static int cmd_shut(char *args) {
 	switch (ch) {
 		case 'r': {
 			nemu_state = STOP;
-			restart_mrk = true;
-			printf("Restarted.\n");
-			longjmp(restart_buf, 1);
+			rmrk = true;
+			longjmp(rbuf, 1);
 			break;
 		}
 		case 'q':

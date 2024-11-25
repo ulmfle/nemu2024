@@ -6,8 +6,8 @@ void ui_mainloop();
 #include "common.h"
 #ifdef DEBUG
 #include <setjmp.h>
-jmp_buf restart_buf;
-int restart_mrk;
+jmp_buf rbuf;
+int rmrk = false;
 #endif
 
 int main(int argc, char *argv[]) {
@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
 	reg_test();
 
 #ifdef DEBUG
-	setjmp(restart_buf);
+	setjmp(rbuf);
+	if (rmrk) printf("Restarted.\n");
 #endif
 
 	/* Initialize the virtual computer system. */
