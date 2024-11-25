@@ -27,7 +27,7 @@ char* rl_gets() {
 		line_read = NULL;
 	}
 
-#ifdef DEBUG
+#if defined(DEBUG) && 0
 	if (rmrk) {
 		line_read = (char *)malloc(sizeof("c"));
 		sprintf(line_read, "c");
