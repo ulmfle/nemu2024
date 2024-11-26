@@ -91,13 +91,16 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg) {
 }
 
 hwaddr_t page_translate(lnaddr_t addr) {
-	if (!(cpu.cr0.protect_enable && cpu.cr0.paging)) return addr;
+	if (!(cpu.cr0.protect_enable && cpu.cr0.paging))
+		return addr;
+
 	bool hit = 0;
 	PDE pde;
 	PTE pte;
 	pte.val = tlb_read(addr, &hit);
 	int f_ret = tlb_flush();
-	if (hit == true && f_ret == false) return (pte.page_frame << 12) + (addr & PAGE_MASK);
+	if (hit == true && f_ret == false)
+		return (pte.page_frame << 12) + (addr & PAGE_MASK);
 
 	pde.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + sizeof(PDE)*(addr >> 22), sizeof(PDE)); 
 	assert(pde.present);
