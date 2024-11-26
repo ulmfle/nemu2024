@@ -12,6 +12,8 @@ keyboard_event(void){
 }
 
 void main_loop() {
-    draw_string("Success!", 0, 0, 0x33);
-    display_buffer();
+    while (true) {
+        draw_string("Success!", 0, 0, 0x33);
+        display_buffer();
+    }
 }
