@@ -12,11 +12,11 @@ void
 keyboard_event(void){
 }
 
-void draw_character_fixed(char ch, int x, int y, int color) {
+void draw_character_fixed(int ch, int x, int y, int color) {
     int i,j;
     for (i = 0; i < 8; ++i) {
         for (j = 0; j < 8; ++j) {
-            if ((font8x8_basic[(int)ch][i] >> j)&1)
+            if ((font8x8_basic[ch][i] >> j)&1)
                 draw_pixel(x+i, y+j, color);
         }
     }
