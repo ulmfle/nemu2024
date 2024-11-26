@@ -19,7 +19,6 @@ int main(int argc, char *argv[]) {
 
 #ifdef DEBUG
 	setjmp(rbuf);
-	if (rmrk) printf("Restarted.\n");
 #endif
 
 	/* Initialize the virtual computer system. */

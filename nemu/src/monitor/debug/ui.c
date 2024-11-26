@@ -167,7 +167,7 @@ static int cmd_info(char *args) {
                 printf("%s\t\t0x%08x\t\t%d\n", regsl[idx], reg_l(idx), reg_l(idx));
             printf("%s\t\t0x%08x\t\t%d\n", "eip", cpu.eip, cpu.eip);
 			printf("%s\t\t0x%08x\t\t%d\n", "eflags", cpu.eflags.val, cpu.eflags.val);
-#if 1 && defined(DEBUG)
+#if defined(DEBUG) && 1
 			uint64_t sr_hdv;
 			int srlen = sizeof(cpu.sr) / sizeof(cpu.sr[0]);
 			printf("%s\t\t0x%08x\t\t%d\n", "GDTR LIM", cpu.gdtr.limit, cpu.gdtr.limit);
@@ -296,7 +296,6 @@ static int cmd_shut(char *args) {
 	switch (ch) {
 		case 'r': {
 			nemu_state = STOP;
-			rmrk = true;
 			longjmp(rbuf, 1);
 			break;
 		}
