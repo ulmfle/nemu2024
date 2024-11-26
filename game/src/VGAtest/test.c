@@ -13,12 +13,10 @@ keyboard_event(void){
 }
 
 void draw_character_fixed(int ch, int x, int y, int color) {
-    set_bp();
     int i,j;
     for (i = 0; i < 8; ++i) {
         printf("%02x:", font8x8_basic[ch][i]);
         for (j = 0; j < 8; ++j) {
-            set_bp();
             if ((font8x8_basic[ch][i] >> j)&1) {
                 printf("00");
                 draw_pixel(x+i, y+j, color);
