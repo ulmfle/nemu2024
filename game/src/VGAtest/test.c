@@ -13,6 +13,7 @@ keyboard_event(void){
 }
 
 void draw_character_fixed(int ch, int x, int y, int color) {
+    set_bp();
     int i,j;
     for (i = 0; i < 8; ++i) {
         for (j = 0; j < 8; ++j) {
@@ -20,7 +21,7 @@ void draw_character_fixed(int ch, int x, int y, int color) {
                 printf("00");
                 draw_pixel(x+i, y+j, color);
             } else {
-                printf("  ");
+                printf("**");
             }
         }
         putchar('\n');
