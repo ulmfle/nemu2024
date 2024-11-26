@@ -1,4 +1,3 @@
-#GAME := VGAtest
 GAME := typing
 #GAME := nemu-pal
 
