@@ -16,10 +16,16 @@ void draw_character_fixed(int ch, int x, int y, int color) {
     int i,j;
     for (i = 0; i < 8; ++i) {
         for (j = 0; j < 8; ++j) {
-            if ((font8x8_basic[ch][i] >> j)&1)
+            if ((font8x8_basic[ch][i] >> j)&1) {
+                printf("00");
                 draw_pixel(x+i, y+j, color);
+            } else {
+                printf("  ");
+            }
         }
+        putchar('\n');
     }
+    putchar('\n');
 }
 
 void main_loop() {
