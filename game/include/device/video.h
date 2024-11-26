@@ -13,7 +13,8 @@ extern uint8_t *vmem;
 static inline void
 draw_pixel(int x, int y, int color) {
 	assert(x >= 0 && y >= 0 && x < SCR_HEIGHT && y < SCR_WIDTH);
-	vmem[(x << 8) + (x << 6) + y] = color;
+	//vmem[(x << 8) + (x << 6) + y] = color;
+	((uint8_t (*)[SCR_WIDTH])vmem)[x][y] = color;
 }
 
 void prepare_buffer(void);
