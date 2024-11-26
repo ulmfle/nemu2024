@@ -16,6 +16,7 @@ void draw_character_fixed(int ch, int x, int y, int color) {
     set_bp();
     int i,j;
     for (i = 0; i < 8; ++i) {
+        printf("%08x:", font8x8_basic[ch][i]);
         for (j = 0; j < 8; ++j) {
             if ((font8x8_basic[ch][i] >> j)&1) {
                 printf("00");
