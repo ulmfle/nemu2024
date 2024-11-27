@@ -72,7 +72,7 @@ int fs_open(const char *pathname, int flags) {
 		lqn = strlen(query(idx)->name);
 		if (lpn >= lqn && strcmp(query(idx)->name, pathname + lpn - lqn) == 0) {
 			state(idx)->opened = true;
-			state(idx)->offset = query(idx)->disk_offset;
+			state(idx)->offset = 0;
 			break;
 		}
 	}
@@ -85,7 +85,8 @@ int fs_read(int fd, void *buf, int len) {
 	if (!valid(fd)) return -1;
 	len -= overflow(fd, len);
 
-	ide_read(buf, state(fd)->offset, len);
+	int real_off = query(fd)->disk_offset + state(fd)->offset;
+	ide_read(buf, real_off, len);
 	state(fd)->offset += len;
 	return len;
 }
@@ -94,7 +95,8 @@ int fs_write(int fd, void *buf, int len) {
 	if (!valid(fd)) return -1;
 	len -= overflow(fd, len);
 
-	ide_write(buf, state(fd)->offset, len);
+	int real_off = query(fd)->disk_offset + state(fd)->offset;
+	ide_write(buf, real_off, len);
 	state(fd)->offset += len;
 	return len;
 }
