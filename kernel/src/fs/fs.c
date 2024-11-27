@@ -72,7 +72,7 @@ int fs_open(const char *pathname, int flags) {
 		lqn = strlen(query(idx)->name);
 		if (lpn >= lqn && strcmp(query(idx)->name, pathname + lpn - lqn) == 0) {
 			state(idx)->opened = true;
-			state(idx)->offset = 0;
+			state(idx)->offset = query(idx)->disk_offset;
 			break;
 		}
 	}
