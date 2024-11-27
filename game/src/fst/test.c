@@ -10,7 +10,7 @@ void keyboard_event() {}
 
 void main_loop() {
     FILE *fp;
-    nemu_assert(fp = fopen(FNAME, "rb+"));
+    fp = fopen(FNAME, "rb+");
     fread(data, 4, 1, fp);
     printf("data(%s):%s", FNAME, data);
     fclose(fp);
