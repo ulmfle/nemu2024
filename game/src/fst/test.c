@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define str(x) #x
-#define FNAME str(1.rpg)
+#define FNAME "1.rpg"
 char data[5] = {0};
 
 void timer_event() {}
