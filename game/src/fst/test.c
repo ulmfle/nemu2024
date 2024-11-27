@@ -6,6 +6,9 @@
 #define FNAME str(1.rpg)
 char data[5] = {0};
 
+void timer_event() {}
+void keyboard_event() {}
+
 void main_loop() {
     FILE *fp;
     nemu_assert(fp = fopen(FNAME, "rb+"));
