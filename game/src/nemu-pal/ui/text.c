@@ -87,7 +87,7 @@ PAL_InitText(
     -1 = memory allocation error.
 
 --*/
-{
+{set_bp();
    FILE       *fpMsg, *fpWord;
    int         i;
 
@@ -174,7 +174,7 @@ PAL_InitText(
    g_TextLib.fUserSkip = FALSE;
 
    PAL_MKFReadChunk(g_TextLib.bufDialogIcons, 282, 12, gpGlobals->f.fpDATA);
-
+set_bp();
    return 0;
 }
 
