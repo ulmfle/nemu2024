@@ -87,7 +87,7 @@ PAL_InitText(
     -1 = memory allocation error.
 
 --*/
-{set_bp();
+{
    FILE       *fpMsg, *fpWord;
    int         i;
 
@@ -148,7 +148,7 @@ set_bp();
    //
    fseek(fpMsg, 0, SEEK_END);
    i = ftell(fpMsg);
-
+set_bp();
    g_TextLib.lpMsgBuf = (LPBYTE)malloc(i);
    if (g_TextLib.lpMsgBuf == NULL)
    {
