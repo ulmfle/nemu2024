@@ -125,14 +125,14 @@ PAL_InitText(
    // Close the words file
    //
    fclose(fpWord);
-set_bp();
+
    //
    // Read the message offsets. The message offsets are in SSS.MKF #3
    //
    i = PAL_MKFGetChunkSize(3, gpGlobals->f.fpSSS) / sizeof(DWORD);
    g_TextLib.nMsgs = i - 1;
-
-   g_TextLib.lpMsgOffset = (LPDWORD)malloc(i * sizeof(DWORD));
+set_bp();
+   g_TextLib.lpMsgOffset = (LPDWORD)malloc(i * sizeof(DWORD));set_bp();
    if (g_TextLib.lpMsgOffset == NULL)
    {
       free(g_TextLib.lpWordBuf);
@@ -148,7 +148,7 @@ set_bp();
    //
    fseek(fpMsg, 0, SEEK_END);
    i = ftell(fpMsg);
-set_bp();
+
    g_TextLib.lpMsgBuf = (LPBYTE)malloc(i);
    if (g_TextLib.lpMsgBuf == NULL)
    {
