@@ -125,7 +125,7 @@ PAL_InitText(
    // Close the words file
    //
    fclose(fpWord);
-
+set_bp();
    //
    // Read the message offsets. The message offsets are in SSS.MKF #3
    //
@@ -174,7 +174,7 @@ PAL_InitText(
    g_TextLib.fUserSkip = FALSE;
 
    PAL_MKFReadChunk(g_TextLib.bufDialogIcons, 282, 12, gpGlobals->f.fpDATA);
-set_bp();
+
    return 0;
 }
 
