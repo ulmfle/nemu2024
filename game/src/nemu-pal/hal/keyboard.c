@@ -42,10 +42,15 @@ void
 keyboard_event(int scan_code) {
 	/* TODO: Fetch the scancode and update the key states. */
 	int idx, rel = scan_code & 0x80;
+
 	for (idx = 0; idx < NR_KEYS && get_keycode(idx) != scan_code; ++idx);
-	if (key_state[idx] == KEY_STATE_EMPTY) key_state[idx] = KEY_STATE_PRESS;
-	else if (key_state[idx] == KEY_STATE_PRESS) key_state[idx] = KEY_STATE_WAIT_RELEASE;
-	else if (key_state[idx] == KEY_STATE_WAIT_RELEASE && rel) key_state[idx] = KEY_STATE_RELEASE;
+
+	if (key_state[idx] == KEY_STATE_EMPTY)
+		key_state[idx] = KEY_STATE_PRESS;
+	else if (key_state[idx] == KEY_STATE_PRESS)
+		key_state[idx] = KEY_STATE_WAIT_RELEASE;
+	else if (key_state[idx] == KEY_STATE_WAIT_RELEASE && rel)
+		key_state[idx] = KEY_STATE_RELEASE;
 	//assert(0);
 }
 

@@ -35,6 +35,8 @@ SDL_Delay(uint32_t ms) {
 	uint32_t after = jiffy + ms;
 	while (true) {
 		wait_intr();
-		if (jiffy >= after) return;
+
+		if (jiffy >= after)
+			return;
 	}
 }
