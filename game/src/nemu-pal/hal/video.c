@@ -25,8 +25,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	}
 
 	int x,y;
-	for (x = 0; x <= dx; ++x) {
-		for (y = 0; y <= dy; ++y) {
+	for (x = 0; x < dx; ++x) {
+		for (y = 0; y < dy; ++y) {
 			dst->pixels[(dy + y) * h + (dx + x)] = src->pixels[(sy + y) * h + (sx + x)];
 		}
 	}
@@ -55,13 +55,13 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	if(dst->h - dy < h) { h = dst->h - dy; }
 
 	int x,y;
-	for (x = 0; x <= dx; ++x) {
-		for (y = 0; y <= dy; ++y) {
+	for (x = 0; x < dx; ++x) {
+		for (y = 0; y < dy; ++y) {
 			dst->pixels[(dy + y) * h + (dx + x)] = color;
 		}
 	}
 
-	assert(0);
+	// assert(0);
 }
 
 void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors, 
