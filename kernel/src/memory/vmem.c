@@ -15,12 +15,10 @@ void create_video_mapping() {
 	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
 	 * some page tables to create this mapping.
 	 */
-	PDE *upd = va_to_pa(get_updir());
+	PDE *upd = get_updir();
 	PTE *kpt = va_to_pa(get_kptable()) + NR_PTE * VMEM_ADDR / PT_SIZE;
 	upd[VMEM_ADDR / PT_SIZE].val = make_pde(kpt);
 }
-
-extern char frame[];
 
 void video_mapping_write_test() {
 	int i;
