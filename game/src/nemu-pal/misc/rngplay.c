@@ -23,7 +23,6 @@
 //
 
 #include "main.h"
-#include "device/video.h"
 
 static INT
 PAL_RNGReadFrame(
@@ -220,7 +219,6 @@ PAL_RNGBlitToSurface(
    // Draw the frame to the surface.
    // FIXME: Dirty and ineffective code, needs to be cleaned up
    //
-
    while (TRUE)
    {
       data = rng[ptr++];
@@ -251,62 +249,61 @@ PAL_RNGBlitToSurface(
       case 0x0a:
          x = dst_ptr % 320;
          y = dst_ptr / 320;
-         //((LPBYTE)(lpDstSurface->pixels)) [[bkp]]  [y * lpDstSurface->pitch + x] = rng[ptr++]bkp;
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          if (++x >= 320)
          {
             x = 0;
             ++y;
          }
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          dst_ptr += 2;
 
       case 0x09:
          x = dst_ptr % 320;
          y = dst_ptr / 320;
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          if (++x >= 320)
          {
             x = 0;
             ++y;
          }
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          dst_ptr += 2;
 
       case 0x08:
          x = dst_ptr % 320;
          y = dst_ptr / 320;
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          if (++x >= 320)
          {
             x = 0;
             ++y;
          }
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          dst_ptr += 2;
 
       case 0x07:
          x = dst_ptr % 320;
          y = dst_ptr / 320;
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          if (++x >= 320)
          {
             x = 0;
             ++y;
          }
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          dst_ptr += 2;
 
       case 0x06:
          x = dst_ptr % 320;
          y = dst_ptr / 320;
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          if (++x >= 320)
          {
             x = 0;
             ++y;
          }
-         draw_pixel(x, y, rng[ptr++]);
+         ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
          dst_ptr += 2;
          break;
 
@@ -316,13 +313,13 @@ PAL_RNGBlitToSurface(
          {
             x = dst_ptr % 320;
             y = dst_ptr / 320;
-            draw_pixel(x, y, rng[ptr++]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
             if (++x >= 320)
             {
                x = 0;
                ++y;
             }
-            draw_pixel(x, y, rng[ptr++]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
             dst_ptr += 2;
          }
          break;
@@ -334,13 +331,13 @@ PAL_RNGBlitToSurface(
          {
             x = dst_ptr % 320;
             y = dst_ptr / 320;
-            draw_pixel(x, y, rng[ptr++]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
             if (++x >= 320)
             {
                x = 0;
                ++y;
             }
-            draw_pixel(x, y, rng[ptr++]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr++];
             dst_ptr += 2;
          }
          break;
@@ -353,13 +350,13 @@ PAL_RNGBlitToSurface(
          {
             x = dst_ptr % 320;
             y = dst_ptr / 320;
-            draw_pixel(x, y, rng[ptr]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr];
             if (++x >= 320)
             {
                x = 0;
                ++y;
             }
-            draw_pixel(x, y, rng[ptr + 1]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr + 1];
             dst_ptr += 2;
          }
          ptr += 2;
@@ -371,13 +368,13 @@ PAL_RNGBlitToSurface(
          {
             x = dst_ptr % 320;
             y = dst_ptr / 320;
-            draw_pixel(x, y, rng[ptr]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr];
             if (++x >= 320)
             {
                x = 0;
                ++y;
             }
-            draw_pixel(x, y, rng[ptr + 1]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr + 1];
             dst_ptr += 2;
          }
          ptr += 2;
@@ -390,13 +387,13 @@ PAL_RNGBlitToSurface(
          {
             x = dst_ptr % 320;
             y = dst_ptr / 320;
-            draw_pixel(x, y, rng[ptr]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr];
             if (++x >= 320)
             {
                x = 0;
                ++y;
             }
-            draw_pixel(x, y, rng[ptr + 1]);
+            ((LPBYTE)(lpDstSurface->pixels))[y * lpDstSurface->pitch + x] = rng[ptr + 1];
             dst_ptr += 2;
          }
          ptr += 2;
