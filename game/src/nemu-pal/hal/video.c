@@ -24,10 +24,12 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 		dstrect->h = h;
 	}
 
-	int x,y;
-	for (x = 0; x < dx; ++x) {
-		for (y = 0; y < dy; ++y) {
-			dst->pixels[(dy + y) * h + (dx + x)] = src->pixels[(sy + y) * h + (sx + x)];
+	int _h,_w;
+	for (_h = 0; _h < h; ++_h)
+	{
+		for (_w = 0; _w < w; ++_w)
+		{
+			dst->pixels[(dy + _h) * dst->pitch + dx + _w] = src->pixels[(sy + _h) * src->pitch + sx + _w];
 		}
 	}
 	/* TODO: copy pixels from position (`sx', `sy') with size
@@ -55,10 +57,11 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	if(dst->h - dy < h) { h = dst->h - dy; }
 
 	int x,y;
-	for (x = 0; x < dx; ++x) {
-		for (y = 0; y < dy; ++y) {
-			draw_pixel(x, y, color);
-			//dst->pixels[(dy + y) * h + (dx + x)] = color;
+	for (y = dy; y < dy + h; ++y)
+	{
+		for (x = dx; x < dx + w; ++x)
+		{
+			dst->pixels[y * dst->pitch + x] = color;
 		}
 	}
 
